@@ -1,20 +1,49 @@
-		/** @type {import('tailwindcss').Config} */
+const { fontFamily } = require('tailwindcss/defaultTheme');
+    /** @type {import('tailwindcss').Config} */
     module.exports = {
       content: ["./src/**/*.{js,jsx,tsx, ts}"],
       theme: {
+        colors:{
+          gray:{
+            100:"#D9D9D9",
+            200:"#B8B8B8",
+            300:"#777777",
+            400:"#333333"
+          }
+        },
+        fontSize: {
+          sm: '0.875rem',
+          base: '1rem',
+          lg:"1.125rem",
+          xl: '1.25rem',
+          '2xl': '1.5rem',
+          '3xl': '2rem',
+          '4xl': '2.25rem',
+          '5xl': '2.5rem',
+          '6xl': "3rem",
+          '7xl': "4.5rem"
+        },
         extend: {
+          fontFamily: {
+            PR_L: ['"Pretendard-Light"', ...fontFamily.sans],
+            PR_M: ['"Pretendard-Medium"', ...fontFamily.sans],
+            PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
+            PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],
+         },
           colors: {
             white: "#ffffff",
-            black: "#000000",
-            "dark-gray": "#525252",
-            blue: {
-              base: "#6979F8", // 기본 버튼 색상
-              highlight: "#3647A7", // 클릭 시 버튼 색상
-              pitch: "#A1A1FF", // 음성 듣기 및 포기하기
-              "bar-1": "#D7D6FF", // 목표 음정 바
-              "bar-2": "#A1C1FF", // 현재 음정 바,결과 음역대 범위 바
-              "bg-bar": "#C7D3EB",
-              result: "#E1E1FA",
+            black: "#111111",
+            green: {
+              "Light":"#e6fbed",
+              "Light :hover":"##d9f9e4",
+              "Light :active":"#b0f2c7",
+              "Normal":"#00d54b",
+              "Normal :hover":"#00c044",
+              "Normal :active":"#00aa3c",
+              "Dark":"#00a038",
+              "Dark :hover":"#00802d",
+              "Dark :active":"#006022",
+              "Darker":"#004b1a"
             },
           },
         },
