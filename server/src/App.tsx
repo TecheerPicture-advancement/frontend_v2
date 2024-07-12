@@ -1,20 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import ResultButton from './components/ResultButton';
-import MainButton from './components/MainButton';
+import Nickname from './pages/NicknamePage';
+import ResultButton from './components/ResultButton'; // Ensure you have this component created
 
 const App: React.FC = () => {
+  const [nickname, setNickname] = useState('');
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
   return (
     <Router>
-      <NavBar/>
       <Routes>
-        <Route path="/" />
-        <Route path="/banner" />
-        <Route path="/background" />
-        <Route path="/about" />
+        <Route path="/" element={<Nickname nickname={nickname} onChange={handleNicknameChange} />} />
+        <Route path="/banner" element={<div>Banner Page</div>} />
+        <Route path="/background" element={<div>Background Page</div>} />
+        <Route path="/about" element={<div>About Page</div>} />
       </Routes>
-    <MainButton value="시작하기"/>
+      {/*<ResultButton value="시작하기" /> {/* Ensure ResultButton is correctly implemented */}
     </Router>
   );
 };
