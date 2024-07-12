@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 interface ResultImageProps {
   src: string;
-  onClick: () => void;
+  onClick?: () => void;
   isSelected: boolean;
   width: string;
   height: string;

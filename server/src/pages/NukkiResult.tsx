@@ -21,7 +21,7 @@ const NukkiResult: React.FC = () => {
                 <div key={index} className='w-5/4 h-5/4 flex justify-center items-center shrink-0 flex-wrap'>
                 <ResultImage 
                     src={photo} 
-                    onClick={() => setSelectedPhoto(NUll)}
+                    onClick={() => setSelectedPhoto(null)}
                     isSelected={selectedPhoto === photo}
                     width="80" 
                     height="[300px]"
