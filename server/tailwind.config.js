@@ -3,6 +3,17 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
     module.exports = {
       content: ["./src/**/*.{js,jsx,tsx, ts}"],
       theme: {
+        screens: {
+          'tablet': '640px',
+          'fontSize':'8',
+          // => @media (min-width: 640px) { ... }
+    
+          'laptop': '1024px',
+          // => @media (min-width: 1024px) { ... }
+    
+          'desktop': '1280px',
+          // => @media (min-width: 1280px) { ... }
+        },
         colors:{
           gray:{
             100:"#D9D9D9",
