@@ -12,6 +12,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           }
         },
         fontSize: {
+          xxs: '0.625rem', // 10px
           sm: '0.875rem',
           base: '1rem',
           lg:"1.125rem",
