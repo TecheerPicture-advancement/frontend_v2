@@ -12,13 +12,15 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <div className="w-full h-full">
         <NavBar />
         <Routes>
-          <Route path="/"  />
-          <Route path="/banner" />
-          <Route path="/background"  />
-          <Route path="/about"  />
+          <Route path="/" element={<BackgroundTheme />} />
+          <Route path="/banner" element={<div>Banner Page</div>} />
+          <Route path="/background" element={<div>Background Page</div>} />
+          <Route path="/about" element={<div>sAbout Page</div>} />
         </Routes>
+      </div>
     </Router>
   );
 }
