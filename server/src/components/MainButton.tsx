@@ -2,6 +2,7 @@ import React from 'react';
 
 interface ButtonProps {
   value: string;
+
 }
 
 const MainButton:React.FC<ButtonProps> = (props) =>  {

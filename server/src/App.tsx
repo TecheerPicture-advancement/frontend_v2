@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainChoose from './pages/MainChoose';
 import Nickname from './pages/NicknamePage';
 import ResultButton from './components/ResultButton'; // Ensure you have this component created
 
@@ -18,7 +19,7 @@ const App: React.FC = () => {
         <Route path="/background" element={<div>Background Page</div>} />
         <Route path="/about" element={<div>About Page</div>} />
       </Routes>
-      {/*<ResultButton value="시작하기" /> {/* Ensure ResultButton is correctly implemented */}
+      <MainChoose name="할 수 있다"></MainChoose>
     </Router>
   );
 };
