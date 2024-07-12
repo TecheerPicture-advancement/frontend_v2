@@ -12,21 +12,21 @@ const NavBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="flex justify-center items-center w-full bg-black py-7	">
-      <div className="flex justify-between items-center w-full max-w-6xl px-10">
-        <Link to="/" className="text-5xl font-PR_BO text-white hover:text-white">
+    <nav className="flex justify-center items-center bg-black py-4">
+      <div className="flex justify-between items-center w-full max-w-screen-2xl px-32">
+        <Link to="/" className="text-3xl font-PR_BO text-white hover:text-white">
           Logo
         </Link>
 
-        <ul className="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-10">
+        <ul className="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4 md:gap-10">
           {navLinks.map((link, index) => (
-            <li key={index} className="font-PR_L">
+            <li key={index} className="text-max-lg">
               <Link
                 to={link.url}
                 className={`${
                   location.pathname === link.url
                     ? 'font-PR_BO text-green-Normal hover:text-green-Normal'
-                    : 'font-PR_L text-gray-200 hover:text-green-Normal :hover active:text-green-Normal :active'
+                    : 'font-PR_L  text-gray-200 hover:text-green-Normal active:text-green-Normal'
                 }`}
               >
                 {link.name}
