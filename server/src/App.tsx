@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MainChoose from './pages/MainChoose';
-import Nickname from './pages/NicknamePage';
-import ResultButton from './components/ResultButton'; // Ensure you have this component created
+import NavBar from './components/NavBar'
+import BannerSetting from './pages/BannerSetting';
 
 const App: React.FC = () => {
   const [nickname, setNickname] = useState('');
@@ -13,15 +12,16 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Nickname nickname={nickname} onChange={handleNicknameChange} />} />
-        <Route path="/banner" element={<div>Banner Page</div>} />
-        <Route path="/background" element={<div>Background Page</div>} />
-        <Route path="/about" element={<div>About Page</div>} />
-      </Routes>
-      <MainChoose name="할 수 있다"></MainChoose>
+        <NavBar />
+        <Routes>
+          <Route path="/"  />
+          <Route path="/banner" />
+          <Route path="/background"  />
+          <Route path="/about"  />
+        </Routes>
+        <BannerSetting />
     </Router>
   );
-};
+}
 
 export default App;

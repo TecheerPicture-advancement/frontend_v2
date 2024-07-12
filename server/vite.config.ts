@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
+import reactSvgPlugin from 'vite-plugin-react-svg';
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    reactSvgPlugin({defaultExport: true})
+  ], 
 })

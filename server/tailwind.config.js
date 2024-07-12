@@ -44,6 +44,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           colors: {
             white: "#ffffff",
             black: "#111111",
+            red:"#ff3939",
             green: {
               "Light":"#e6fbed",
               "Light :hover":"##d9f9e4",
