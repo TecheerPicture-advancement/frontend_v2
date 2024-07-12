@@ -1,19 +1,22 @@
 import React from 'react';
 import ImageBox from '../components/ImageBox';
+import ThemeBox from '../components/ThemeBox';
+import MainButton from '../components/MainButton';
 
-const BackgroundTheme: React.FC = () => {
+const ThemeResult: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-start p-2.5 bg-[#111] overflow-hidden">
-      <div className="w-full max-w-screen-2xl h-full flex flex-col items-center justify-start gap-24 md:gap-20 lg:gap-[90px] overflow-hidden">
+      <div className="w-full max-w-screen-2xl h-full flex flex-col items-center justify-start gap-10 md:gap-20 lg:gap-[90px] overflow-hidden">
         <header className="h-30 md:h-52 lg:h-[200px] flex flex-col items-center justify-start gap-2.5 md:gap-3 lg:gap-[10px] pt-6 md:pt-8 lg:pt-[23px] pr-6 md:pr-8 lg:pr-[119px] pl-6 md:pl-8 lg:pl-[120px] overflow-hidden">
           <h1 className="text-xl md:text-2xl lg:text-[40px] leading-tight font-['Noto_Sans_KR'] font-black text-center text-[#fff]">
             내 마음대로 만드는<br />
             <span className="text-[#00d54b]">상품 이미지</span>
           </h1>
           <p className="text-sm md:text-base lg:text-[18px] leading-tight font-['Pretendard'] text-[#b8b8b8] text-center">
-            원하는 상품 이미지를 클릭해주세요
+            <MainButton value="이미지 업로드 하러 가기"/>
           </p>
         </header>
+        <ThemeBox imageSource='ThemeImage/AI.png' prompt='원하는 사진을 만들어드립니다.' theme='AI' detail='적합한 이미지 추천'/>
         <main className="flex flex-col items-center justify-center w-full overflow-hidden">
           <div className="relative w-full max-w-4xl h-[230px] shrink-0 flex items-center justify-center">
             <ImageBoxPosition
@@ -114,4 +117,4 @@ const ImageBoxPosition: React.FC<ImageBoxPositionProps> = ({ className, imageSou
   );
 };
 
-export default BackgroundTheme;
+export default ThemeResult;
