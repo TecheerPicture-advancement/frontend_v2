@@ -1,7 +1,7 @@
 const { fontFamily } = require('tailwindcss/defaultTheme');
     /** @type {import('tailwindcss').Config} */
     module.exports = {
-      content: ["./src/**/*.{js,jsx,tsx, ts}"],
+      content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
       theme: {
         screens: {
           'tablet': '640px',
@@ -23,6 +23,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           }
         },
         fontSize: {
+          xxs: '0.625rem', // 10px
           sm: '0.875rem',
           base: '1rem',
           lg:"1.125rem",
