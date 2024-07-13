@@ -1,28 +1,30 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import BackgroundTheme from './pages/ThemeSelcetPage';
 
 const App: React.FC = () => {
-  const [nickname, setNickname] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
+  const handleToggle = () => {
+    setChecked(prevChecked => !prevChecked);
+  };
+
+  const handleResetHover = () => {
+    setHovered(false);
+  };
+
+  const handleHover = () => {
+    setHovered(true);
   };
   
   return (
     <Router>
-      <div className="w-full h-full">
-        <NavBar />
         <Routes>
-          <Route path="/" element={<BackgroundTheme />} />
+          <Route path="/"/>
           <Route path="/banner" element={<div>Banner Page</div>} />
           <Route path="/background" element={<div>Background Page</div>} />
           <Route path="/about" element={<div>sAbout Page</div>} />
         </Routes>
-      </div>
     </Router>
   );
 }
-
-export default App;
