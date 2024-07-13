@@ -1,20 +1,31 @@
 import React from 'react';
+import classNames from 'classnames';
 
-interface PhotoProps {
+interface ResultImageProps {
   src: string;
-  onClick: () => void;
+  onClick?: () => void;
   isSelected: boolean;
+  width: string;
+  height: string;
 }
 
-const Photo: React.FC<PhotoProps> = ({ src, onClick, isSelected }) => {
+const ResultImage: React.FC<ResultImageProps> = ({ src, onClick, isSelected, width, height }) => {
+  const widthClass = `w-${width}`;
+  const heightClass = `h-${height}`;
+
   return (
     <img
       src={src}
-      alt="thumbnail"
+      alt="ResultImage"
       onClick={onClick}
-        className={`cursor-pointer w-64 h-64 border  ${isSelected ? 'border-green-Normal border-4' : 'border-gray-300'}`}
+      className={classNames(
+        'cursor-pointer border',
+        { 'border-green-Normal border-4': isSelected, 'border-gray-300': !isSelected },
+        widthClass,
+        heightClass
+      )}
     />
   );
 };
 
-export default Photo;
+export default ResultImage;
