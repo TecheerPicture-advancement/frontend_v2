@@ -1,6 +1,6 @@
 import React from 'react';
 
-const styles = {
+const styles = { 
   radio: {
     WebkitAppearance: 'none' as const,
     MozAppearance: 'none' as const,
