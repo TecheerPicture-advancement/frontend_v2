@@ -1,5 +1,7 @@
 import React from 'react';
-
+import Instagram from '../../assets/instagram.svg?react'
+import GooglAd from '../../assets/googleAd.svg?react'
+import X from '../../assets/x.svg?react'
 
 interface AspectRatioButtonProps {
   buttons: { label: string, width: number, height: number}[];
@@ -11,6 +13,8 @@ const AspectRatioButtons: React.FC<AspectRatioButtonProps> = ({ buttons, selecte
   return (
     <div className="flex flex-wrap gap-5 pt-6 pl-1">
       {buttons.map((button) => (
+        <div>
+        <Instagram/>
         <div key={button.label} className="flex flex-col items-center w-1/2 md:w-auto">
           <button
             onClick={() => onClick(button.width, button.height, button.label)}
@@ -21,6 +25,7 @@ const AspectRatioButtons: React.FC<AspectRatioButtonProps> = ({ buttons, selecte
             {button.label}
           </button>
         </div>
+      </div>
       ))}
     </div>
   );

@@ -4,6 +4,7 @@ import img1 from "../../public/assets/BackgroundImage1.png";
 
 const MoveChoose:React.FC = () =>  {
     return(
+
 <button className="flex flex-row justify-center items-center w-full rounded-md border-2 border-white hover:border-green-Normal :hover active:border-green-Normal :active">
         <img
           src={img1}

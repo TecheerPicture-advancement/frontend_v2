@@ -1,9 +1,5 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavBar from './components/NavBar'
-import RadioButton from './components/RadioButton';
-
-import BackgroundChoose from './pages/BackgroundChoose';
 
 const App: React.FC = () => {
   const [checked, setChecked] = useState(false);
@@ -20,7 +16,7 @@ const App: React.FC = () => {
   const handleHover = () => {
     setHovered(true);
   };
-
+  
   return (
     <Router>
         <Routes>
