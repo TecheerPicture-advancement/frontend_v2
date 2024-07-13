@@ -25,6 +25,8 @@ const ResultPage: React.FC = () => {
                 src={photo} 
                 onClick={() => setSelectedPhoto(photo)}
                 isSelected={selectedPhoto === photo}
+                width="96"
+                height="96"
               />
             </div>
           ))}

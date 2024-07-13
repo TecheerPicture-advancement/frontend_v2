@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SuccessImageModal from './components/SuccessImageModal'
+import UploadImageModal from './components/UploadImageModal';
 
 const App: React.FC = () => {
   const [checked, setChecked] = useState(false);
@@ -19,6 +21,7 @@ const App: React.FC = () => {
   
   return (
     <Router>
+      <UploadImageModal/>
         <Routes>
           <Route path="/"/>
           <Route path="/banner" element={<div>Banner Page</div>} />
@@ -28,3 +31,4 @@ const App: React.FC = () => {
     </Router>
   );
 }
+export default App;
