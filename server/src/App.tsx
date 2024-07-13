@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavBar from './components/NavBar';
-
-import BackgroundTheme from './pages/ThemeSelcetPage';
+import NavBar from './components/NavBar'
+import STResultPage from './pages/STResultPage';
 
 const App: React.FC = () => {
   const [nickname, setNickname] = useState('');
