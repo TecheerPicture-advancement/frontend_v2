@@ -12,8 +12,8 @@ interface ButtonProps {
 const MainButton:React.FC<ButtonProps> = (props) =>  {
   return (
     <button className="flex text-center w-full h-full min-w-96 min-h-9 text-xl font-PR_M justify-center items-center rounded-[10px] bg-green-Normal hover:bg-green-Normal :hover hover:font-PR_BO active:font-PR_BO  active:bg-green-Normal :active text-black hover:text-black active:text-black" >
-  {props.value}</button>
-);
+    {props.value}</button>
+  );
 };
 
 export default MainButton;
