@@ -8,7 +8,7 @@ interface ChooseProps {
 
 const MoveChoose:React.FC<ChooseProps> = (props) =>  {
     return(
-<button className="flex shrink-0 display-flex gap-8 justify-center items-center px-3 py-5 rounded-md border-2 border-white hover:border-green-Normal :hover active:border-green-Normal :active">
+      <button className="flex shrink-0 display-flex gap-8 justify-center items-center px-3 py-5 rounded-md border-2 border-white hover:border-green-Normal :hover active:border-green-Normal :active">
         <img
           src={img1}
           className="flex shrink-0 w-52 h-52 object-cover"
