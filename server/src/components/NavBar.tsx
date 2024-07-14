@@ -12,13 +12,13 @@ const NavBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="flex justify-center items-center bg-black py-4">
-      <div className="flex justify-between items-center w-full max-w-screen-2xl px-32">
-        <Link to="/" className="text-3xl font-PR_BO text-white hover:text-white">
+    <nav className="flex items-center justify-center w-full h-full py-4 bg-black">
+      <div className="flex items-center justify-between w-full px-32 max-w-screen-2xl">
+        <Link to="/" className="text-3xl text-white font-PR_BO hover:text-white">
           Logo
         </Link>
 
-        <ul className="flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-4 md:gap-10">
+        <ul className="relative flex items-center justify-start flex-grow-0 flex-shrink-0 gap-4 md:gap-10">
           {navLinks.map((link, index) => (
             <li key={index} className="text-max-lg">
               <Link
