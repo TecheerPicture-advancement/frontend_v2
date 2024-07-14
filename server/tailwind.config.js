@@ -41,6 +41,10 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
             PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
             PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],
          },
+         
+        width: {
+          '50': '12.5rem',
+        },
           colors: {
             white: "#ffffff",
             black: "#111111",

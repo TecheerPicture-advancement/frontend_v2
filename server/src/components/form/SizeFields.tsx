@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, isDisabled, essential }) => (
-  <div className="flex py-1 px-1 flex-wrap gap-6">
+  <div className="flex flex-col py-1 px-1 flex-wrap gap-6">
     <div>
         <label className="block text-lg font-PR_BO text-green-Light">
           가로 사이즈
@@ -44,7 +44,7 @@ const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, isDisa
         placeholder="예) 1920"
         disabled={isDisabled}
         id="myNumberInput"
-        className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+        className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border overflow-hidden border-green-Light w-full ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
         style={{
           WebkitAppearance: 'none',
           MozAppearance: 'textfield',
@@ -65,7 +65,7 @@ const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, isDisa
             disabled={isDisabled}
             placeholder="예) 1080"
             id="myNumberInput"
-            className={`flex justify-start items-center gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+            className={`flex justify-start items-center gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border overflow-hidden border-green-Light w-full ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
           />
     </div>
   </div>
