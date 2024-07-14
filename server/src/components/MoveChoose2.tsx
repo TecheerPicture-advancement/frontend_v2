@@ -1,34 +1,24 @@
 import React from 'react';
 import img2 from "../../public/assets/BackgroundImage2.png";
 
-interface ChooseProps {
-  value: string;
-  value2:string;
-}
 
-const MoveChoose:React.FC<ChooseProps> = (props) =>  {
+const MoveChoose:React.FC = () =>  {
     return(
-<button className="flex justify-center items-center w-full h-full overflow-hidden gap-[60px] px-20 py-[50px] rounded-[10px] border-2 border-white hover:border-green-Normal :hover active:border-green-Normal :active">
-  <div className="flex-grow-0 flex-shrink-0 w-80 h-[120px] relative">
-    <p className="w-[360px] absolute left-[-41px] top-0 text-3xl font-PR_BO text-right text-green-Normal">
-      {props.value}
-    </p>
-    <p className="w-full h-full absolute left-[8px] top-[60px] text-lg font-PR_L text-right text-white">
-    {props.value2}
-    </p>
-  </div>
-  <div className="flex-grow-0 flex-shrink-0 w-[300px] h-[300px] relative overflow-hidden">
-    <div className="w-[300px] h-[300px] absolute left-[-1px] top-[-1px]" />
-    <img
+<button className="flex flex-row-reverse w-full justify-center items-center rounded-md border-2 border-white hover:border-green-Normal :hover active:border-green-Normal :active">
+        <img
           src={img2}
-          className="w-full object-cover"
+          className="w-64 h-64 mr-12 my-5 object-cover"
         />
-  </div>
-</button>
-
+        <div className="flex flex-col justify-end items-end w-full mr-10 ml-20">
+          <p className="desktop:text-3xl labtop:text-2xl tablet:text-xl mb-3 font-PR_BO text-left text-green-Normal">
+           광고 배너 생성
+          </p>
+          <p className="desktop:text-lg labtop:text-base tablet:text-sm font-PR_L text-left text-white">
+            AI가 제품 이미지와 컨셉을 분석하여 적합한 광고 배너를 생성합니다.
+          </p>     
+        </div>
+      </button>
 );
 };
-
-
 
 export default MoveChoose;
