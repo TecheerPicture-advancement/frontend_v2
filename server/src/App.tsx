@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SuccessImageModal from './components/SuccessImageModal'
-import UploadImageModal from './components/UploadImageModal';
+import Onboarding2 from './components/Onboarding2';
 
 const App: React.FC = () => {
   const [checked, setChecked] = useState(false);
@@ -21,13 +20,13 @@ const App: React.FC = () => {
   
   return (
     <Router>
-      <UploadImageModal/>
         <Routes>
           <Route path="/"/>
           <Route path="/banner" element={<div>Banner Page</div>} />
           <Route path="/background" element={<div>Background Page</div>} />
           <Route path="/about" element={<div>sAbout Page</div>} />
         </Routes>
+        <Onboarding2/>
     </Router>
   );
 }
