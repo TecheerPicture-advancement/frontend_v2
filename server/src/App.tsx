@@ -1,32 +1,18 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import BannerEdit from './pages/BannerEdit';
 
 const App: React.FC = () => {
-  const [checked, setChecked] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
-  const handleToggle = () => {
-    setChecked(prevChecked => !prevChecked);
-  };
-
-  const handleResetHover = () => {
-    setHovered(false);
-  };
-
-  const handleHover = () => {
-    setHovered(true);
-  };
-  
   return (
     <Router>
-        <Routes>
-          <Route path="/"/>
-          <Route path="/banner" element={<div>Banner Page</div>} />
-          <Route path="/background" element={<div>Background Page</div>} />
-          <Route path="/about" element={<div>sAbout Page</div>} />
-        </Routes>
-        <Onboarding2/>
+      <Routes>
+        <Route path='/' element={<BannerEdit mainText1='1234' mainText2='4567' subText1='789' subText2='123456789'/>} />
+        <Route path="/banner" element={<div>Banner Page</div>} />
+        <Route path="/background" element={<div>Background Page</div>} />
+        <Route path="/about" element={<div>About Page</div>} />
+      </Routes>
     </Router>
   );
-}
+};
+
 export default App;
