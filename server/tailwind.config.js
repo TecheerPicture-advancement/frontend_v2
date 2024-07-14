@@ -5,7 +5,6 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
       theme: {
         screens: {
           'tablet': '640px',
-          'fontSize':'8',
           // => @media (min-width: 640px) { ... }
     
           'laptop': '1024px',
@@ -33,7 +32,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           '4xl': '2.25rem',
           '5xl': '2.5rem',
           '6xl': "3rem",
-          '7xl': "4.5rem"
+          '7xl': "4rem"
         },
         extend: {
           fontFamily: {
@@ -42,6 +41,10 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
             PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
             PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],
          },
+         
+        width: {
+          '50': '12.5rem',
+        },
           colors: {
             white: "#ffffff",
             black: "#111111",
