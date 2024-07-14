@@ -25,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/background" element={<div>Background Page</div>} />
           <Route path="/about" element={<div>sAbout Page</div>} />
         </Routes>
+        <Onboarding2/>
     </Router>
   );
 }
