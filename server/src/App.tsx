@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Onboarding2 from './components/Onboarding2';
 
 const App: React.FC = () => {
   const [checked, setChecked] = useState(false);
