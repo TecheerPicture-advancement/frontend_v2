@@ -30,8 +30,8 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
           <p className="w-[170px] h-[36px] absolute left-[-0.25px] top-[75px] text-xxs font-medium text-left text-white">
             {prompt}
           </p>
-          <div className="w-[89px] h-[50px] absolute left-0 top-0 overflow-hidden">
-            <p className="w-[24.5px] h-[26px] absolute left-0 top-[19.5px] text-2xl font-bold text-left text-[#e6fbed]">
+          <div className="w-[130px] h-[50px] absolute left-0 top-0 overflow-hidden">
+            <p className="w-[130px] h-[45px] absolute left-0 top-[19.5px] text-2xl font-bold text-left text-[#e6fbed]">
               {theme}
             </p>
             <p className="absolute left-0 top-0 text-xxs font-medium text-left text-[#d9d9d9]">
@@ -39,7 +39,9 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
             </p>
           </div>
         </div>
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[240px] h-[32px] relative rounded-[10px]">
           <MainButton value='생성하러 가기' />
+          </div>
       </div>
     </div>
   );
