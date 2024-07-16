@@ -2,7 +2,8 @@ import React from 'react';
 
 interface ButtonProps {
   value: string;
-  onClick?: () => void; // 'onClick'으로 변경
+  onClick?: () => void;
+  next: string;
 }
 
 const MainButton: React.FC<ButtonProps> = (props) => {
