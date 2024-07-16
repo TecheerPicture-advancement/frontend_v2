@@ -6,7 +6,7 @@ import React from 'react';
 
 interface ButtonProps {
   value: string;
-
+  next: string;
 }
 
 const MainButton:React.FC<ButtonProps> = (props) =>  {

@@ -44,6 +44,10 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
          
         width: {
           '50': '12.5rem',
+          '370': '92.5rem',
+        },
+        height: {
+          '88': '22rem',
         },
           colors: {
             white: "#ffffff",
