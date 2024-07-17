@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SizeFields from '../components/form/SizeFields';
 import { FormData } from '../components/types/formTypes';
 
@@ -18,7 +19,6 @@ const ImageResizing: React.FC<sizeProps> = (props) => {
     aspectRatio: 'other',
   });
 
-  const [selectedRatio, setSelectedRatio] = useState<string>('other');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,25 +27,10 @@ const ImageResizing: React.FC<sizeProps> = (props) => {
       [name]: value,
     });
   };
-
-  const handleAspectRatioClick = (width: number, height: number, label: string) => {
-    if (selectedRatio === label) {
-      setSelectedRatio('other');
-      setFormData({
-        ...formData,
-        aspectRatio: 'other',
-        width: 0,
-        height: 0,
-      });
-    } else {
-      setSelectedRatio(label);
-      setFormData({
-        ...formData,
-        aspectRatio: label,
-        width,
-        height,
-      });
-    }
+  
+  const navigate = useNavigate(); 
+  const handleClose = () => {
+    navigate(-1);
   };
 
   return (
@@ -91,7 +76,10 @@ const ImageResizing: React.FC<sizeProps> = (props) => {
               <button className="flex justify-center items-center w-50 h-14 rounded-[10px] border-2 bg-gray-200 border-gray-200 text-xl font-PR_M text-center text-black">
                 다운로드
               </button>
-              <button className="flex justify-center items-center w-50 h-14 rounded-[10px] border-2 border-green-Light hover:border-green-Light bg-green-Light text-xl font-PR_M text-center text-black">
+              <button className="flex justify-center items-center w-50 h-14 rounded-[10px] border-2 border-green-Light hover:border-green-Light bg-green-Light text-xl font-PR_M text-center text-black"
+                      onClick={handleClose} 
+                      style={{ cursor: 'pointer' }}
+              >
                 취소
               </button>
             </div>

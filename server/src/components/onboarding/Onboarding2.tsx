@@ -1,7 +1,7 @@
 import React from "react";
-import ResultImage from "../../public/assets/BannerResult.jpg";
-import Beauty from '../../public/assets/Beauty.jpg'
-import Arrow from '../assets/arrow.svg?react'
+import ResultImage from "../../../public/assets/BannerResult.jpg";
+import Beauty from '../../../public/assets/Beauty.jpg'
+import Arrow from '../../assets/arrow.svg?react'
 
 const Onboarding2 : React.FC = () => {
     

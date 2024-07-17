@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MoveChoose from '../components/MoveChoose';
 import MoveChoose2 from '../components/MoveChoose2';
 import MainButton from '../components/MainButton';
@@ -9,11 +10,20 @@ interface NameProps {
 
 const MainChoose: React.FC<NameProps> = (props) => {
   const [activeButton, setActiveButton] = useState<string | null>(null);
-  const [Rayout, setRayout]=useState<string|null>(null);
+  const [Rayout, setRayout] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleButtonClick = (buttonType: string) => {
     setActiveButton(buttonType);
     setRayout(buttonType);
+  };
+
+  const handleStartClick = () => {
+    if (activeButton === '상품 배경을') {
+      navigate('/background');
+    } else if (activeButton === '광고 배너를') {
+      navigate('/banner');
+    }
   };
 
   return (
@@ -39,11 +49,12 @@ const MainChoose: React.FC<NameProps> = (props) => {
               </div>
             )}
           </div>
-
           {activeButton ? (
-            <div className="w-full h-14 rounded-[10px] bg-[#b8b8b8] overflow-hidden place-content-center">
-              <MainButton value='시작하기' next={activeButton} />
-            </div>
+          <div  onClick={activeButton ? handleStartClick : undefined}
+                className={activeButton ? 'bg-green-Normal "w-full h-14 rounded-[10px] overflow-hidden place-content-center' : 'bg-[#b8b8b8] "w-full h-14 rounded-[10px] overflow-hidden place-content-center'}
+            >
+            <MainButton value='시작하기' />
+          </div>
           ) : (
             <div className="w-full h-14 rounded-[10px] bg-[#b8b8b8] overflow-hidden place-content-center">
               <button className="text-xl font-PR_BO text-center text-white w-full h-full">
@@ -51,11 +62,7 @@ const MainChoose: React.FC<NameProps> = (props) => {
               </button>
             </div>
           )}
-
-
         </div>
-
-        
 
         {/* 오른쪽 레이아웃 */}
         <div className="w-full flex flex-col gap-10 justify-center items-center">
