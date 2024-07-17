@@ -7,16 +7,16 @@ import NavBar from '../components/NavBar';
 const ThemeResult: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState({
     imageSource: '',
-    prompt: '원하는 사진을 만들어드립니다.',
+    prompt: '',
     theme: '',
     detail: '',
   });
   const [isThemeSelected, setIsThemeSelected] = useState(false);
 
-  const handleThemeSelect = (themeDetails: { imageSource: string; detail: string; theme: string }) => {
+  const handleThemeSelect = (themeDetails: { imageSource: string; detail: string; theme: string; sentence: string }) => {
     setSelectedTheme({
       imageSource: themeDetails.imageSource,
-      prompt: '원하는 사진을 만들어드립니다.',
+      prompt: themeDetails.sentence,
       theme: themeDetails.theme,
       detail: themeDetails.detail,
     });
@@ -72,6 +72,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/AI.png"
                 detail="적합한 이미지 추천"
                 theme="AI"
+                sentence="AI가 사진을 분석 후 최적의 사진을 제공해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -81,6 +82,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/spring.png"
                 detail="흩날리는"
                 theme="봄"
+                sentence="따뜻한 봄날에 어울리는 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -90,6 +92,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/studio.png"
                 detail="감성적인 디자인"
                 theme="스튜디오"
+                sentence="스튜디오에서 찍은 것처럼 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -101,6 +104,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/place.png"
                 detail="아름답고 현실적인"
                 theme="명소"
+                sentence="유명한 명소를 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -110,6 +114,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/summer.png"
                 detail="시원한 바닷가"
                 theme="여름"
+                sentence="여름철 시원한 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -119,6 +124,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/office.png"
                 detail="정돈된 환경"
                 theme="오피스"
+                sentence="깔끔하게 정돈된 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -130,6 +136,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/natural.png"
                 detail="편안하고 포근한"
                 theme="자연"
+                sentence="편안한 자연을 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -139,6 +146,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/fall.png"
                 detail="낭만적인 단풍잎"
                 theme="가을"
+                sentence="가을의 단풍잎이 어울리는 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -148,6 +156,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/cafe.png"
                 detail="모던한 디자인"
                 theme="카페"
+                sentence="카페처럼 모던한 디자인의 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -159,6 +168,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/city.png"
                 detail="차갑고 세련된"
                 theme="도시"
+                sentence="세련된 도시를 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -168,6 +178,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/winter.png"
                 detail="얼어붙은 나무들"
                 theme="겨울"
+                sentence="겨울철 차가운 느낌의 배경으로 이미지를 생성해드립니다."
                 onClick={handleThemeSelect}
               />
             )}
@@ -177,6 +188,7 @@ const ThemeResult: React.FC = () => {
                 imageSource="ThemeImage/pen.png"
                 detail="내가 원하는 테마가 없다면?"
                 theme="직접입력"
+                sentence=""
                 onClick={handleThemeSelect}
               />
             )}
@@ -192,14 +204,15 @@ interface ImageBoxPositionProps {
   imageSource: string;
   detail: string;
   theme: string;
-  onClick: (themeDetails: { imageSource: string; detail: string; theme: string }) => void;
+  sentence: string; // Added sentence here
+  onClick: (themeDetails: { imageSource: string; detail: string; theme: string; sentence: string }) => void;
 }
 
-const ImageBoxPosition: React.FC<ImageBoxPositionProps> = ({ className, imageSource, detail, theme, onClick }) => {
+const ImageBoxPosition: React.FC<ImageBoxPositionProps> = ({ className, imageSource, detail, theme, sentence, onClick }) => {
   return (
     <motion.div
       className={`absolute ${className} w-50 h-50 md:w-50 md:h-50 cursor-pointer`}
-      onClick={() => onClick({ imageSource, detail, theme })}
+      onClick={() => onClick({ imageSource, detail, theme, sentence })}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       layoutId={theme}

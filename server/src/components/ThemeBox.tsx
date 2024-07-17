@@ -1,12 +1,12 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import MainButton from './MainButton';
 import UploadImageModal from './UploadImageModal';
 
 interface ThemeBoxProps {
-    imageSource: string;
-    prompt: string;
-    detail: string;
-    theme: string;
+  imageSource: string;
+  prompt: string;
+  detail: string;
+  theme: string;
 }
 
 const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme }) => {
@@ -26,6 +26,9 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
     console.log('모달 닫힘');
   };
 
+  // 조건부 렌더링을 위한 변수
+  const isDirectInput = theme === '직접입력';
+
   return (
     <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[35px] px-2.5 h-full">
       <div className="flex-grow-0 flex-shrink-0 w-[250px] h-[250px] relative overflow-hidden rounded-[30px]">
@@ -33,7 +36,7 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
           className="w-[250px] h-[250px] absolute left-0 top-[-0.5px] bg-[#e6ffef] rounded-[30px]"
           style={{
             boxShadow:
-              "10.5px 123.5px 34.5px 0 rgba(255,255,255,0), 6.5px 79px 31.5px 0 rgba(255,255,255,0.01), 4px 44.5px 27px 0 rgba(255,255,255,0.05), 1.5px 19.5px 20px 0 rgba(255,255,255,0.09), 0.5px 5px 11px 0 rgba(255,255,255,0.1)",
+              '10.5px 123.5px 34.5px 0 rgba(255,255,255,0), 6.5px 79px 31.5px 0 rgba(255,255,255,0.01), 4px 44.5px 27px 0 rgba(255,255,255,0.05), 1.5px 19.5px 20px 0 rgba(255,255,255,0.09), 0.5px 5px 11px 0 rgba(255,255,255,0.1)',
           }}
         />
         <img
@@ -44,23 +47,32 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
       </div>
       <div className="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 relative gap-20">
         <div className="flex-grow-0 flex-shrink-0 w-[191.5px] h-[121px] relative overflow-hidden">
-          <p className="w-[170px] h-[36px] absolute left-[-0.25px] top-[75px] text-sm font-PR_M text-left text-white">
+        </div>
+        {isDirectInput ? (
+          <div className="w-full h-[100px] absolute left-[-0.25px] top-[75px] border-[1px] border-solid border-white rounded-[6px] overflow-hidden ">
+            <textarea
+              placeholder=" 입력하세요"
+              className=" w-full h-full bg-black text-white text-sm font-PR_M p-2"
+            />
+          </div>
+        ) : (
+          <p className="w-[191.5px] h-[36px] absolute left-[-0.25px] top-[75px] text-sm font-PR_M text-left text-white">
             {prompt}
           </p>
-          <div className="w-[130px] h-[50px] absolute left-0 top-0 overflow-hidden">
-            <p className="w-[130px] h-[45px] absolute left-0 top-[19.5px] text-2xl font-PR_BO text-left text-[#e6fbed]">
-              {theme}
-            </p>
-            <p className="absolute left-0 top-0 text-sm font-PR_M text-left text-[#d9d9d9]">
-              {detail}
-            </p>
-          </div>
+        )}
+        <div className="w-full h-[50px] absolute left-0 top-0 overflow-hidden">
+          <p className="w-full h-[45px] absolute left-0 top-[19.5px] text-2xl font-PR_BO text-left text-[#e6fbed]">
+            {theme}
+          </p>
+          <p className="w-full absolute left-0 top-0 text-sm font-PR_M text-left text-[#d9d9d9]">
+            {detail}
+          </p>
         </div>
         <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[240px] h-[32px] relative rounded-xl">
-        <div onClick={openModal} className='w-[430px] h-[44px] rounded-lg'>
-          <MainButton value='생성하러 가기' />
+          <div onClick={openModal} className="w-[430px] h-[44px] rounded-lg">
+            <MainButton value="생성하러 가기" />
+          </div>
         </div>
-        </div>  
       </div>
       {showModal && (
         <UploadImageModal
