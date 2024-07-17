@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ThemeResult from './pages/ThemeResultPage';
-import Nickname from './pages/NicknamePage';
+import BackgroundChoose from './pages/BackgroundChoose';
+import BannerSetting from './pages/BannerSetting';
+import Nickname from './pages/Nickname';
+import Onboarding from './pages/Onboarding';
+import MainChoose from './pages/MainChoose';
+import Theme from './pages/ThemeResult';
+import STResult from './pages/STResult';
+import BannerResult from './pages/BannerResult';
+import NukkiResult from './pages/NukkiResult';
+import ImageResizing from './pages/ImageResizing';
+import BannerEdit from './pages/BannerEdit';
 
 const App: React.FC = () => {
+  const [nickname] = useState('');
+
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Nickname />}/>
-        <Route path="/banner" element={<div>Banner Page</div>} />
-        <Route path="/background" element={<div>Background Page</div>} />
-        <Route path="/about" element={<div>About Page</div>} />
+        <Route path='/' element={<Onboarding />}/>
+        <Route path="/banner" element={<BannerSetting/>} />
+        <Route path="/background" element={<BackgroundChoose/>} />
+        <Route path="/nikname" element={<Nickname />} />
+        <Route path='/backgroundchoose' element={<BackgroundChoose/>}/>
+        <Route path='/mainchoose' element={<MainChoose name={nickname}/>}/>
+        <Route path='/theme' element={<Theme/>}/>
+        <Route path='/theme/result' element={<STResult/>}/>
+        <Route path='/simple/result' element={<STResult/>}/>
+        <Route path='/banner/result' element={<BannerResult/>}/>
+        <Route path='/nukki/result' element={<NukkiResult/>}/>
+        <Route path='/banner/result/resizing' element={<ImageResizing/>}/>
+        <Route path='/theme/result/resizing' element={<ImageResizing/>}/>
+        <Route path='/simple/result/resizing' element={<ImageResizing/>}/>
+        <Route path='/banner/result/edit' element={<BannerEdit/>}/>
       </Routes>
     </Router>
   );

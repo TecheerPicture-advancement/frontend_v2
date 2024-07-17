@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import RadioButton from '../components/RadioButton';
 import ResultButton from '../components/ResultButton';
@@ -16,6 +17,8 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
 
   const [checkedMinor, setCheckedMinor] = React.useState<string | null>(null);
   const [hoveredMinor, setHoveredMinor] = React.useState<string | null>(null);
+
+  const navigate = useNavigate(); 
 
   const handleToggleMajor = (id: string) => {
     setCheckedMajor(prevChecked => (prevChecked === id ? null : id));
@@ -41,13 +44,13 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
     setHoveredMinor(null);
   };
 
+  const handleClose = () => {
+    navigate(-1);
+  };
+
   return (
-    <div className="flex flex-col justify-start items-center min-h-screen overflow-hidden gap-6 bg-[#111]">
-      <div className="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-full overflow-hidden px-8 py-2 bg-[#111]">
-        <div className="relative flex items-center self-stretch justify-between flex-grow-0 flex-shrink-0 h-full">
+    <div className="flex flex-col min-h-screen overflow-hidden gap-6 bg-black">
           <NavBar />
-        </div>
-      </div>
       <div className="flex flex-col justify-start items-center flex-grow flex-shrink-0 w-full relative overflow-hidden gap-1 px-12 py-2 bg-[#111]">
         <div className="flex-grow-0 flex-shrink-0 w-[60%] h-20 relative overflow-hidden">
           <p className="absolute left-0 text-xl font-medium text-left text-white top-12">자유롭게 변경하세요</p>
@@ -157,7 +160,11 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
           <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg">
             <ResultButton value="확인" />
           </div>
-          <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg">
+          <div
+            className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg"
+            onClick={handleClose} 
+            style={{ cursor: 'pointer' }}
+          >
             <ResultButton value="닫기" />
           </div>
         </div>

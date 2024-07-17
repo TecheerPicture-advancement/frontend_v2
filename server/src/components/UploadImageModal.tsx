@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
 import Uploadcloud from '../assets/uploadcloud.svg?react';
 
 interface UploadImageModalProps {
   onClose: () => void;
   onUpload: (file: File) => void;
+  redirectPath: string; // 추가된 props
 }
 
-const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload }) => {
+const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload, redirectPath }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -36,6 +39,7 @@ const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload }
   const handleUpload = () => {
     if (file) {
       onUpload(file);
+      navigate(redirectPath); // 업로드 후 경로로 이동
     }
   };
 
@@ -46,26 +50,32 @@ const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-7/12 h-auto flex flex-col items-center">
-        <h2 className="text-2xl flex items-center justify-center font-PR_BL m-6">변경하고 싶은 이미지를 업로드 해주세요</h2>
-        
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-lg shadow-lg w-7/12 h-auto flex flex-col items-center">
+        <h2 className="text-2xl flex items-center justify-center font-PR_BL m-6">
+          변경하고 싶은 이미지를 업로드 해주세요
+        </h2>
+
         {!preview ? (
           <div className="mb-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-4 w-5/6 h-4/6 text-center">
             <Uploadcloud className="mx-auto mt-10 mb-6" />
-            <p className="text-black font-PR_BO text-xl mb-2">파일을 선택하거나 여기로 드래그 앤 드롭합니다.</p>
-            <p className="text-gray-300 font-PR_M text-base">JPG, PNG 크기는 10MB 이하입니다.</p>
-            <input 
-              type="file" 
-              onChange={handleFileChange} 
-              className="hidden" 
+            <p className="text-black font-PR_BO text-xl mb-2">
+              파일을 선택하거나 여기로 드래그 앤 드롭합니다.
+            </p>
+            <p className="text-gray-300 font-PR_M text-base">
+              JPG, PNG 크기는 10MB 이하입니다.
+            </p>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="hidden"
               id="fileInput"
             />
             {uploadError && (
               <p className="text-red font-PR_BL text- mt-2">{uploadError}</p>
             )}
-            <label 
-              htmlFor="fileInput" 
+            <label
+              htmlFor="fileInput"
               className="font-PR_BO rounded-lg cursor-pointer px-4 py-3 my-8 inline-block text-green-Dark border-2 border-solid border-green-Dark hover:bg-green-Normal hover:text-black"
             >
               파일 선택하기
@@ -82,15 +92,18 @@ const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload }
             </button>
           </div>
         )}
-        
-        <div className="flex justify-end items-end space-x-4 mt-4 w-full">
-          <button onClick={onClose} className="bg-gray-500 text-black font-PR_BO px-8 py-2 rounded hover:bg-gray-100">
+
+        <div className="flex justify-end items-end space-x-4 mt-4 w-full py-4 px-4">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-black font-PR_BO px-8 py-2 rounded hover:bg-[#EFF0F1] drop-shadow-lg"
+          >
             닫기
           </button>
           {preview && (
-            <button 
-              onClick={handleUpload} 
-              className="bg-blue-500 text-black px-6 py-2 font-PR_BO rounded hover:bg-green-Normal"
+            <button
+              onClick={handleUpload}
+              className="bg-blue-500 text-black px-6 py-2 font-PR_BO rounded hover:bg-green-Normal drop-shadow-lg" 
               disabled={uploadError !== null}
             >
               업로드

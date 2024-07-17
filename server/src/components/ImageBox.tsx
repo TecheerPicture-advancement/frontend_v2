@@ -21,7 +21,7 @@ const ImageBox: React.FC<ImageBoxProps> = ({imageSource, detail, theme}) => {
             <p className="text-xxs font-medium text-right text-[#d9d9d9]">
               {detail}
             </p>
-            <p className="text-xs font-bold text-right text-[#e6fbed]">
+            <p className="text-lg font-PR_BO text-right text-[#e6fbed]">
               {theme}
             </p>
           </div>

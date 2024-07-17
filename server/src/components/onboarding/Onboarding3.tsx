@@ -1,9 +1,9 @@
 import React from "react";
-import Lipstick from '../../public/assets/lipstick.jpg'
-import Fan from '../../public/assets/fan.jpg'
-import Perfume from '../../public/assets/perfume.jpg'
-import Lotion from '../../public/assets/lotion.jpg'
-import Torretta from '../../public/assets/torretta.jpg'
+import Lipstick from '../../../public/assets/lipstick.jpg'
+import Fan from '../../../public/assets/fan.jpg'
+import Perfume from '../../../public/assets/perfume.jpg'
+import Lotion from '../../../public/assets/lotion.jpg'
+import Torretta from '../../../public/assets/torretta.jpg'
 
 const Onboarding3 : React.FC = () => {
     

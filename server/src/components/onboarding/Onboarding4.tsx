@@ -1,5 +1,5 @@
 import React from "react";
-import example from "../../public/assets/example.gif"
+import example from "../../../public/assets/example.gif"
 
 const Onboarding4: React.FC = () => {
   return (
