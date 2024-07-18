@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MoveChoose from '../components/MoveChoose';
 import MoveChoose2 from '../components/MoveChoose2';
 import MainButton from '../components/MainButton';
+import axios from 'axios';
 
-interface NameProps {
-  name: string;
-}
-
-const MainChoose: React.FC<NameProps> = (props) => {
+const MainChoose: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [Rayout, setRayout] = useState<string | null>(null);
+  const [data, setData] = useState<string>('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { userid } = location.state || {};
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (userid) {
+          const response = await axios.get(`http://localhost:8000/api/v1/nicknames/${userid}`);
+          setData(response.data.data.nickname); // 응답 데이터에서 닉네임을 추출하여 상태로 설정
+          if (response.status !== 200) throw new Error('Error fetching data');
+        }
+      } catch (error) {
+        console.error('Error fetching nickname:', error);
+      }
+    };
+
+    fetchData();
+  }, [userid]);
 
   const handleButtonClick = (buttonType: string) => {
     setActiveButton(buttonType);
@@ -44,17 +60,18 @@ const MainChoose: React.FC<NameProps> = (props) => {
                   안녕하세요!
                 </p>
                 <p className="my-12 text-4xl font-PR_BO text-left text-white">
-                  {props.name}님
+                  {data}님
                 </p>
               </div>
             )}
           </div>
           {activeButton ? (
-          <div  onClick={activeButton ? handleStartClick : undefined}
-                className={activeButton ? 'bg-green-Normal "w-full h-14 rounded-[10px] overflow-hidden place-content-center' : 'bg-[#b8b8b8] "w-full h-14 rounded-[10px] overflow-hidden place-content-center'}
+            <div
+              onClick={activeButton ? handleStartClick : undefined}
+              className={activeButton ? 'bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center' : 'bg-[#b8b8b8] w-full h-14 rounded-[10px] overflow-hidden place-content-center'}
             >
-            <MainButton value='시작하기' />
-          </div>
+              <MainButton value='시작하기' />
+            </div>
           ) : (
             <div className="w-full h-14 rounded-[10px] bg-[#b8b8b8] overflow-hidden place-content-center">
               <button className="text-xl font-PR_BO text-center text-white w-full h-full">
