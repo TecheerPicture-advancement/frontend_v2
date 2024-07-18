@@ -1,27 +1,60 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import RadioButton from '../components/RadioButton';
+import RadioButton2 from '../components/RadioButton2';
 import ResultButton from '../components/ResultButton';
+import axios from 'axios';
 
-interface BannerEditProps {
-  mainText1: string;
-  mainText2: string;
-  subText1: string;
-  subText2: string;
-}
+const BannerEdit: React.FC = () => {
+  const { banner_id } = useParams<{ banner_id: string }>(); // Get banner_id from the route parameters
+  const [mainText1, setMainText1] = React.useState('');
+  const [mainText2, setMainText2] = React.useState('');
+  const [subText1, setSubText1] = React.useState('');
+  const [subText2, setSubText2] = React.useState('');
 
-const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1, subText2 }) => {
+  const [selectedMainText, setSelectedMainText] = React.useState('');
+  const [selectedSubText, setSelectedSubText] = React.useState('');
+
   const [checkedMajor, setCheckedMajor] = React.useState<string | null>(null);
   const [hoveredMajor, setHoveredMajor] = React.useState<string | null>(null);
 
   const [checkedMinor, setCheckedMinor] = React.useState<string | null>(null);
   const [hoveredMinor, setHoveredMinor] = React.useState<string | null>(null);
 
-  const navigate = useNavigate(); 
+  const [editMainText3, setEditMainText3] = React.useState('');
+  const [editSubText3, setEditSubText3] = React.useState('');
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetchBannerData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/v1/banners/${banner_id}`);
+        const { ad_text, ad_text2, serve_text, serve_text2 } = response.data.data;
+        setMainText1(ad_text);
+        setMainText2(ad_text2);
+        setSubText1(serve_text);
+        setSubText2(serve_text2);
+        setSelectedMainText(ad_text); // Set default selected main text
+        setSelectedSubText(serve_text); // Set default selected sub text
+      } catch (error) {
+        console.error('Error fetching banner data:', error);
+      }
+    };
+
+    fetchBannerData();
+  }, [banner_id]);
 
   const handleToggleMajor = (id: string) => {
     setCheckedMajor(prevChecked => (prevChecked === id ? null : id));
+    if (id === 'option1') {
+      setSelectedMainText(mainText1);
+    } else if (id === 'option2') {
+      setSelectedMainText(mainText2);
+    } else if (id === 'option3') {
+      setSelectedMainText(editMainText3);
+    }
   };
 
   const handleMouseEnterMajor = (id: string) => {
@@ -34,6 +67,13 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
 
   const handleToggleMinor = (id: string) => {
     setCheckedMinor(prevChecked => (prevChecked === id ? null : id));
+    if (id === 'option4') {
+      setSelectedSubText(subText1);
+    } else if (id === 'option5') {
+      setSelectedSubText(subText2);
+    } else if (id === 'option6') {
+      setSelectedSubText(editSubText3);
+    }
   };
 
   const handleMouseEnterMinor = (id: string) => {
@@ -48,9 +88,19 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
     navigate(-1);
   };
 
+  const handleMajorTextChange = (value: string) => {
+      setEditMainText3(value);
+      setSelectedMainText(value);
+  };
+
+  const handleMinorTextChange = (value: string) => {
+      setEditSubText3(value);
+      setSelectedSubText(value);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden gap-6 bg-black">
-          <NavBar />
+    <div className="flex flex-col min-h-screen gap-6 overflow-hidden bg-black">
+      <NavBar />
       <div className="flex flex-col justify-start items-center flex-grow flex-shrink-0 w-full relative overflow-hidden gap-1 px-12 py-2 bg-[#111]">
         <div className="flex-grow-0 flex-shrink-0 w-[60%] h-20 relative overflow-hidden">
           <p className="absolute left-0 text-xl font-medium text-left text-white top-12">자유롭게 변경하세요</p>
@@ -63,14 +113,10 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
             <div className="absolute left-0 top-0 w-96 h-96 bg-[#d9d9d9]" />
             <img src="ThemeImage/office.png" className="absolute top-0 left-0 object-cover w-96 h-96" />
             <p className="absolute left-5 bottom-24 font-PR_BO text-sm font-medium text-left text-[#111]">
-              <span>{subText1}</span>
-              <br />
-              <span>{subText2}</span>
+              <span>{selectedSubText}</span>
             </p>
-            <p className="absolute text-xl font-black text-left text-white left-5 bottom-8">
-              <span>{mainText1}</span>
-              <br />
-              <span>{mainText2}</span>
+            <p className="absolute text-xl font-black text-left text-white left-5 bottom-16">
+              <span>{selectedMainText}</span>
             </p>
           </div>
           <div className="flex flex-col items-center justify-start flex-grow-0 flex-shrink-0 gap-8 p-1 h-80 w-80">
@@ -85,7 +131,7 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
                       onToggle={() => handleToggleMajor('option1')}
                       onMouseEnter={() => handleMouseEnterMajor('option1')}
                       onResetHover={handleMouseLeaveMajor}
-                      text='아무거나 아무거나'
+                      text={mainText1}
                     />
                   </div>
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3 overflow-hidden">
@@ -95,17 +141,18 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
                       onToggle={() => handleToggleMajor('option2')}
                       onMouseEnter={() => handleMouseEnterMajor('option2')}
                       onResetHover={handleMouseLeaveMajor}
-                      text='왜이래 왜이래'
+                      text={mainText2}
                     />
                   </div>
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 overflow-hidden">
-                    <RadioButton
+                    <RadioButton2
                       checked={checkedMajor === 'option3'}
                       hovered={hoveredMajor === 'option3'}
                       onToggle={() => handleToggleMajor('option3')}
                       onMouseEnter={() => handleMouseEnterMajor('option3')}
                       onResetHover={handleMouseLeaveMajor}
-                      text='적당히 적당히'
+                      value={editMainText3}
+                      onValueChange={handleMajorTextChange}
                     />
                   </div>
                 </div>
@@ -124,7 +171,7 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
                       onToggle={() => handleToggleMinor('option4')}
                       onMouseEnter={() => handleMouseEnterMinor('option4')}
                       onResetHover={handleMouseLeaveMinor}
-                      text='퍼블리싱 날 힘들게 하지마'
+                      text={subText1}
                     />
                   </div>
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3 overflow-hidden">
@@ -134,17 +181,18 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
                       onToggle={() => handleToggleMinor('option5')}
                       onMouseEnter={() => handleMouseEnterMinor('option5')}
                       onResetHover={handleMouseLeaveMinor}
-                      text='그만 그만 그만'
+                      text={subText2}
                     />
                   </div>
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 overflow-hidden">
-                    <RadioButton
+                    <RadioButton2
                       checked={checkedMinor === 'option6'}
                       hovered={hoveredMinor === 'option6'}
                       onToggle={() => handleToggleMinor('option6')}
                       onMouseEnter={() => handleMouseEnterMinor('option6')}
                       onResetHover={handleMouseLeaveMinor}
-                      text='기능 구현 언제쯤...'
+                      value={editSubText3}
+                      onValueChange={handleMinorTextChange}
                     />
                   </div>
                 </div>
@@ -162,7 +210,7 @@ const BannerEdit: React.FC<BannerEditProps> = ({ mainText1, mainText2, subText1,
           </div>
           <div
             className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg"
-            onClick={handleClose} 
+            onClick={handleClose}
             style={{ cursor: 'pointer' }}
           >
             <ResultButton value="닫기" />
