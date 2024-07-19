@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import MainButton from '../components/MainButton';
 
@@ -8,6 +8,7 @@ const Nickname: React.FC = () => {
   const [nickname, setNickname] = useState<string>('');
   const [nicknameSuccess, setNicknameSuccess] = useState<string>('');
   const [nicknameError, setNicknameError] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -20,6 +21,8 @@ const Nickname: React.FC = () => {
       const response = await axios.post('http://localhost:8000/api/v1/nicknames/', { nickname });
       console.log('Nickname registered successfully:', response.data);
       setNicknameSuccess('닉네임이 성공적으로 생성되었습니다.');
+      const userId = response.data.data.id;
+      navigate('/mainchoose', { state: { userid: userId } }); // 닉네임 생성이 성공하면 페이지 이동
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setNicknameError('중복된 닉네임입니다. 다른 닉네임을 입력해주세요.');
@@ -27,13 +30,14 @@ const Nickname: React.FC = () => {
         console.error('Error registering nickname:', error);
         setNicknameError('닉네임 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
+      setNicknameSuccess('');
     }
   };
 
   return (
     <div className='flex flex-col h-screen'>
       <div className='flex-shrink-0'>
-      <NavBar />
+        <NavBar />
       </div>
       <div className="flex flex-1 justify-center items-center bg-black">
         <div className='flex flex-col justify-center items-center w-3/12 gap-3'>
@@ -48,19 +52,17 @@ const Nickname: React.FC = () => {
             className="rounded-lg border border-green-Light text-green-Light font-PR_L w-full h-[44px] bg-black px-3"
           />
           {nicknameError && (
-              <div className="mt-2 text-sm text-red">{nicknameError}</div>
-            )}
-            {nicknameSuccess && (
-              <div className="mt-2 text-sm text-green-Normal">{nicknameSuccess}</div>
-            )}
-          <div className='w-full mt-4 h-[40px]'>
-            <Link to="/mainchoose">
-              <MainButton value='확인' onClick={handleSubmit}/>
-            </Link>
-            </div>
+            <div className="mt-2 text-sm text-red">{nicknameError}</div>
+          )}
+          {nicknameSuccess && (
+            <div className="mt-2 text-sm text-green-Normal">{nicknameSuccess}</div>
+          )}
+          <div className='w-full mt-4 h-[42px]'>
+            <MainButton value='확인' onClick={handleSubmit} />
           </div>
         </div>
       </div>
+    </div>
   );
 }
 
