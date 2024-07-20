@@ -5,6 +5,13 @@ import MoveChoose2 from '../components/MoveChoose2';
 import MainButton from '../components/MainButton';
 import axios from 'axios';
 
+interface NicknameResponse {
+  data: {
+    id: string;
+    nickname: string;
+  };
+}
+
 const MainChoose: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [Rayout, setRayout] = useState<string | null>(null);
@@ -17,15 +24,13 @@ const MainChoose: React.FC = () => {
     const fetchData = async () => {
       try {
         if (userid) {
-          const response = await axios.get(`http://localhost:8000/api/v1/nicknames/${userid}`);
+          const response = await axios.get<NicknameResponse>(`http://localhost:8000/api/v1/nicknames/${userid}`);
           setData(response.data.data.nickname); // 응답 데이터에서 닉네임을 추출하여 상태로 설정
-          if (response.status !== 200) throw new Error('Error fetching data');
         }
       } catch (error) {
         console.error('Error fetching nickname:', error);
       }
     };
-
     fetchData();
   }, [userid]);
 
@@ -67,20 +72,19 @@ const MainChoose: React.FC = () => {
           </div>
           {activeButton ? (
             <div
-              onClick={activeButton ? handleStartClick : undefined}
-              className={activeButton ? 'bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center' : 'bg-[#b8b8b8] w-full h-14 rounded-[10px] overflow-hidden place-content-center'}
+              onClick={handleStartClick}
+              className='bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center'
             >
               <MainButton value='시작하기' />
             </div>
           ) : (
-            <div className="w-full h-14 rounded-[10px] bg-[#b8b8b8] overflow-hidden place-content-center">
+            <div className="w-full h-14 rounded-[10px] bg-[#B8B8B8] overflow-hidden place-content-center">
               <button className="text-xl font-PR_BO text-center text-white w-full h-full">
                 메뉴 선택 후 시작하기
               </button>
             </div>
           )}
         </div>
-
         {/* 오른쪽 레이아웃 */}
         <div className="w-full flex flex-col gap-10 justify-center items-center">
           <MoveChoose

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import BackgroundChoose from './pages/BackgroundChoose';
-import BannerSetting from './pages/BannerSetting';
+import BannerSetting from './pages/BannerSetting1';
 import Nickname from './pages/Nickname';
 import Onboarding from './pages/Onboarding';
 import MainChoose from './pages/MainChoose';
