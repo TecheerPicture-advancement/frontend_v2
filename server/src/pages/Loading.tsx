@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import '../styles/Loading.css'; // 사용자 정의 CSS 가져오기
 
 const Loading = () => {
   const [loading, setLoading] = useState(true);
