@@ -1,74 +1,48 @@
 import React from 'react';
-
 interface SizeFieldsProps {
-  width: number;
-  height: number;
+  width: number | string;
+  height: number | string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  isDisabled: boolean;
   essential: boolean;
-  
-}
-// TypeScript로 스핀 버튼을 제거하는 함수
-function removeNumberInputSpinButton() {
-  const numberInput = document.getElementById('myNumberInput') as HTMLInputElement | null;
-  if (numberInput) {
-      // mousedown 이벤트 리스너 등록
-      numberInput.addEventListener('mousedown', (event) => {
-          // input 요소가 number 타입이고, mousedown 이벤트의 타겟이 input이라면
-          if (numberInput.type === 'number' && event.target === numberInput) {
-              // 이벤트 기본 동작을 막음 (스핀 버튼 클릭 시 동작하지 않음)
-              event.preventDefault();
-          }
-      });
-  }
+  isDisabled: boolean;
+  onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-// 페이지 로드 시 실행
-document.addEventListener('DOMContentLoaded', () => {
-  removeNumberInputSpinButton();
-});
-
-
-const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, isDisabled, essential }) => (
-  <div className="flex flex-col py-1 px-1 flex-wrap gap-6">
-    <div>
-        <label className="block text-lg font-PR_BO text-green-Light">
-          가로 사이즈
+const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, essential, isDisabled, onFocus }) => {
+  return (
+    <div className="flex flex-col w-auto gap-4">
+      <div className="flex flex-col w-auto space-y-2">
+        <label className="flex-grow-0 flex-shrink-0 text-lg font-PR_BO w-auto">
+          <span className='text-green-Light w-auto'>가로</span>
           {essential && <span className="text-red">*</span>}
-          </label>
-      <input 
-        type="number" 
-        name="width" 
-        value={width} 
-        onChange={onChange} 
-        placeholder="예) 1920"
-        disabled={isDisabled}
-        id="myNumberInput"
-        className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border overflow-hidden border-green-Light w-full ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
-        style={{
-          WebkitAppearance: 'none',
-          MozAppearance: 'textfield',
-          appearance: 'none',
-        }}
-      />
-    </div>
-    <div>
-        <label className="block text-lg font-PR_BO text-green-Light">
-          세로 사이즈
+        </label>
+        <input
+          type="number"
+          name="output_w"
+          value={width}
+          onChange={onChange}
+          onFocus={onFocus}
+          disabled={isDisabled}
+          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+        />
+      </div>
+      <div className="flex flex-col space-y-2">
+        <label className="text-green-Normal flex-grow-0 flex-shrink-0 text-lg font-PR_BO">
+          <span className='text-green-Light w-auto'>세로</span>
           {essential && <span className="text-red">*</span>}
-          </label>
-          <input 
-            type="number" 
-            name="height" 
-            value={height} 
-            onChange={onChange} 
-            disabled={isDisabled}
-            placeholder="예) 1080"
-            id="myNumberInput"
-            className={`flex justify-start items-center gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border overflow-hidden border-green-Light w-full ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
-          />
+        </label>
+        <input
+          type="number"
+          name="output_h"
+          value={height}
+          onChange={onChange}
+          onFocus={onFocus}
+          disabled={isDisabled}
+          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default SizeFields;

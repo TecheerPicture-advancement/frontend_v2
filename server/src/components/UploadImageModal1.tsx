@@ -1,77 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Uploadcloud from '../assets/uploadcloud.svg?react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '../api/Usercontext';
+import Uploadcloud from '../assets/uploadcloud.svg?react';
 
-interface UploadImageModalProps {
-  onClose: () => void;
-  onUpload: (file: File) => void;
-  redirectPath: string;
-  user_id: number;
+interface ImageUploadModalProps {
+  onClose: (uploadedImageId: number | null) => void;
 }
 
-const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload, redirectPath, user_id }) => {
+interface UploadResponse {
+  image_id: number;
+}
+
+const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
   const [file, setFile] = useState<File | null>(null);
+  const { userid } = useUser();
   const [preview, setPreview] = useState<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const navigate = useNavigate();
-
-  // Determine the generation type based on the redirect path
-  const gen_type = redirectPath.includes('theme') ? 'concept' : 'simple';
-
-  // Debugging purpose
-  console.log('Received user_id:', user_id);
-
-  const imagehandler = async () => {
-    if (!file) return;
-
-    const formData = new FormData();
-    if (user_id !== undefined) {
-      formData.append('user_id', user_id.toString());
-    } else {
-      formData.append('user_id', '1'); // 기본값 설정
-    }
-    formData.append('file', file);
-
-    try {
-      setUploading(true);
-      const response = await axios.post('http://localhost:8000/api/v1/images/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const { image_id } = response.data;
-      console.log('Image upload initiated with ID:', image_id);
-      navigate(redirectPath, {
-        state: {
-          user_id: `${user_id}`,
-          image_id: `${image_id}`,
-          gen_type: `${gen_type}`,
-        },
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      setUploadError('이미지 업로드 중 오류가 발생했습니다.');
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const selectedFile = event.target.files[0];
-
-      const isValid = ['image/jpg', 'image/png', 'image/jpeg'].includes(selectedFile.type);
-      if (!isValid) {
-        setUploadError('JPG, PNG가 아닙니다.');
-        setFile(null);
-        setPreview(null);
-        return;
-      }
-
-      setUploadError(null);
-      setFile(selectedFile);
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
+    if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -80,77 +28,99 @@ const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload, 
     }
   };
 
-  const handleUpload = () => {
-    if (file) {
-      onUpload(file);
-      imagehandler();
-    }
-  };
-
   const handleRemoveFile = () => {
     setFile(null);
     setPreview(null);
-    setUploadError(null);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="flex flex-col items-center w-7/12 h-auto bg-white rounded-lg shadow-lg">
-        <h2 className="flex items-center justify-center m-6 text-2xl font-PR_BL">
-          변경하고 싶은 이미지를 업로드 해주세요
-        </h2>
+  const handleUpload = async () => {
+    if (!file) {
+      alert('파일을 선택해주세요');
+      return;
+    }
 
+    const formData = new FormData();
+    if (userid) {
+      formData.append('user_id', userid.toString());
+    } else {
+      console.error('닉네임을 생성하지 않았습니다.');
+      alert('오류: 닉네임을 생성하지 않았습니다.');
+      return;
+    }
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post<UploadResponse>('http://localhost:8000/api/v1/images/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Upload response:', response.data);
+      onClose(response.data.image_id); // 부모 컴포넌트에 image_id 보내기
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('이미지 업로드 중 에러가 발생하였습니다.');
+      onClose(null);
+    }
+  };
+
+  useEffect(() => {
+    // 모달이 열릴 때 스크롤을 막습니다.
+    document.body.style.overflow = 'hidden';
+    return () => {
+      // 모달이 닫힐 때 스크롤을 다시 활성화합니다.
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-7/12 min-h-3/4 flex flex-col items-center">
+        <h2 className="text-2xl flex items-center justify-center font-PR_BL m-6">변경하고 싶은 이미지를 업로드 해주세요</h2>
         {!preview ? (
-          <div className="flex flex-col items-center justify-center w-5/6 p-4 mb-4 text-center border border-dashed rounded-lg h-4/6">
+          <div className="mb-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-4 w-5/6 h-4/6 text-center">
             <Uploadcloud className="mx-auto mt-10 mb-6" />
-            <p className="mb-2 text-xl text-black font-PR_BO">
-              파일을 선택하거나 여기로 드래그 앤 드롭합니다.
-            </p>
-            <p className="text-base text-gray-300 font-PR_M">
-              JPG, PNG 크기는 10MB 이하입니다.
-            </p>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="hidden"
+            <p className="text-black font-PR_BO text-xl mb-2">파일을 선택하거나 여기로 드래그 앤 드롭합니다.</p>
+            <p className="text-gray-300 font-PR_M text-base">JPG, PNG 크기는 10MB 이하입니다.</p>
+            <input 
+              type="file" 
+              onChange={handleFileChange} 
+              className="hidden" 
               id="fileInput"
             />
-            {uploadError && (
-              <p className="mt-2 text-red font-PR_BL text-">{uploadError}</p>
-            )}
-            <label
-              htmlFor="fileInput"
-              className="inline-block px-4 py-3 my-8 border-2 border-solid rounded-lg cursor-pointer font-PR_BO text-green-Dark border-green-Dark hover:bg-green-Normal hover:text-black"
+            <label 
+              htmlFor="fileInput" 
+              className="font-PR_BO rounded-lg cursor-pointer px-4 py-3 my-8 inline-block text-green-Dark border-2 border-solid border-green-Dark hover:bg-green-Normal hover:text-black"
             >
               파일 선택하기
             </label>
           </div>
-        ) : (
+        ) : (          
           <div className="relative flex flex-col items-center mb-4">
-            <img src={preview} alt="미리보기" className="object-contain w-64 h-64 mb-2" />
+            <img src={preview} alt="미리보기" className="w-64 h-64 object-contain mb-2" />
             <div className="mt-2 text-gray-400 font-PR_M">
-              {file?.name}
+              {file?.name ?? 'No file selected'}
             </div>
-            <button onClick={handleRemoveFile} className="flex px-2 py-1 text-gray-300 rounded">
+            <button 
+              onClick={handleRemoveFile} 
+              className="flex text-gray-300 px-2 py-1 rounded"
+              disabled={!file} // Disable button when file is null
+            >
               삭제
             </button>
           </div>
         )}
-
-        <div className="flex items-end justify-end w-full px-4 py-4 mt-4 space-x-4">
-          <button
-            onClick={onClose}
-            className="bg-gray-500 text-black font-PR_BO px-8 py-2 rounded hover:bg-[#EFF0F1] drop-shadow-lg"
-          >
+        <div className="flex justify-end items-end space-x-4 mt-4 w-full">
+          <button onClick={() => onClose(null)} className="bg-gray-500 text-black font-PR_BO px-4 py-2 rounded hover:bg-gray-600">
             닫기
           </button>
-          {preview && (
-            <button
-              onClick={handleUpload}
-              className="px-6 py-2 text-black bg-blue-500 rounded font-PR_BO hover:bg-green-Normal drop-shadow-lg" 
-              disabled={uploadError !== null || uploading}
+          {file && (
+            <button 
+              onClick={handleUpload} 
+              className="bg-blue-500 text-black px-4 py-2 font-PR_BO rounded hover:bg-green-Normal"
             >
-              {uploading ? '업로드 중...' : '업로드'}
+              업로드
             </button>
           )}
         </div>
@@ -159,4 +129,4 @@ const UploadImageModal: React.FC<UploadImageModalProps> = ({ onClose, onUpload, 
   );
 };
 
-export default UploadImageModal;
+export default ImageUploadModal;

@@ -4,8 +4,8 @@ interface InputFieldProps {
   label: string;
   essential: boolean;
   name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   placeholder?: string;
 }
@@ -29,6 +29,9 @@ const InputField: React.FC<InputFieldProps> = ({
     setIsFocused(false);
   };
 
+  // Ensure value is a valid input value
+  const displayValue = type === 'number' && (value === '' || isNaN(value as number)) ? '' : value;
+
   return (
     <div className={`relative ${isFocused ? 'border-green-Normal focus:border-green-Normal' : 'border-green-Light'} rounded-lg px-3 py-2 flex flex-col justify-start items-start w-full`}>
       <div>
@@ -40,7 +43,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <input
         type={type}
         name={name}
-        value={value}
+        value={displayValue}
         onChange={onChange}
         onFocus={handleFocus}
         onBlur={handleBlur}

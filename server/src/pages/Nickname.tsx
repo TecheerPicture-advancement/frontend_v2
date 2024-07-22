@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import MainButton from '../components/MainButton';
+import { useUser } from '../api/Usercontext';
 
 interface NicknameResponse {
   data: {
@@ -16,6 +17,7 @@ const Nickname: React.FC = () => {
   const [nicknameSuccess, setNicknameSuccess] = useState<string>('');
   const [nicknameError, setNicknameError] = useState<string>('');
   const navigate = useNavigate();
+  const { setUserid } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -29,7 +31,8 @@ const Nickname: React.FC = () => {
       console.log('Nickname registered successfully:', response.data);
       setNicknameSuccess('닉네임이 성공적으로 생성되었습니다.');
       const userId = response.data.data.id;
-      navigate('/mainchoose', { state: { userid: userId } }); // 닉네임 생성이 성공하면 페이지 이동
+      setUserid(userId); // 전역 상태에 userid 설정
+      navigate('/mainchoose'); // 닉네임 생성이 성공하면 페이지 이동
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setNicknameError('중복된 닉네임입니다. 다른 닉네임을 입력해주세요.');
@@ -71,6 +74,6 @@ const Nickname: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Nickname;

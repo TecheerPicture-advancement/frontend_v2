@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MoveChoose from '../components/MoveChoose';
 import MoveChoose2 from '../components/MoveChoose2';
 import MainButton from '../components/MainButton';
 import axios from 'axios';
+import { useUser } from '../api/Usercontext';
 
 interface NicknameResponse {
   data: {
@@ -17,8 +18,7 @@ const MainChoose: React.FC = () => {
   const [Rayout, setRayout] = useState<string | null>(null);
   const [data, setData] = useState<string>('');
   const navigate = useNavigate();
-  const location = useLocation();
-  const { userid } = location.state || {};
+  const { userid } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
