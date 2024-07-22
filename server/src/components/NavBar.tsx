@@ -54,7 +54,7 @@ const NavBar: React.FC = () => {
     { name: '홈', url: '/' },
     { name: '배너생성', url: '/banner' },
     { name: '배경생성', url: '/background' },
-    { name: '닉네임', url: '/nikname' },
+    { name: '닉네임', url: '/nickname' },
   ];
 
   return (
