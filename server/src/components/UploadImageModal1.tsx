@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import React, { useState, useEffect, DragEvent } from 'react';
 import { useUser } from '../api/Usercontext';
 import Uploadcloud from '../assets/uploadcloud.svg?react';
 
@@ -15,6 +15,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
   const [file, setFile] = useState<File | null>(null);
   const { userid } = useUser();
   const [preview, setPreview] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
@@ -74,12 +75,52 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
     };
   }, []);
 
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragging(false);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragging(false);
+
+    const droppedFile = event.dataTransfer.files[0];
+    setFile(droppedFile);
+
+    if (droppedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(droppedFile);
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-7/12 min-h-3/4 flex flex-col items-center">
         <h2 className="text-2xl flex items-center justify-center font-PR_BL m-6">변경하고 싶은 이미지를 업로드 해주세요</h2>
         {!preview ? (
-          <div className="mb-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-4 w-5/6 h-4/6 text-center">
+          <div
+            className={`mb-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-4 w-5/6 h-4/6 text-center ${dragging ? 'bg-green-Light' : ''}`}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
             <Uploadcloud className="mx-auto mt-10 mb-6" />
             <p className="text-black font-PR_BO text-xl mb-2">파일을 선택하거나 여기로 드래그 앤 드롭합니다.</p>
             <p className="text-gray-300 font-PR_M text-base">JPG, PNG 크기는 10MB 이하입니다.</p>
@@ -91,7 +132,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
             />
             <label 
               htmlFor="fileInput" 
-              className="font-PR_BO rounded-lg cursor-pointer px-4 py-3 my-8 inline-block text-green-Dark border-2 border-solid border-green-Dark hover:bg-green-Normal hover:text-black"
+              className="font-PR_BO rounded-lg cursor-pointer px-4 py-3 my-8 inline-block bg-white text-green-Dark border-2 border-solid border-green-Dark hover:bg-green-Normal hover:text-black"
             >
               파일 선택하기
             </label>
