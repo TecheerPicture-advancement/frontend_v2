@@ -53,7 +53,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
             white: "#ffffff",
             black: "#111111",
             red:"#ff3939",
-            green: {
+             green: {
               "Light":"#e6fbed",
               "Light :hover":"#d9f9e4",
               "Light :active":"#b0f2c7",
@@ -65,15 +65,6 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
               "Dark :active":"#006022",
               "Darker":"#004b1a"
             },
-          },
-          keyframes: {
-            slide: {
-              '0%': { transform: 'translateX(0)' },
-              '100%': { transform: 'translateX(-50%)' },
-            },
-          },
-          animation: {
-            slide: 'slide 20s linear infinite',
           },
         },
       },

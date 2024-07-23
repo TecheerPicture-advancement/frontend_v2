@@ -6,7 +6,7 @@ import { useUser } from '../api/Usercontext';
 import InputField from '../components/form/InputField';
 import SizeFields from '../components/form/SizeFields';
 import AspectRatioButtons from '../components/form/AspectRatioButtons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface FormData {
   item_name: string;
@@ -32,6 +32,7 @@ const BannerSetting: React.FC = () => {
   const [imageId, setImageId] = useState<number | null>(null);
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -60,7 +61,7 @@ const BannerSetting: React.FC = () => {
           concept_option: {
             category: "others",
             theme: formData.item_concept,
-            num_results: 4,
+            num_results: 1,
           },
         };
         console.log('Banner Data:', bannerData);
@@ -75,6 +76,7 @@ const BannerSetting: React.FC = () => {
 
         await Promise.all([bannerRequest, backgroundRequest]);
         alert('데이터를 성공적으로 전송했습니다.');
+        return  navigate('/banner/result');
       } catch (error) {
         console.error('Error submitting data:', error);
         alert('데이터를 전송하지 못했습니다.');
