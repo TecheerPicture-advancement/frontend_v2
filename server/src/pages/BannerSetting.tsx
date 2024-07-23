@@ -7,6 +7,7 @@ import InputField from '../components/form/InputField';
 import SizeFields from '../components/form/SizeFields';
 import AspectRatioButtons from '../components/form/AspectRatioButtons';
 import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading'; // Import the Loading component
 
 interface FormData {
   item_name: string;
@@ -32,6 +33,7 @@ const BannerSetting: React.FC = () => {
   const [imageId, setImageId] = useState<number | null>(null);
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,11 +41,11 @@ const BannerSetting: React.FC = () => {
     setFormData({ ...formData, [name]: value === '' ? '' : value });
   };
 
-  
   const handleModalClose = async (uploadedImageId: number | null) => {
     setShowModal(false);
     if (uploadedImageId && userid) {
       setImageId(uploadedImageId);
+      setLoading(true); // Show loading screen
       try {
         const bannerData = {
           item_name: formData.item_name,
@@ -65,7 +67,7 @@ const BannerSetting: React.FC = () => {
             num_results: 1,
           },
         };
-  
+
         // 세 번의 POST 요청을 병렬로 보냄
         const requests = [];
         for (let i = 0; i < 3; i++) {
@@ -80,17 +82,20 @@ const BannerSetting: React.FC = () => {
             headers: { 'Content-Type': 'application/json' }
           })
         );
-  
+
         // 모든 요청을 병렬로 처리
         await Promise.all(requests);
-        alert('데이터를 성공적으로 전송했습니다.');
-        navigate('/banner/result');
+        setTimeout(() => {
+          navigate('/banner/result'); // Navigate to result page after loading
+        }, 3000); // Set delay to 10 seconds
       } catch (error) {
         console.error('Error submitting data:', error);
         alert('데이터를 전송하지 못했습니다.');
+        setLoading(false); // Hide loading screen if there was an error
       }
     }
   };
+
   const handleAspectRatioClick = (width: number, height: number) => {
     const ratio = `${width}x${height}`;
     if (selectedRatio === ratio) {
@@ -114,7 +119,6 @@ const BannerSetting: React.FC = () => {
       [name]: ''
     }));
   };
-  
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,17 +143,17 @@ const BannerSetting: React.FC = () => {
   if (!userid) {
     console.error('userid is undefined');
     return (
-    <div className='flex flex-col justify-center items-center bg-black min-h-screen gap-4'>
-      <div className=' text-white font-PR_BO text-3xl flex flex-col items-center'>
-      <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
-      <span>닉네̆̈임을 ગુ력하スΙ 않ヱ 왔군요̆̈</span>
-      <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌ටㅏ와주⋌⫣요̆̈  </span>
+      <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
+        <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
+          <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
+          <span>닉네̆̈임을 ગુ력하スΙ 않ヱ 왔군요̆̈</span>
+          <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
+        </div>
+        <Link to="/nickname">
+          <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
+        </Link>
       </div>
-      <Link to="/nickname">
-      <button className='text-black font-PR_M bg-green-Normal p-4 rounded-lg text-lg' type="button"> 닉네임 창으로 가기</button>
-      </Link>
-    </div>
-  );
+    );
   }
 
   const buttons = [
@@ -162,99 +166,105 @@ const BannerSetting: React.FC = () => {
   ];
 
   return (
-    <div className=" bg-black">
-      <NavBar />
-      <div className='flex flex-col justify-center items-center'>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 relative my-14 bg-black">
-          <span className="text-4xl font-PR_BO text-center flex justify-center items-center text-white">
-            내 마음대로 만드는
-          </span>
-          <span className="text-4xl font-PR_BO ml-2 text-center text-green-Normal">
-            광고 이미지
-          </span>
-        </div>
-        <form onSubmit={handleSubmit} className="grid-cols-2 w-auto max-w-5xl p-5 bg-black space-y-4">
-          <div className="flex flex-col justify-center gap-20">
-            <div className='grid grid-cols-2 gap-24'>
-              <div className="flex flex-col flex-grow w-full">
-                <div className="mb-5 flex flex-col">
-                  <span className="px-3 text-2xl font-PR_BO text-left text-green-Normal">
-                    광고 정보
-                  </span>
-                  <span className="px-3 text-base font-PR_L text-left text-green-Light">
-                    내 마음대로 만드는 광고 상품 이미지
-                  </span>
-                </div>
-                <div className="font-PR_L text-green-Light w-full">
-                  <InputField
-                    label="상품 이름"
-                    essential={true}
-                    name="item_name"
-                    value={formData.item_name}
-                    onChange={handleChange}
-                    placeholder="예) 아이폰 15 프로"
-                  />
-                  <InputField
-                    label="상품 컨셉"
-                    name="item_concept"
-                    essential={true}
-                    value={formData.item_concept}
-                    onChange={handleChange}
-                    placeholder="예) 고급, 가벼움"
-                  />
-                  <InputField
-                    label="상품 카테고리"
-                    name="item_category"
-                    essential={true}
-                    value={formData.item_category}
-                    onChange={handleChange}
-                    placeholder="예) 전자기기"
-                  />
-                  <InputField
-                    label="더 추가하고 싶은 내용이 있다면 적어주세요"
-                    name="add_information"
-                    essential={false}
-                    value={formData.add_information}
-                    onChange={handleChange}
-                    placeholder="예) 유명인과 셀럽들만 사용한다는걸 어필해주세요"
-                  />
-                </div>
-              </div>
+    <div className="bg-black">
+      {loading ? ( // Show loading screen if loading is true
+        <Loading />
+      ) : (
+        <>
+          <NavBar />
+          <div className='flex flex-col items-center justify-center'>
+            <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 bg-black my-14">
+              <span className="flex items-center justify-center text-4xl text-center text-white font-PR_BO">
+                내 마음대로 만드는
+              </span>
+              <span className="ml-2 text-4xl text-center font-PR_BO text-green-Normal">
+                광고 이미지
+              </span>
+            </div>
+            <form onSubmit={handleSubmit} className="w-auto max-w-5xl grid-cols-2 p-5 space-y-4 bg-black">
+              <div className="flex flex-col justify-center gap-20">
+                <div className='grid grid-cols-2 gap-24'>
+                  <div className="flex flex-col flex-grow w-full">
+                    <div className="flex flex-col mb-5">
+                      <span className="px-3 text-2xl text-left font-PR_BO text-green-Normal">
+                        광고 정보
+                      </span>
+                      <span className="px-3 text-base text-left font-PR_L text-green-Light">
+                        내 마음대로 만드는 광고 상품 이미지
+                      </span>
+                    </div>
+                    <div className="w-full font-PR_L text-green-Light">
+                      <InputField
+                        label="상품 이름"
+                        essential={true}
+                        name="item_name"
+                        value={formData.item_name}
+                        onChange={handleChange}
+                        placeholder="예) 아이폰 15 프로"
+                      />
+                      <InputField
+                        label="상품 컨셉"
+                        name="item_concept"
+                        essential={true}
+                        value={formData.item_concept}
+                        onChange={handleChange}
+                        placeholder="예) 고급, 가벼움"
+                      />
+                      <InputField
+                        label="상품 카테고리"
+                        name="item_category"
+                        essential={true}
+                        value={formData.item_category}
+                        onChange={handleChange}
+                        placeholder="예) 전자기기"
+                      />
+                      <InputField
+                        label="더 추가하고 싶은 내용이 있다면 적어주세요"
+                        name="add_information"
+                        essential={false}
+                        value={formData.add_information}
+                        onChange={handleChange}
+                        placeholder="예) 유명인과 셀럽들만 사용한다는걸 어필해주세요"
+                      />
+                    </div>
+                  </div>
 
-              <div className="flex flex-col flex-grow w-full md:w-1/3">
-                <div className='flex flex-col mb-7'>
-                  <span className="text-2xl font-PR_BO text-left text-green-Normal">
-                    광고 사이즈
-                  </span>
-                  <span className="text-base font-PR_L text-left text-green-Light">
-                    광고 배경 사이즈를 입력해주세요 
-                  </span>
+                  <div className="flex flex-col flex-grow w-full md:w-1/3">
+                    <div className='flex flex-col mb-7'>
+                      <span className="text-2xl text-left font-PR_BO text-green-Normal">
+                        광고 사이즈
+                      </span>
+                      <span className="text-base text-left font-PR_L text-green-Light">
+                        광고 배경 사이즈를 입력해주세요
+                      </span>
+                    </div>
+                    <SizeFields
+                      width={formData.output_w}
+                      height={formData.output_h}
+                      onChange={handleChange}
+                      essential={true}
+                      isDisabled={isSizeFieldsDisabled}
+                      onFocus={handleFocus}
+                    />
+                    <AspectRatioButtons buttons={buttons} selectedRatio={selectedRatio} onClick={handleAspectRatioClick} />
+                  </div>
                 </div>
-                <SizeFields
-                  width={formData.output_w}
-                  height={formData.output_h}
-                  onChange={handleChange}
-                  essential={true}
-                  isDisabled={isSizeFieldsDisabled}
-                  onFocus={handleFocus}
-                />
-                <AspectRatioButtons buttons={buttons} selectedRatio={selectedRatio} onClick={handleAspectRatioClick} />
+                <div className="flex items-center justify-center" >
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center px-20 py-4 mt-4 text-lg text-black bg-green-Normal font-PR_BO rounded-xl"
+                  >
+                    이미지 올리기
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-center items-center" >
-              <button
-                type="submit"
-                className="mt-4 px-20 py-4 bg-green-Normal text-black text-lg font-PR_BO rounded-xl flex justify-center items-center"
-              >
-                이미지 올리기
-              </button>
-            </div>
+            </form>
           </div>
-        </form>
-      </div>
-      {showModal && (
-          <ImageUploadModal onClose={handleModalClose} />
-        )}
+          {showModal && (
+            <ImageUploadModal onClose={handleModalClose} />
+          )}
+        </>
+      )}
     </div>
   );
 };

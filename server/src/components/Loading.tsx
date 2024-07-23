@@ -59,7 +59,7 @@ const Loading = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-black flex flex-col items-center justify-center text-white">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen text-white bg-black">
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center mb-[25px] bg-opacity-0">
           <Loader />
@@ -84,7 +84,7 @@ const Loading = () => {
     />
       </svg>
       <p className="mt-[30px] text-center text-lg font-bold">생성중</p>
-      <p className="absolute bottom-28 text-sm font-medium text-center w-full">
+      <p className="absolute w-full text-sm font-medium text-center bottom-28">
         {shuffledTips[tipIndex]}
       </p>
     </div>
