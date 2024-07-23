@@ -39,6 +39,7 @@ const BannerSetting: React.FC = () => {
     setFormData({ ...formData, [name]: value === '' ? '' : value });
   };
 
+  
   const handleModalClose = async (uploadedImageId: number | null) => {
     setShowModal(false);
     if (uploadedImageId && userid) {
@@ -64,26 +65,32 @@ const BannerSetting: React.FC = () => {
             num_results: 1,
           },
         };
-        console.log('Banner Data:', bannerData);
-        console.log('Background Data:', backgroundData);
-        const bannerRequest = axios.post('http://localhost:8000/api/v1/banners/', 
-          bannerData,
-          {headers: { 'Content-Type': 'application/json' }});
-
-        const backgroundRequest = axios.post('http://localhost:8000/api/v1/backgrounds/', 
-          backgroundData,
-          {headers: { 'Content-Type': 'application/json' }});
-
-        await Promise.all([bannerRequest, backgroundRequest]);
+  
+        // 세 번의 POST 요청을 병렬로 보냄
+        const requests = [];
+        for (let i = 0; i < 3; i++) {
+          requests.push(
+            axios.post('http://localhost:8000/api/v1/backgrounds/', backgroundData, {
+              headers: { 'Content-Type': 'application/json' }
+            })
+          );
+        }
+        requests.push(
+          axios.post('http://localhost:8000/api/v1/banners/', bannerData, {
+            headers: { 'Content-Type': 'application/json' }
+          })
+        );
+  
+        // 모든 요청을 병렬로 처리
+        await Promise.all(requests);
         alert('데이터를 성공적으로 전송했습니다.');
-        return  navigate('/banner/result');
+        navigate('/banner/result');
       } catch (error) {
         console.error('Error submitting data:', error);
         alert('데이터를 전송하지 못했습니다.');
       }
     }
   };
-
   const handleAspectRatioClick = (width: number, height: number) => {
     const ratio = `${width}x${height}`;
     if (selectedRatio === ratio) {
