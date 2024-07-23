@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MainButton from './MainButton';
-import UploadImageModal from './UploadImageModal';
+import ImageUploadModal from './UploadImageModal1';
 
 interface ThemeBoxProps {
   imageSource: string;
@@ -45,14 +45,14 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
         />
         <div className="w-[250px] h-[250px] absolute left-0 top-[0px] opacity-50 bg-gradient-to-b from-white to-black mix-blend-multiply" />
       </div>
-      <div className="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 relative gap-20">
+      <div className="relative flex flex-col items-start justify-between flex-grow-0 flex-shrink-0 gap-20">
         <div className="flex-grow-0 flex-shrink-0 w-[191.5px] h-[121px] relative overflow-hidden">
         </div>
         {isDirectInput ? (
           <div className="w-full h-[100px] absolute left-[-0.25px] top-[75px] border-[1px] border-solid border-white rounded-[6px] overflow-hidden ">
             <textarea
               placeholder=" 입력하세요"
-              className=" w-full h-full bg-black text-white text-sm font-PR_M p-2"
+              className="w-full h-full p-2 text-sm text-white bg-black  font-PR_M"
             />
           </div>
         ) : (
@@ -75,7 +75,7 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
         </div>
       </div>
       {showModal && (
-        <UploadImageModal
+        <ImageUploadModal
           onClose={handleCloseModal}
           onUpload={handleUpload}
           redirectPath="/theme/result"
