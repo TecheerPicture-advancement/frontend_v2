@@ -101,6 +101,7 @@ const BannerSetting: React.FC = () => {
 
         // 모든 요청을 병렬로 처리
         const responses = await Promise.all(requests);
+        console.log(responses)
         
         // 응답에서 background_ids 추출 (4개)
         const ids = responses.slice(0, 4).map((res) => (res as any).data.background_id) as number[];
@@ -108,11 +109,13 @@ const BannerSetting: React.FC = () => {
 
         // banner 응답에서 id 추출
         const bannerId = (responses[4] as any).data.id as number;
+        console.log("banner",bannerId)
+        console.log("출력", { bannerId, backgroundIds: ids })
 
         // 로딩 후 결과 페이지로 이동
         setTimeout(() => {
-          console.log("Setting페이지 베너 아이디",bannerId);
-          navigate('/banner/result', { state: { bannerid:bannerId,backgroundids: ids } });
+          console.log(bannerId);
+          navigate('/banner/result', { state: { bannerid:bannerId, backgroundids: ids } });
         }, 3000); // 3초 지연 설정
       } catch (error) {
         console.error('Error submitting data:', error);

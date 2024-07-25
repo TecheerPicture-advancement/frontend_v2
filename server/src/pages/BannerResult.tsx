@@ -28,22 +28,22 @@ interface BackgroundResponse {
 const BannerResult: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation(); 
-  const { backgroundids = [] } = location.state || { backgroundids: [] }; 
-  const { bannerid } = location.state || { };
+  const { backgroundids = [] } = location.state || {}; 
+  const { bannerid } = location.state || {};
   const { takeMaintext, takeServetext, Index } = location.state || {};
-
+  const { MaintextArr = [] } = location.state || {}; 
+  const { ServetextArr = [] } = location.state || {}; 
 
   // 배너 텍스트 배열 상태 변수
-  const [MainText, setMainText] = useState<string[]>(new Array(backgroundids.length).fill(''));
-  const [ServeText, setServeText] = useState<string[]>(new Array(backgroundids.length).fill(''));
-
+  const [MainText, setMainText] = useState<string[]>([]);
+  const [ServeText, setServeText] = useState<string[]>([]);
 
   // 메세지 상태 변수
   const [message, setMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
 
   // 사진 배열 상태 변수
-  const [photos, setPhotos] = useState<string[]>(new Array(backgroundids.length).fill(''));
+  const [photos, setPhotos] = useState<string[]>([]);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
 
@@ -53,30 +53,24 @@ const BannerResult: React.FC = () => {
   const [selectserveText, setSelectServeText] = useState<string>('');
   const [index, setindex] = useState<number>(0);
 
-
-
   const lastImageRef = useRef<LastImageRef>(null);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(false);
 
   const goToResizingBanner = () => {
     if (selectedBackgroundId !== null) {
-      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext:selectMainText, Servetext: selectserveText } });
+      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId ,Maintext:selectMainText, Servetext: selectserveText } });
     }
   };
   
   const goToBannerEdit = () => {
     if (selectedBackgroundId !== null) {
-      console.log("index=",index);
-    
-      console.log(MainText);
-      console.log(ServeText);
-      navigate('/banner/result/edit', { state: { backgroundids: backgroundids, banner_id:bannerid ,Photo:selectedPhoto, Maintext:selectMainText, Servetext: selectserveText, index:index } });
+      navigate('/banner/result/edit', { state: { backgroundids, MaintextArr: MainText, ServetextArr: ServeText, banner_id: bannerid, Photo: selectedPhoto, selectMaintext: selectMainText, selectServetext: selectserveText, index } });
     }
   };
-  
+
   useEffect(() => {
     const fetchBackgrounds = async () => {
-      if (!Array.isArray(backgroundids) || backgroundids.length === 0) {
+      if (backgroundids.length === 0) {
         setMessage('배경 ID가 제공되지 않았습니다.');
         setIsError(true);
         return;
@@ -84,7 +78,7 @@ const BannerResult: React.FC = () => {
 
       try {
         const responses = await Promise.all(
-          backgroundids.map((id) => axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`))
+          backgroundids.map((id: number) => axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`))
         );
 
         const newPhotos = responses.map((response, index) => {
@@ -112,38 +106,46 @@ const BannerResult: React.FC = () => {
 
     fetchBackgrounds();
   }, [backgroundids]);
-  
 
   useEffect(() => {
+    console.log(bannerid);
     const fetchBanner = async () => {
-      console.log("Result페이지 베너 아이디",bannerid);
+      if (!bannerid) return;
+      
+      console.log("Result페이지 베너 아이디", bannerid);
       try {
         const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${bannerid}/`);
         if (response.data && response.data.data) {
-          // 동일한 값을 배열의 모든 요소에 설정
           const mainTextArray = new Array(backgroundids.length).fill(response.data.data.maintext);
-          const serveTextArray = new Array(backgroundids.length).fill(response.data.data.servetext);  
-          setMainText(mainTextArray);
-          setServeText(serveTextArray);
+          const serveTextArray = new Array(backgroundids.length).fill(response.data.data.servetext);
           
-          setMainText(prevMainText => {
-            const newMainText = [...prevMainText];
-            if (Index !== undefined) {
-                newMainText[Index] = takeMaintext;
-            }
-            return newMainText;
-        });
-        
-        setServeText(prevServeText => {
-            const newServeText = [...prevServeText];
-            if (Index !== undefined) {
-                newServeText[Index] = takeServetext;
-            }
-            return newServeText;
-        });
+          if (MaintextArr.length > 0) {
+            setMainText(MaintextArr);
+          } else {
+            setMainText(mainTextArray);
+          }
 
+          if (ServetextArr.length > 0) {
+            setServeText(ServetextArr);
+          } else {
+            setServeText(serveTextArray);
+          }
 
-        }else {
+          if (Index !== undefined) {
+            setMainText(prevMainText => {
+              const newMainText = [...prevMainText];
+              newMainText[Index] = takeMaintext || prevMainText[Index];
+              return newMainText;
+            });
+          
+            setServeText(prevServeText => {
+              const newServeText = [...prevServeText];
+              newServeText[Index] = takeServetext || prevServeText[Index];
+              return newServeText;
+            });
+          }
+
+        } else {
           setMessage('유효한 데이터를 가져오지 못했습니다.');
           setIsError(true);
         }
@@ -155,10 +157,7 @@ const BannerResult: React.FC = () => {
     };
 
     fetchBanner();
-  }, [backgroundids, bannerid, Index, takeMaintext, takeServetext]);
-
-
-
+  }, [bannerid, backgroundids, MaintextArr, ServetextArr, Index, takeMaintext, takeServetext]);
 
   const handleDownloadClick = async () => {
     if (lastImageRef.current) {
@@ -184,7 +183,6 @@ const BannerResult: React.FC = () => {
         <div className="grid grid-cols-2 gap-10 h-full">
           {photos.map((photo, index) => (
             <div key={index} className="flex flex-wrap items-center justify-center h-full">
-              
               <ResultImageBanner 
                 src={photo} 
                 onClick={() => {

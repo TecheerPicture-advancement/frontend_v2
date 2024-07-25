@@ -27,7 +27,7 @@ interface BannerResponse {
 const BannerEdit: React.FC = () => {
 
   const location = useLocation();
-  const {backgroundids, banner_id, Photo, Maintext, Servetext, index  } = location.state || {}; // BannerResult에서 전달된 state 구조 분해 할당
+  const {backgroundids,MaintextArr, ServetextArr, banner_id, Photo, selectMaintext, selectServetext, index  } = location.state || {}; // BannerResult에서 전달된 state 구조 분해 할당
 
   const [mainText1, setMainText1] = React.useState('');
   const [mainText2, setMainText2] = React.useState('');
@@ -50,14 +50,16 @@ const BannerEdit: React.FC = () => {
 
   useEffect(() => {
     const fetchBannerData = async () => {
+      console.log(selectMaintext);
+      console.log(selectServetext);
       try {
         const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${banner_id}`);
         setMainText1(response.data.data.maintext);
         setMainText2(response.data.data.maintext2);
         setSubText1(response.data.data.servetext);
         setSubText2(response.data.data.servetext2);
-        setSelectedMainText(Maintext); // Set default selected main text
-        setSelectedSubText(Servetext); // Set default selected sub text
+        setSelectedMainText(selectMaintext); // Set default selected main text
+        setSelectedSubText(selectServetext); // Set default selected sub text
       } catch (error) {
         console.error('Error fetching banner data:', error);
       }
@@ -111,10 +113,7 @@ const BannerEdit: React.FC = () => {
 
   const goToBannerResult = () => {
     if (selectedMainText &&selectedSubText) {
-      console.log("index2=",index);
-      console.log(selectedMainText);
-      console.log(selectedSubText);
-      navigate('/banner/result', { state: { backgroundids:backgroundids,bannerid:banner_id, takeMaintext:selectedMainText, takeServetext:selectedSubText, Index:index } });
+      navigate('/banner/result', { state: { backgroundids:backgroundids,MaintextArr:MaintextArr,ServetextArr:ServetextArr,bannerid:banner_id, takeMaintext:selectedMainText, takeServetext:selectedSubText, Index:index } });
     }
   };
 
