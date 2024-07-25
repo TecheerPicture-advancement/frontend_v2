@@ -4,11 +4,10 @@ interface SizeFieldsProps {
   height: number | string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   essential: boolean;
-  isDisabled: boolean;
   onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, essential, isDisabled, onFocus }) => {
+const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, essential, onFocus }) => {
   return (
     <div className="flex flex-col w-auto gap-4">
       <div className="flex flex-col w-auto space-y-2">
@@ -22,8 +21,7 @@ const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, essent
           value={width}
           onChange={onChange}
           onFocus={onFocus}
-          disabled={isDisabled}
-          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] `}
         />
       </div>
       <div className="flex flex-col space-y-2">
@@ -37,8 +35,7 @@ const SizeFields: React.FC<SizeFieldsProps> = ({ width, height, onChange, essent
           value={height}
           onChange={onChange}
           onFocus={onFocus}
-          disabled={isDisabled}
-          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] ${isDisabled ? 'bg-gray-400' : 'bg-black'}`}
+          className={`flex justify-start items-center w-fill gap-1 mt-2 px-3 py-2.5 rounded-md bg-black font-PR_L text-gray-100 border border-green-Light w-[340px] `}
         />
       </div>
     </div>
