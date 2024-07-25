@@ -50,6 +50,8 @@ const BannerSetting: React.FC = () => {
   const [selectedRatio, setSelectedRatio] = useState<string>('');
   const [loading, setLoading] = useState(false); // Add loading state
   const [backgroundIds, setBackgroundIds] = useState<number[]>([]); // State to store background_ids
+
+  
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +86,7 @@ const BannerSetting: React.FC = () => {
           },
         };
 
+
         // 네 번의 POST 요청을 병렬로 보냄
         const requests = [];
         for (let i = 0; i < 4; i++) {
@@ -117,6 +120,12 @@ const BannerSetting: React.FC = () => {
           console.log(bannerId);
           navigate('/banner/result', { state: { bannerid:bannerId, backgroundids: ids } });
         }, 3000); // 3초 지연 설정
+
+        await Promise.all(requests);
+        setTimeout(() => {
+          navigate('/banner/result'); // Navigate to result page after loading
+        }, 3000); // Set delay to 10 seconds
+
       } catch (error) {
         console.error('Error submitting data:', error);
         alert('데이터를 전송하지 못했습니다.');
@@ -175,6 +184,7 @@ const BannerSetting: React.FC = () => {
       <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
         <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
           <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
+
           <span>닉네̆̈임을 ગુ력하스Ι 않ヱ 왔군요̆̈</span>
           <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
         </div>
@@ -273,6 +283,9 @@ const BannerSetting: React.FC = () => {
                       height={formData.output_h}
                       onChange={handleChange}
                       essential={true}
+
+                      isDisabled={isSizeFieldsDisabled}
+
                       onFocus={handleFocus}
                     />
                     <AspectRatioButtons buttons={buttons} selectedRatio={selectedRatio} onClick={handleAspectRatioClick} />
