@@ -37,7 +37,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
           onChange={() => {}} // No need to handle onChange for input
           {...props}
         />
-        {text && <span className="text-white text-[14px] font-bold">{text}</span>}
+        {text && <span className="text-white text-[14px] font-PR_BO">{text}</span>}
       </div>
     </div>
   );

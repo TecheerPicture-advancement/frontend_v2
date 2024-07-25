@@ -51,6 +51,8 @@ const STResult: React.FC = () => {
                 isSelected={selectedPhoto === photo}
                 width="64"
                 height="64"
+                maintext=''
+                servetext=''
               />
             </div>
           ))}

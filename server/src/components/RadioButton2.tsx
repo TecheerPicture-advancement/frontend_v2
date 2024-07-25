@@ -44,7 +44,7 @@ const RadioButton2: React.FC<RadioButton2Props> = ({
           value={value}
           onChange={(e) => onValueChange && onValueChange(e.target.value)}  
           placeholder="직접 입력"
-          className="text-white bg-black text-[14px] font-bold outline-none"
+          className="text-white bg-black text-[14px] font-PR_BO outline-none"
         />
       </div>
     </div>
