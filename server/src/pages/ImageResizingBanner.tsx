@@ -156,8 +156,8 @@ const ImageResizingBanner: React.FC = () => {
                 height={formData.output_h}
                 onChange={handleChange}
                 essential={true}
-                onFocus={handleFocus}
-              />
+                isDisabled={false}
+                onFocus={handleFocus} />
             </div>
             <div className="w-full h-[50px] place-content-center">
               {message && (
