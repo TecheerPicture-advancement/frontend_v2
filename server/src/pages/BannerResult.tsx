@@ -25,22 +25,20 @@ interface BackgroundResponse {
   output_w: number;  
 }
 
+
 const BannerResult: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation(); 
-  const { backgroundids = [] } = location.state || {}; 
-  const { bannerid } = location.state || {};
+  const { bannerId, backgroundids=[] } = location.state || {}; 
   const { takeMaintext, takeServetext, Index } = location.state || {};
   const { MaintextArr = [] } = location.state || {}; 
   const { ServetextArr = [] } = location.state || {}; 
-
+  if (!bannerId || backgroundids.length === 0) {
+    console.error('Missing data: bannerId or backgroundids');
+    return <div>Required data is missing. Please try again.</div>;
+  }
   // 배너 텍스트 배열 상태 변수
   const [MainText, setMainText] = useState<string[]>([]);
   const [ServeText, setServeText] = useState<string[]>([]);
-
-  // 메세지 상태 변수
-  const [message, setMessage] = useState<string>('');
-  const [isError, setIsError] = useState<boolean>(false);
 
   // 사진 배열 상태 변수
   const [photos, setPhotos] = useState<string[]>([]);
@@ -49,72 +47,37 @@ const BannerResult: React.FC = () => {
 
   const [selectedBackgroundId, setSelectedBackgroundId] = useState<number | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const [selectMainText, setSelectMainText] = useState<string>('');
-  const [selectserveText, setSelectServeText] = useState<string>('');
+  const [selectedMainText, setSelectedMainText] = useState<string>('');
+  const [selectedserveText, setSelecedtServeText] = useState<string>('');
   const [index, setindex] = useState<number>(0);
 
   const lastImageRef = useRef<LastImageRef>(null);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const goToResizingBanner = () => {
     if (selectedBackgroundId !== null) {
-      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId ,Maintext:selectMainText, Servetext: selectserveText } });
+      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId ,Maintext:selectedMainText, Servetext: selectedserveText } });
     }
   };
   
   const goToBannerEdit = () => {
     if (selectedBackgroundId !== null) {
-      navigate('/banner/result/edit', { state: { backgroundids, MaintextArr: MainText, ServetextArr: ServeText, banner_id: bannerid, Photo: selectedPhoto, selectMaintext: selectMainText, selectServetext: selectserveText, index } });
+      navigate('/banner/result/edit', { state: { backgroundids:backgroundids, MaintextArr: MainText, ServetextArr: ServeText, banner_id: bannerId, Photo: selectedPhoto, selectMaintext: selectedMainText, selectServetext: selectedserveText, index } });
     }
   };
 
-  useEffect(() => {
-    const fetchBackgrounds = async () => {
-      if (backgroundids.length === 0) {
-        setMessage('배경 ID가 제공되지 않았습니다.');
-        setIsError(true);
-        return;
-      }
-
-      try {
-        const responses = await Promise.all(
-          backgroundids.map((id: number) => axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`))
-        );
-
-        const newPhotos = responses.map((response, index) => {
-          if (response.data) {
-            if (index === 0) {
-              setWidth(response.data.output_w);
-              setHeight(response.data.output_h);
-            }
-            return response.data.image_url;
-          } else {
-            console.log(`ID ${backgroundids[index]}에 대한 유효한 데이터를 받지 못했습니다.`);
-            setMessage('유효한 데이터를 받지 못했습니다.');
-            setIsError(true);
-            return '';
-          }
-        });
-
-        setPhotos(newPhotos);
-      } catch (error) {
-        console.log('배경 데이터를 가져오는 중 오류가 발생했습니다:', error);
-        setMessage('배경 데이터를 가져오는 중 오류가 발생했습니다.');
-        setIsError(true);
-      }
-    };
-
-    fetchBackgrounds();
-  }, [backgroundids]);
+useEffect(() => {
+console.log(backgroundids);
+console.log(bannerId);
+},[]);
 
   useEffect(() => {
-    console.log(bannerid);
-    const fetchBanner = async () => {
-      if (!bannerid) return;
-      
-      console.log("Result페이지 베너 아이디", bannerid);
+    const fetchBanner = async () => 
+      {
       try {
-        const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${bannerid}/`);
+        const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${bannerId}/`);
+      console.log("Result페이지 베너 아이디", bannerId);
         if (response.data && response.data.data) {
           const mainTextArray = new Array(backgroundids.length).fill(response.data.data.maintext);
           const serveTextArray = new Array(backgroundids.length).fill(response.data.data.servetext);
@@ -146,18 +109,46 @@ const BannerResult: React.FC = () => {
           }
 
         } else {
-          setMessage('유효한 데이터를 가져오지 못했습니다.');
-          setIsError(true);
+          console.log('유효한 데이터를 가져오지 못했습니다.');
         }
       } catch (error) {
-        console.error('Error fetching banner:', error);
-        setMessage('배너 데이터를 가져오는 중 오류가 발생했습니다.');
-        setIsError(true);
+        console.error('배너 데이터를 가져오는 중 오류가 발생했습니다.');
       }
     };
 
     fetchBanner();
-  }, [bannerid, backgroundids, MaintextArr, ServetextArr, Index, takeMaintext, takeServetext]);
+  }, [ bannerId]);
+
+
+  useEffect(() => {
+    console.log("Result페이지 Backgroundids=", backgroundids);
+    const fetchBackgrounds = async () => {
+     
+      try {
+        const responses = await Promise.all(
+          backgroundids.map((id: number) => axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`))
+        );
+
+        const newPhotos = responses.map((response , index) => {
+          if (response.data) {
+            if (index === 0) {
+              setWidth(response.data.output_w);
+              setHeight(response.data.output_h);
+            }
+            return response.data.image_url;
+          } else {
+            console.log(`ID ${backgroundids[index]}에 대한 유효한 데이터를 받지 못했습니다.`);
+            return '';
+          }
+        });
+        setPhotos(newPhotos);
+      } catch (error) {
+        console.log('배경 데이터를 가져오는 중 오류가 발생했습니다:');
+      }
+    };
+
+    fetchBackgrounds();
+  }, [backgroundids]);
 
   const handleDownloadClick = async () => {
     if (lastImageRef.current) {
@@ -188,8 +179,8 @@ const BannerResult: React.FC = () => {
                 onClick={() => {
                   setSelectedPhoto(photo);
                   setSelectedBackgroundId(backgroundids[index]); // Update selected background id
-                  setSelectMainText(MainText[index]);
-                  setSelectServeText(ServeText[index]);
+                  setSelectedMainText(MainText[index]);
+                  setSelecedtServeText(ServeText[index]);
                   setindex(index);
                 }}
                 isSelected={selectedPhoto === photo}
@@ -209,8 +200,8 @@ const BannerResult: React.FC = () => {
               isSelected={false}
               width={270}
               height={270}
-              maintext={selectMainText}
-              servetext={selectserveText} />
+              maintext={selectedMainText}
+              servetext={selectedserveText} />
             
             <div className="flex flex-col gap-10 mt-[4px]">
               <div onClick={goToBannerEdit}>
@@ -236,9 +227,9 @@ const BannerResult: React.FC = () => {
           src={selectedPhoto || ''} // Ensure src is always provided
           width={width}
           height={height}
-          maintext={selectMainText}
-          servetext={selectserveText}
-        />
+          maintext={selectedMainText}
+          servetext={selectedserveText}
+          />
       </div>
     </div>
   );
