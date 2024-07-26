@@ -48,23 +48,23 @@ const MainChoose: React.FC = () => {
   };
 
   return (
-    <div className='bg-black min-h-screen flex place-items-center place-content-center'>
+    <div className='flex min-h-screen bg-black place-items-center place-content-center'>
       <div className="flex flex-row w-10/12 gap-40 p-2.5 place-content-center">
         {/* 왼쪽 레이아웃 */}
-        <div className="w-7/12 gap-14 place-content-center justify-center">
-          <div className="flex flex-col relative overflow-hidden">
+        <div className="justify-center w-7/12 gap-14 place-content-center">
+          <div className="relative flex flex-col overflow-hidden">
             {Rayout ? (
               <div className="">
-                <p className="my-12 text-4xl font-PR_BO text-left text-white">
+                <p className="my-12 text-4xl text-left text-white font-PR_BO">
                   {activeButton} 생성해 드릴게요
                 </p>
               </div>
             ) : (
               <div>
-                <p className="absolute left-0 text-3xl font-PR_BO text-left text-gray-200">
+                <p className="absolute left-0 text-3xl text-left text-gray-200 font-PR_BO">
                   안녕하세요!
                 </p>
-                <p className="my-12 text-4xl font-PR_BO text-left text-white">
+                <p className="my-12 text-4xl text-left text-white font-PR_BO">
                   {data}님
                 </p>
               </div>
@@ -73,20 +73,20 @@ const MainChoose: React.FC = () => {
           {activeButton ? (
             <div
               onClick={handleStartClick}
-              className='bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center'
+              className='bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center hover:scale-[1.03] translate-transform ease-in-out hover duration-200'
             >
               <MainButton value='시작하기' />
             </div>
           ) : (
             <div className="w-full h-14 rounded-[10px] bg-[#B8B8B8] overflow-hidden place-content-center">
-              <button className="text-xl font-PR_BO text-center text-white w-full h-full">
+              <button className="w-full h-full text-xl text-center text-white font-PR_BO">
                 메뉴 선택 후 시작하기
               </button>
             </div>
           )}
         </div>
         {/* 오른쪽 레이아웃 */}
-        <div className="w-full flex flex-col gap-10 justify-center items-center">
+        <div className="flex flex-col items-center justify-center w-full gap-10">
           <MoveChoose
             isActive={activeButton === '상품 배경을'}
             onButtonClick={() => handleButtonClick('상품 배경을')}

@@ -25,17 +25,18 @@ const BackgroundChoose: React.FC = () => {
     setShowModal(false);
     console.log('모달 닫힘');
   };
+  
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-black">
       <NavBar />
-      <div className="flex flex-col justify-center items-center h-3/6">
+      <div className="flex flex-col items-center justify-center h-3/6">
         <div className="items-center w-full h-full px-20 py-14 overflow-clip">
           <p className="text-center desktop:text-4xl laptop:text-3xl tablet:text-2xl font-PR_BL">
-            <span className="font-PR_BO text-center mr-2 text-white">
+            <span className="mr-2 text-center text-white font-PR_BO">
               내 마음대로 만드는
             </span>
-            <span className="font-PR_BO text-center text-green-Normal">
+            <span className="text-center font-PR_BO text-green-Normal">
               상품 이미지
             </span>
           </p>
