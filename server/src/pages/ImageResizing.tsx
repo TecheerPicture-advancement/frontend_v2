@@ -150,6 +150,7 @@ const ImageResizing: React.FC = () => {
                   height={formData.output_h}
                   onChange={handleChange}
                   essential={true}
+                  isDisabled={false}
                   onFocus={handleFocus}
                 />
             </div>

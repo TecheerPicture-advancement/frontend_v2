@@ -282,9 +282,7 @@ const BannerSetting: React.FC = () => {
                       height={formData.output_h}
                       onChange={handleChange}
                       essential={true}
-
                       isDisabled={isSizeFieldsDisabled}
-
                       onFocus={handleFocus}
                     />
                     <AspectRatioButtons buttons={buttons} selectedRatio={selectedRatio} onClick={handleAspectRatioClick} />
