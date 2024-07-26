@@ -17,6 +17,21 @@ interface FormData {
   output_w: number;
   output_h: number;
 }
+interface BannerResponse {
+  code: number;
+  message: string;
+  data: {
+    id: number;
+    maintext: string;
+    servetext: string;
+    maintext2: string;
+    servetext2: string;
+  };
+}
+
+interface BackgroundResponse {
+  background_id: number;
+}
 
 const BannerSetting: React.FC = () => {
   const { userid } = useUser();
@@ -34,6 +49,9 @@ const BannerSetting: React.FC = () => {
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
   const [loading, setLoading] = useState(false); // Add loading state
+  const [backgroundIds, setBackgroundIds] = useState<number[]>([]); // State to store background_ids
+
+  
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,26 +86,46 @@ const BannerSetting: React.FC = () => {
           },
         };
 
-        // 세 번의 POST 요청을 병렬로 보냄
+
+        // 네 번의 POST 요청을 병렬로 보냄
         const requests = [];
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
           requests.push(
-            axios.post('http://localhost:8000/api/v1/backgrounds/', backgroundData, {
+            axios.post<BackgroundResponse>('http://localhost:8000/api/v1/backgrounds/', backgroundData, {
               headers: { 'Content-Type': 'application/json' }
             })
           );
         }
         requests.push(
-          axios.post('http://localhost:8000/api/v1/banners/', bannerData, {
+          axios.post<BannerResponse>('http://localhost:8000/api/v1/banners/', bannerData, {
             headers: { 'Content-Type': 'application/json' }
           })
         );
 
         // 모든 요청을 병렬로 처리
+        const responses = await Promise.all(requests);
+        console.log(responses)
+        
+        // 응답에서 background_ids 추출 (4개)
+        const ids = responses.slice(0, 4).map((res) => (res as any).data.background_id) as number[];
+        setBackgroundIds(ids);
+
+        // banner 응답에서 id 추출
+        const bannerId = (responses[4] as any).data.id as number;
+        console.log("banner",bannerId)
+        console.log("출력", { bannerId, backgroundIds: ids })
+
+        // 로딩 후 결과 페이지로 이동
+        setTimeout(() => {
+          console.log(bannerId);
+          navigate('/banner/result', { state: { bannerid:bannerId, backgroundids: ids } });
+        }, 3000); // 3초 지연 설정
+
         await Promise.all(requests);
         setTimeout(() => {
           navigate('/banner/result'); // Navigate to result page after loading
         }, 3000); // Set delay to 10 seconds
+
       } catch (error) {
         console.error('Error submitting data:', error);
         alert('데이터를 전송하지 못했습니다.');
@@ -139,22 +177,22 @@ const BannerSetting: React.FC = () => {
   const openModal = () => {
     setShowModal(true);
   };
+  if (!userid) {
+    console.error('userid is undefined');
+    return (
+      <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
+        <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
+          <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
 
-  // if (!userid) {
-  //   console.error('userid is undefined');
-  //   return (
-  //     <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
-  //       <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
-  //         <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
-  //         <span>닉네̆̈임을 ગુ력하スΙ 않ヱ 왔군요̆̈</span>
-  //         <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
-  //       </div>
-  //       <Link to="/nickname">
-  //         <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
-  //       </Link>
-  //     </div>
-  //   );
-  // }
+          <span>닉네̆̈임을 ગુ력하스Ι 않ヱ 왔군요̆̈</span>
+          <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
+        </div>
+        <Link to="/nickname">
+          <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
+        </Link>
+      </div>
+    );
+  }
 
   const buttons = [
     { label: '스토리 광고', width: 1080, height: 1920 },
@@ -164,6 +202,7 @@ const BannerSetting: React.FC = () => {
     { label: '1:1 프로모션 광고', width: 800, height: 800 },
     { label: '1.91:1 프로모션', width: 800, height: 418 },
   ];
+
 
   return (
     <div className="bg-black">
@@ -243,7 +282,9 @@ const BannerSetting: React.FC = () => {
                       height={formData.output_h}
                       onChange={handleChange}
                       essential={true}
+
                       isDisabled={isSizeFieldsDisabled}
+
                       onFocus={handleFocus}
                     />
                     <AspectRatioButtons buttons={buttons} selectedRatio={selectedRatio} onClick={handleAspectRatioClick} />

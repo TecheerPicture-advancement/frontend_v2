@@ -10,6 +10,7 @@ import STResult from './pages/STResult';
 import BannerResult from './pages/BannerResult';
 import NukkiResult from './pages/NukkiResult';
 import ImageResizing from './pages/ImageResizing';
+import ImageResizingBanner from './pages/ImageResizingBanner';
 import BannerEdit from './pages/BannerEdit';
 import { UserProvider } from './api/Usercontext';
 
@@ -31,7 +32,7 @@ const App: React.FC = () => {
         <Route path='/simple/result' element={<STResult/>}/>
         <Route path='/banner/result' element={<BannerResult/>}/>
         <Route path='/nukki/result' element={<NukkiResult/>}/>
-        <Route path='/banner/result/resizing' element={<ImageResizing/>}/>
+        <Route path='/banner/result/resizing' element={<ImageResizingBanner/>}/>
         <Route path='/theme/result/resizing' element={<ImageResizing/>}/>
         <Route path='/simple/result/resizing' element={<ImageResizing/>}/>
         <Route path='/banner/result/edit' element={<BannerEdit/>}/>
