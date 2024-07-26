@@ -177,7 +177,6 @@ const BannerSetting: React.FC = () => {
   const openModal = () => {
     setShowModal(true);
   };
-
   if (!userid) {
     console.error('userid is undefined');
     return (

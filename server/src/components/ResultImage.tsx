@@ -21,7 +21,7 @@ const ResultImage: React.FC<ResultImageProps> = ({ src, onClick, isSelected, wid
       src={src}
       alt="ResultImage"
       className={classNames(
-        'cursor-pointer border',
+        'cursor-pointer border rounded-md', 
         { 'border-green-Normal border-4': isSelected, 'border-gray-300': !isSelected },
         widthClass,
         heightClass
