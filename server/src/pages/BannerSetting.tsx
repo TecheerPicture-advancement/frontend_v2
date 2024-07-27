@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-
-// Components
-import AspectRatioButtons from '../components/form/AspectRatioButtons';
 import ImageUploadModal from '../components/UploadImageModal1';
-import InputField from '../components/form/InputField';
-import Loading from '../components/Loading';
 import NavBar from '../components/NavBar';
-import SizeFields from '../components/form/SizeFields';
-
-// Context
 import { useUser } from '../api/Usercontext';
+import InputField from '../components/form/InputField';
+import SizeFields from '../components/form/SizeFields';
+import AspectRatioButtons from '../components/form/AspectRatioButtons';
+import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading'; // Import the Loading component
 
 interface FormData {
   item_name: string;
@@ -53,7 +49,6 @@ const BannerSetting: React.FC = () => {
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
   const [loading, setLoading] = useState(false); // Add loading state
-  const [backgroundIds, setBackgroundIds] = useState<number[]>([]); // State to store background_ids
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,16 +63,16 @@ const BannerSetting: React.FC = () => {
       setLoading(true); // Show loading screen
       try {
         const bannerData = {
+          image_id: imageId,
+          user_id: userid,
           item_name: formData.item_name,
           item_concept: formData.item_concept,
           item_category: formData.item_category,
           add_information: formData.add_information,
-          image_id: uploadedImageId,
-          user_id: userid,
         };
         const backgroundData = {
           user_id: userid,
-          image_id: uploadedImageId,
+          image_id: imageId,
           gen_type: 'concept',
           output_w: formData.output_w,
           output_h: formData.output_h,
@@ -87,9 +82,11 @@ const BannerSetting: React.FC = () => {
             num_results: 1,
           },
         };
+        console.log(imageId);
 
         // 네 번의 POST 요청을 병렬로 보냄
         const requests = [];
+        const requests2 = [];
         for (let i = 0; i < 4; i++) {
           requests.push(
             axios.post<BackgroundResponse>('http://localhost:8000/api/v1/backgrounds/', backgroundData, {
@@ -97,31 +94,31 @@ const BannerSetting: React.FC = () => {
             })
           );
         }
-        requests.push(
+        requests2.push(
           axios.post<BannerResponse>('http://localhost:8000/api/v1/banners/', bannerData, {
             headers: { 'Content-Type': 'application/json' }
           })
         );
 
         // 모든 요청을 병렬로 처리
-        const responses = await Promise.all(requests);
-        console.log(responses)
+        const responses2 = await Promise.all(requests2);//bannerid 처리
+        const responses = await Promise.all(requests);//backgroundids 처리
         
         // 응답에서 background_ids 추출 (4개)
-        const ids = responses.slice(0, 4).map((res) => (res as any).data.background_id) as number[];
-        setBackgroundIds(ids);
+        const backgroundids = responses.map((res) => res.data.background_id);
 
         // banner 응답에서 id 추출
-        const bannerId = (responses[4] as any).data.id as number;
-        console.log("banner",bannerId)
-        console.log("출력", { bannerId, backgroundIds: ids })
-
+        const bannerId = responses2[0].data.data.id;
+      
+      
         // 로딩 후 결과 페이지로 이동
         setTimeout(() => {
-          navigate('/banner/result', { state: { bannerId, backgroundIds: ids } });
-        }, 3000); // 3초 지연 설정
+          console.log("bannerid=",bannerId);
+          console.log("backgroundids=",backgroundids);
+          navigate('/banner/result', { state: {bannerId: bannerId, backgroundids: backgroundids }});
+        }, 10000); // 10초 지연 설정
       } catch (error) {
-        console.error('Error submitting data:', error);
+        console.log('데이터를 전송하지 못했습니다.');
         alert('데이터를 전송하지 못했습니다.');
         setLoading(false); // Hide loading screen if there was an error
       }
