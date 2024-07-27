@@ -116,7 +116,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="z-10 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="flex flex-col items-center w-7/12 p-6 bg-white rounded-lg shadow-lg min-h-3/4">
         <h2 className="flex items-center justify-center m-6 text-2xl font-PR_BL">변경하고 싶은 이미지를 업로드 해주세요</h2>
         {!preview ? (
@@ -146,12 +146,12 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
         ) : (          
           <div className="relative flex flex-col items-center mb-4">
             <img src={preview} alt="미리보기" className="object-contain w-64 h-64 mb-2" />
-            <div className="mt-2 text-gray-400 font-PR_M">
+            <div className="mt-2 text-gray-400 font-PR_M mb-3">
               {file?.name ?? 'No file selected'}
             </div>
               <button 
                 onClick={handleRemoveFile} 
-                className="flex px-2 py-1 text-gray-300 bg-black rounded"
+                className="flex px-4 py-2 text-sm text-black "
                 disabled={!file} // Disable button when file is null
               >
                 삭제
@@ -159,7 +159,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
           </div>
         )}
         <div className="flex items-end justify-end w-full mt-4 space-x-4">
-          <button onClick={() => onClose(null)} className="px-4 py-2 text-black bg-gray-300 rounded font-PR_BO hover:bg-gray-400">
+          <button onClick={() => onClose(null)} className="px-6 py-2 text-black rounded font-PR_BO hover:bg-gray-100">
             닫기
           </button>
           {file && (
