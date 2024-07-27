@@ -63,7 +63,7 @@ const BannerSetting: React.FC = () => {
       setLoading(true); // Show loading screen
       try {
         const bannerData = {
-          image_id: imageId,
+          image_id: uploadedImageId,
           user_id: userid,
           item_name: formData.item_name,
           item_concept: formData.item_concept,
@@ -72,7 +72,7 @@ const BannerSetting: React.FC = () => {
         };
         const backgroundData = {
           user_id: userid,
-          image_id: imageId,
+          image_id: uploadedImageId,
           gen_type: 'concept',
           output_w: formData.output_w,
           output_h: formData.output_h,
@@ -82,7 +82,7 @@ const BannerSetting: React.FC = () => {
             num_results: 1,
           },
         };
-        console.log(imageId);
+        console.log(uploadedImageId);
 
         // 네 번의 POST 요청을 병렬로 보냄
         const requests = [];
