@@ -48,7 +48,7 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
         gen_type: 'concept',
         concept_option: {
           category: 'others',
-          theme: '깔끔',
+          theme: theme,
           num_results: 1,
         },
       };
