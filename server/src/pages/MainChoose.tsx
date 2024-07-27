@@ -13,7 +13,11 @@ interface NicknameResponse {
   };
 }
 
-const MainChoose: React.FC = () => {
+interface MainChooseProps {
+  name : string;
+}
+
+const MainChoose: React.FC<MainChooseProps> = () => {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [Rayout, setRayout] = useState<string | null>(null);
   const [data, setData] = useState<string>('');
