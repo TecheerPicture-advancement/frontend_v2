@@ -5,7 +5,7 @@ import BackgroundChooseComImage1 from '../../public/assets/BackgroundChooseComIm
 import BackgroundChooseComImage2 from '../../public/assets/BackgroundChooseComImage2.png';
 import BackgroundChooseComImage3 from '../../public/assets/BackgroundChooseComImage3.png';
 import NavBar from '../components/NavBar';
-import UploadImageModal from '../components/UploadImageModal';
+import UploadImageModal from '../components/UploadImageModal1';
 
 const BackgroundChoose: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
