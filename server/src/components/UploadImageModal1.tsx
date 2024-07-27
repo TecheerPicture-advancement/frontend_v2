@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect, DragEvent } from 'react';
 import { useUser } from '../api/Usercontext';
 import Uploadcloud from '../assets/uploadcloud.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 
 interface ImageUploadModalProps {
@@ -17,6 +18,8 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
   const { userid } = useUser();
   const [preview, setPreview] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
@@ -47,6 +50,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
     } else {
       console.error('닉네임을 생성하지 않았습니다.');
       alert('오류: 닉네임을 생성하지 않았습니다.');
+      navigate('/nickname');
       return;
     }
     formData.append('file', file);
