@@ -1,8 +1,8 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import ImageBox from '../components/ImageBox';
-import ThemeBox from '../components/ThemeBox';
 import NavBar from '../components/NavBar';
+import ThemeBox from '../components/ThemeBox';
 
 const ThemeResult: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState({
@@ -12,6 +12,7 @@ const ThemeResult: React.FC = () => {
     detail: '',
   });
   const [isThemeSelected, setIsThemeSelected] = useState(false);
+  
 
   const handleThemeSelect = (themeDetails: { imageSource: string; detail: string; theme: string; sentence: string }) => {
     setSelectedTheme({
@@ -48,6 +49,7 @@ const ThemeResult: React.FC = () => {
         </header>
         <AnimatePresence>
           {isThemeSelected && (
+            <div className='z-10'>
             <motion.div
               key={selectedTheme.theme}
               layoutId={selectedTheme.theme}
@@ -62,9 +64,10 @@ const ThemeResult: React.FC = () => {
                 detail={selectedTheme.detail}
               />
             </motion.div>
+            </div>
           )}
         </AnimatePresence>
-        <main className="flex flex-row items-center justify-center w-full h-full gap-5">
+        <main className="flex flex-row items-center justify-center w-full h-full gap-5 z-0">
           <div className="relative w-[200px] max-w-4xl h-[900px] shrink-0 flex items-center justify-center">
             {selectedTheme.theme !== 'AI' && (
               <ImageBoxPosition

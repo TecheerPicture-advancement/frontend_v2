@@ -183,4 +183,3 @@ const ImageResizing: React.FC = () => {
 };
 
 export default ImageResizing;
-

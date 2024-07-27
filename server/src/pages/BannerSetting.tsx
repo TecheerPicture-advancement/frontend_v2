@@ -300,4 +300,3 @@ const BannerSetting: React.FC = () => {
 };
 
 export default BannerSetting;
-

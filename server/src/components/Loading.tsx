@@ -30,7 +30,7 @@ const Loading = () => {
     // Simulate a loading delay
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 10000);
+    }, 1000000);
 
     // Change tip every 5 seconds
     const interval = setInterval(() => {
