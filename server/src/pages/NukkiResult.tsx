@@ -24,12 +24,11 @@ const NukkiResult: React.FC = () => {
             {photos.map((photo, index) => (
                 <div key={index} className='w-5/4 h-5/4 flex justify-center items-center shrink-0 flex-wrap'>
                 <ResultImage 
-                    src={photo} 
-                    onClick={() => setSelectedPhoto(null)}
-                    isSelected={selectedPhoto === photo}
-                    width="80" 
-                    height="[300px]"
-                />
+                  src={photo}
+                  onClick={() => setSelectedPhoto(null)}
+                  isSelected={selectedPhoto === photo}
+                  width="80"
+                  height="[300px]" maintext={''} servetext={''}                />
                 </div>
             ))}
             <div className="flex flex-col space-y-2 gap-10">

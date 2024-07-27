@@ -45,7 +45,7 @@ const BannerSetting: React.FC = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
-  const [imageId, setImageId] = useState<number | null>(null);
+  const [, setImageId] = useState<number | null>(null);
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
   const [loading, setLoading] = useState(false); // Add loading state

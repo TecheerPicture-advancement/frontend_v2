@@ -166,12 +166,12 @@ console.log(bannerId);
   return (
     <div className="flex flex-col w-full h-full min-h-screen px-10 pb-12 bg-black">
       <NavBar />
-      <header className="flex justify-center items-center my-6 text-4xl font-PR_BL">
+      <header className="flex items-center justify-center my-6 text-4xl font-PR_BL">
         <span className="text-white">배너 </span>
-        <span className="text-green-Normal ml-2">결과 이미지</span>
+        <span className="ml-2 text-green-Normal">결과 이미지</span>
       </header>
       <div className="flex flex-row items-start justify-center w-full h-full">
-        <div className="grid grid-cols-2 gap-10 h-full">
+        <div className="grid h-full grid-cols-2 gap-10">
           {photos.map((photo, index) => (
             <div key={index} className="flex flex-wrap items-center justify-center h-full">
               <ResultImageBanner 
@@ -194,7 +194,7 @@ console.log(bannerId);
         </div>
        
         {selectedPhoto && 
-          <div className="flex flex-col minHeight ml-24 gap-10">
+          <div className="flex flex-col gap-10 ml-24 minHeight">
             <ResultImageBanner
               src={selectedPhoto}
               isSelected={false}

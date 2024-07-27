@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MainButton from './MainButton';
-import UploadImageModal from './UploadImageModal';
+import ImageUploadModal from './UploadImageModal1';
 
 interface ThemeBoxProps {
   imageSource: string;
@@ -75,7 +75,7 @@ const ThemeBox: React.FC<ThemeBoxProps> = ({ imageSource, detail, prompt, theme 
         </div>
       </div>
       {showModal && (
-        <UploadImageModal
+        <ImageUploadModal
           onClose={handleCloseModal}
           onUpload={handleUpload}
           redirectPath="/theme/result"
