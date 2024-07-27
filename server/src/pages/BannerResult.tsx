@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -37,6 +38,7 @@ const BannerResult: React.FC = () => {
     return <div>Required data is missing. Please try again.</div>;
   }
   // 배너 텍스트 배열 상태 변수
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [MainText, setMainText] = useState<string[]>([]);
   const [ServeText, setServeText] = useState<string[]>([]);
 
@@ -67,10 +69,10 @@ const BannerResult: React.FC = () => {
     }
   };
 
-useEffect(() => {
-console.log(backgroundids);
-console.log(bannerId);
-},[]);
+  useEffect(() => {
+  console.log(backgroundids);
+  console.log(bannerId);
+  },[backgroundids, bannerId]);
 
   useEffect(() => {
     const fetchBanner = async () => 
@@ -117,7 +119,7 @@ console.log(bannerId);
     };
 
     fetchBanner();
-  }, [ bannerId]);
+  }, [Index, MaintextArr, ServetextArr, backgroundids.length, bannerId, takeMaintext, takeServetext]);
 
 
   useEffect(() => {

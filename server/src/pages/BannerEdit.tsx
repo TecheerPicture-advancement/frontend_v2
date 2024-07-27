@@ -8,8 +8,6 @@ import ResultImageBanner from '../components/ResultImageBanner';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-
-
 interface BannerResponse {
   code: number;
   message: string;
@@ -20,9 +18,6 @@ interface BannerResponse {
     servetext2: string;
   };
 }
-
-
-
 
 const BannerEdit: React.FC = () => {
 
@@ -66,7 +61,7 @@ const BannerEdit: React.FC = () => {
     };
 
     fetchBannerData();
-  }, [banner_id]);
+  }, [banner_id, selectMaintext, selectServetext]);
 
 
   const handleToggleMajor = (id: string) => {
@@ -130,16 +125,16 @@ const BannerEdit: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen gap-6 overflow-hidden bg-black">
       <NavBar />
-      <div className="flex flex-col justify-start items-center flex-grow flex-shrink-0 w-full relative overflow-hidden gap-1 px-12 py-2 bg-black">
+      <div className="relative flex flex-col items-center justify-start flex-grow flex-shrink-0 w-full gap-1 px-12 py-2 overflow-hidden bg-black">
         <div className="flex-grow-0 flex-shrink-0 w-[60%] h-20 relative overflow-hidden">
-          <p className="absolute left-0 text-xl font-PR_M text-left text-white top-12">자유롭게 변경하세요</p>
+          <p className="absolute left-0 text-xl text-left text-white font-PR_M top-12">자유롭게 변경하세요</p>
           <div className="absolute left-0 overflow-hidden ">
-            <p className="text-3xl font-PR_BL text-left text-green-Normal">문구 편집</p>
+            <p className="text-3xl text-left font-PR_BL text-green-Normal">문구 편집</p>
           </div>
         </div>
         <div className="relative flex items-start justify-center flex-grow-0 flex-shrink-0 w-full h-full gap-32">
           <div className="relative flex-grow-0 flex-shrink-0 mt-8 mr-3 w-96 h-96">
-            <div className="absolute left-0 top-0 w-96 h-96 bg-white" />
+            <div className="absolute top-0 left-0 bg-white w-96 h-96" />
 
             <ResultImageBanner
                 src={Photo}
@@ -154,7 +149,7 @@ const BannerEdit: React.FC = () => {
           <div className="flex flex-col items-center justify-start flex-grow-0 flex-shrink-0 gap-8 p-1 h-80 w-80">
             <div className="flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 gap-0 overflow-hidden pt-7">
               <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 h-48 overflow-hidden w-76">
-                <p className="flex-grow-0 flex-shrink-0 w-20 h-6 text-lg font-PR_BL text-left pb-7 text-green-Light">주요</p>
+                <p className="flex-grow-0 flex-shrink-0 w-20 h-6 text-lg text-left font-PR_BL pb-7 text-green-Light">주요</p>
                 <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 py-1 overflow-hidden">
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3">
                     <RadioButton
@@ -190,7 +185,7 @@ const BannerEdit: React.FC = () => {
                 </div>
                </div>
               <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 h-48 overflow-hidden">
-                <p className="flex-grow-0 flex-shrink-0 w-16 h-6 text-lg font-PR_M pb-7 text-left text-green-Light">부가</p>
+                <p className="flex-grow-0 flex-shrink-0 w-16 h-6 text-lg text-left font-PR_M pb-7 text-green-Light">부가</p>
                 <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 py-1 overflow-hidden">
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3 overflow-hidden">
                     <RadioButton

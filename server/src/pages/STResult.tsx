@@ -122,8 +122,7 @@ const STResult: React.FC = () => {
                 onClick={() => setSelectedPhoto(imageData)}
                 isSelected={selectedPhoto === imageData}
                 width="64"
-                height="64"
-              />
+                height="64" maintext={''} servetext={''}              />
             </div>
           )}
 
@@ -134,8 +133,7 @@ const STResult: React.FC = () => {
                 onClick={() => setSelectedPhoto(removeBgData.image_url)}
                 isSelected={selectedPhoto === removeBgData.image_url}
                 width="64"
-                height="64"
-              />
+                height="64" maintext={''} servetext={''}              />
             </div>
           )}
 
