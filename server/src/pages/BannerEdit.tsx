@@ -1,13 +1,34 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation  } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import RadioButton from '../components/RadioButton';
 import RadioButton2 from '../components/RadioButton2';
 import ResultButton from '../components/ResultButton';
+import ResultImageBanner from '../components/ResultImageBanner';
 import axios from 'axios';
+import { useEffect } from 'react';
+
+
+
+interface BannerResponse {
+  code: number;
+  message: string;
+  data: {
+    maintext: string;
+    servetext: string;
+    maintext2: string;
+    servetext2: string;
+  };
+}
+
+
+
 
 const BannerEdit: React.FC = () => {
-  const { banner_id } = useParams<{ banner_id: string }>(); // Get banner_id from the route parameters
+
+  const location = useLocation();
+  const {backgroundids,MaintextArr, ServetextArr, banner_id, Photo, selectMaintext, selectServetext, index  } = location.state || {}; // BannerResult에서 전달된 state 구조 분해 할당
+
   const [mainText1, setMainText1] = React.useState('');
   const [mainText2, setMainText2] = React.useState('');
   const [subText1, setSubText1] = React.useState('');
@@ -27,17 +48,18 @@ const BannerEdit: React.FC = () => {
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchBannerData = async () => {
+      console.log(selectMaintext);
+      console.log(selectServetext);
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/banners/${banner_id}`);
-        const { ad_text, ad_text2, serve_text, serve_text2 } = response.data.data;
-        setMainText1(ad_text);
-        setMainText2(ad_text2);
-        setSubText1(serve_text);
-        setSubText2(serve_text2);
-        setSelectedMainText(ad_text); // Set default selected main text
-        setSelectedSubText(serve_text); // Set default selected sub text
+        const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${banner_id}`);
+        setMainText1(response.data.data.maintext);
+        setMainText2(response.data.data.maintext2);
+        setSubText1(response.data.data.servetext);
+        setSubText2(response.data.data.servetext2);
+        setSelectedMainText(selectMaintext); // Set default selected main text
+        setSelectedSubText(selectServetext); // Set default selected sub text
       } catch (error) {
         console.error('Error fetching banner data:', error);
       }
@@ -45,6 +67,7 @@ const BannerEdit: React.FC = () => {
 
     fetchBannerData();
   }, [banner_id]);
+
 
   const handleToggleMajor = (id: string) => {
     setCheckedMajor(prevChecked => (prevChecked === id ? null : id));
@@ -88,6 +111,12 @@ const BannerEdit: React.FC = () => {
     navigate(-1);
   };
 
+  const goToBannerResult = () => {
+    if (selectedMainText &&selectedSubText) {
+      navigate('/banner/result', { state: { backgroundids:backgroundids,MaintextArr:MaintextArr,ServetextArr:ServetextArr,bannerid:banner_id, takeMaintext:selectedMainText, takeServetext:selectedSubText, Index:index } });
+    }
+  };
+
   const handleMajorTextChange = (value: string) => {
       setEditMainText3(value);
       setSelectedMainText(value);
@@ -101,28 +130,31 @@ const BannerEdit: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen gap-6 overflow-hidden bg-black">
       <NavBar />
-      <div className="flex flex-col justify-start items-center flex-grow flex-shrink-0 w-full relative overflow-hidden gap-1 px-12 py-2 bg-[#111]">
+      <div className="flex flex-col justify-start items-center flex-grow flex-shrink-0 w-full relative overflow-hidden gap-1 px-12 py-2 bg-black">
         <div className="flex-grow-0 flex-shrink-0 w-[60%] h-20 relative overflow-hidden">
-          <p className="absolute left-0 text-xl font-medium text-left text-white top-12">자유롭게 변경하세요</p>
-          <div className="absolute left-0 overflow-hidden top-2">
-            <p className="text-2xl font-black text-left text-[#00d54b]">문구 편집</p>
+          <p className="absolute left-0 text-xl font-PR_M text-left text-white top-12">자유롭게 변경하세요</p>
+          <div className="absolute left-0 overflow-hidden ">
+            <p className="text-3xl font-PR_BL text-left text-green-Normal">문구 편집</p>
           </div>
         </div>
         <div className="relative flex items-start justify-center flex-grow-0 flex-shrink-0 w-full h-full gap-32">
           <div className="relative flex-grow-0 flex-shrink-0 mt-8 mr-3 w-96 h-96">
-            <div className="absolute left-0 top-0 w-96 h-96 bg-[#d9d9d9]" />
-            <img src="ThemeImage/office.png" className="absolute top-0 left-0 object-cover w-96 h-96" />
-            <p className="absolute left-5 bottom-24 font-PR_BO text-sm font-medium text-left text-[#111]">
-              <span>{selectedSubText}</span>
-            </p>
-            <p className="absolute text-xl font-black text-left text-white left-5 bottom-16">
-              <span>{selectedMainText}</span>
-            </p>
+            <div className="absolute left-0 top-0 w-96 h-96 bg-white" />
+
+            <ResultImageBanner
+                src={Photo}
+                isSelected={false}
+                width={384}
+                height={384}
+                maintext={selectedMainText}
+                servetext={selectedSubText}
+              />
+
           </div>
           <div className="flex flex-col items-center justify-start flex-grow-0 flex-shrink-0 gap-8 p-1 h-80 w-80">
             <div className="flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 gap-0 overflow-hidden pt-7">
               <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 h-48 overflow-hidden w-76">
-                <p className="flex-grow-0 flex-shrink-0 w-20 h-6 text-lg font-black text-left pb-7 text-[#e6fbed]">주요</p>
+                <p className="flex-grow-0 flex-shrink-0 w-20 h-6 text-lg font-PR_BL text-left pb-7 text-green-Light">주요</p>
                 <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 py-1 overflow-hidden">
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3">
                     <RadioButton
@@ -156,13 +188,9 @@ const BannerEdit: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="self-stretch flex-grow-0 flex-shrink-0 h-48 bg-[#111] border border-[#111]" style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }} />
-                <div className="flex justify-start items-center flex-grow-0 flex-shrink-0 w-80 h-8 relative gap-0.5 px-1 py-0.5 rounded-md border border-[#e6fbed]">
-                  <p className="flex-grow-0 flex-shrink-0 text-sm font-medium text-center text-white">손에 착 감기는 완벽함 중국산의 새로운 기준</p>
-                </div>
-              </div>
+               </div>
               <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 h-48 overflow-hidden">
-                <p className="flex-grow-0 flex-shrink-0 w-16 h-6 text-lg font-medium pb-7 text-left text-[#e6fbed]">부가</p>
+                <p className="flex-grow-0 flex-shrink-0 w-16 h-6 text-lg font-PR_M pb-7 text-left text-green-Light">부가</p>
                 <div className="relative flex flex-col items-start self-stretch justify-start flex-grow-0 flex-shrink-0 py-1 overflow-hidden">
                   <div className="relative self-stretch flex-grow-0 flex-shrink-0 h-10 mb-3 overflow-hidden">
                     <RadioButton
@@ -205,7 +233,8 @@ const BannerEdit: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center justify-center flex-grow-0 flex-shrink-0 gap-4 px-4 py-2 mt-10 overflow-hidden">
-          <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg">
+          <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 w-32 h-8 gap-1 px-1 rounded-lg"
+          onClick={goToBannerResult}>
             <ResultButton value="확인" />
           </div>
           <div

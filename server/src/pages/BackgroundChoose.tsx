@@ -90,6 +90,7 @@ const BackgroundChoose: React.FC = () => {
       }
     }
   };
+  
 
   return (
     <>
@@ -135,6 +136,7 @@ const BackgroundChoose: React.FC = () => {
                 />
               </div>
             </div>
+
           </div>
           {showModal && (
             <ImageUploadModal onClose={handleModalClose} />

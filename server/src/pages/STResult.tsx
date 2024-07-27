@@ -146,8 +146,7 @@ const STResult: React.FC = () => {
                 onClick={() => setSelectedPhoto(data.image_url)}
                 isSelected={selectedPhoto === data.image_url}
                 width="64"
-                height="64"
-              />
+                height="64" maintext={''} servetext={''}              />
             </div>
           ))}
         </div>
