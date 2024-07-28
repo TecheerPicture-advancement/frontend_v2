@@ -108,7 +108,7 @@ const BannerEdit: React.FC = () => {
 
   const goToBannerResult = () => {
     if (selectedMainText &&selectedSubText) {
-      navigate('/banner/result', { state: { backgroundids:backgroundids,MaintextArr:MaintextArr,ServetextArr:ServetextArr,bannerid:banner_id, takeMaintext:selectedMainText, takeServetext:selectedSubText, Index:index } });
+      navigate('/banner/result', { state: { backgroundids:backgroundids,MaintextArr:MaintextArr,ServetextArr:ServetextArr,bannerId:banner_id, takeMaintext:selectedMainText, takeServetext:selectedSubText, Index:index } });
     }
   };
 
