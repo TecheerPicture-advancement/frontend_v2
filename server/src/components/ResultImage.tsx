@@ -17,7 +17,7 @@ const ResultImage: React.FC<ResultImageProps> = ({ src, onClick, isSelected, wid
   const defaultSrc = 'path/to/default/image.jpg'; // Provide a default image path
 
   return (
-    <div className="w-64 h-64 relative object-cover" onClick={onClick}>
+    <div className="w-64 h-64 relative object-cover overflow-hidden" onClick={onClick}>
     <img
       src={src || defaultSrc} // Use defaultSrc if src is undefined
       alt="ResultImage"

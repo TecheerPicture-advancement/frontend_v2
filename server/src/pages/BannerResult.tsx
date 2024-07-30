@@ -241,3 +241,5 @@ const BannerResult: React.FC = () => {
 };
 
 export default BannerResult;
+
+

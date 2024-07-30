@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SizeFields from '../components/form/SizeFields';
 import ResultImageBanner from '../components/ResultImageBanner';
 import LastImage, { LastImageRef } from '../components/LastImage';
-import axios from 'axios';
+
 
 interface FormData {
   output_w: number,
@@ -42,6 +43,11 @@ const ImageResizing: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!selectedPhotoId) {
+        console.error('유효한 backgroundId가 제공되지 않았습니다.');
+        return;
+      }
+  
       try {
         if (selectedPhotoIndex === 0) {
           const response = await axios.get<ImageResponse>(`http://localhost:8000/api/v1/images/${selectedPhotoId}/`);
@@ -68,14 +74,14 @@ const ImageResizing: React.FC = () => {
 
   const handleDownloadClick = async () => {
     if (lastImageRef.current) {
-      setIsImageVisible(true); // Show the image component
+      setIsImageVisible(true);
       setTimeout(async () => {
-        if (lastImageRef.current) { // Double-check if the ref is still non-null
+        if (lastImageRef.current) { 
           await lastImageRef.current.downloadImage();
           setMessage("이미지가 성공적으로 생성되었습니다.")
         }
-        setIsImageVisible(false); // Hide the image component
-      }, 500); // Small delay to ensure the component is visible
+        setIsImageVisible(false); 
+      }, 500); 
     }
   };
 

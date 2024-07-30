@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useState, useEffect, DragEvent } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../api/Usercontext';
 import Uploadcloud from '../assets/uploadcloud.svg?react';
-import { useNavigate } from 'react-router-dom';
 
 
 interface ImageUploadModalProps {
@@ -43,7 +43,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
       alert('파일을 선택해주세요');
       return;
     }
-
+  
     const formData = new FormData();
     if (userid) {
       formData.append('user_id', userid.toString());
@@ -54,24 +54,25 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
       return;
     }
     formData.append('file', file);
-
+  
     try {
       const response = await axios.post<UploadResponse>('http://localhost:8000/api/v1/images/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
       console.log('Upload response:', response.data);
-      onClose(response.data.image_id); // 부모 컴포넌트에 image_id 보내기
+      setTimeout(() => {
+        onClose(response.data.image_id); // 부모 컴포넌트에 image_id 보내기
+      }, 10000);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('이미지 업로드 중 에러가 발생하였습니다.');
       onClose(null);
     }
-    
   };
-
+  
   useEffect(() => {
     // 모달이 열릴 때 스크롤을 막습니다.
     document.body.style.overflow = 'hidden';

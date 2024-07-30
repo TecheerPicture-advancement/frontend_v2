@@ -1,14 +1,15 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BackgroundChooseCom from '../components/BackgroundChooseCom';
+import ImageUploadModal from '../components/UploadImageModal1';
+import Loading from '../components/Loading';
+import NavBar from '../components/NavBar';
+import { useUser } from '../api/Usercontext';
 import BackgroundChooseComImage1 from '../../public/assets/BackgroundChooseComImage1.png';
 import BackgroundChooseComImage2 from '../../public/assets/BackgroundChooseComImage2.png';
 import BackgroundChooseComImage3 from '../../public/assets/BackgroundChooseComImage3.png';
-import ImageUploadModal from '../components/UploadImageModal1';
-import Loading from '../components/Loading';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../api/Usercontext';
-import NavBar from '../components/NavBar';
-import React, { useState } from 'react';
+
 
 interface PostData {
   user_id: string;
@@ -50,7 +51,7 @@ const BackgroundChoose: React.FC = () => {
         output_h: 1000,
         concept_option: {
           category: 'others',
-          theme: '깔끔',
+          theme: 'clean',
           num_results: 1,
         },
       };
@@ -75,11 +76,16 @@ const BackgroundChoose: React.FC = () => {
         setIsLoading(false);
         alert('데이터를 성공적으로 전송했습니다.');
 
-        const state = {
-          conceptBackgroundIds: [conceptBackgroundIds[1], conceptBackgroundIds[2]],
-          removeBgBackgroundId: conceptBackgroundIds[0], // Assuming the first one is remove_bg background
-          imageId: uploadedImageId
-        };
+        const state = modalSource === 'simple'
+          ? {
+              conceptBackgroundIds: [conceptBackgroundIds[1], conceptBackgroundIds[2]],
+              removeBgBackgroundId: conceptBackgroundIds[0],
+              imageId: uploadedImageId
+            }
+          : {
+              removeBgBackgroundId: [conceptBackgroundIds[0]],
+              imageId: uploadedImageId
+            };
 
         const targetPath = modalSource === 'simple' ? '/simple/result' : '/nukki/result';
         navigate(targetPath, { state });
@@ -90,7 +96,6 @@ const BackgroundChoose: React.FC = () => {
       }
     }
   };
-  
 
   return (
     <>
@@ -136,7 +141,6 @@ const BackgroundChoose: React.FC = () => {
                 />
               </div>
             </div>
-
           </div>
           {showModal && (
             <ImageUploadModal onClose={handleModalClose} />
