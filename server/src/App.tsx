@@ -13,6 +13,7 @@ import ImageResizing from './pages/ImageResizing';
 import ImageResizingBanner from './pages/ImageResizingBanner';
 import BannerEdit from './pages/BannerEdit';
 import { UserProvider } from './api/Usercontext';
+import MainchooseExplain from './pages/MainchooseExplain';
 
 const App: React.FC = () => {
   const [nickname] = useState('');
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/nickname" element={<Nickname />} />
         <Route path='/backgroundchoose' element={<BackgroundChoose/>}/>
         <Route path='/mainchoose' element={<MainChoose name={nickname}/>}/>
+        <Route path='/mainchoose/explain' element={<MainchooseExplain />}/>
         <Route path='/theme' element={<Theme/>}/>
         <Route path='/theme/result' element={<STResult/>}/>
         <Route path='/simple/result' element={<STResult/>}/>

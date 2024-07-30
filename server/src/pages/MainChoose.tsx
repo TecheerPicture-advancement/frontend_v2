@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import MoveChoose from '../components/MoveChoose';
-import MoveChoose2 from '../components/MoveChoose2';
-import MainButton from '../components/MainButton';
+import BackgroundImage1 from '../../public/assets/BackgroundImage1.png';
+import BackgroundImage2 from '../../public/assets/BackgroundImage2.png';
+import BackgroundImage3 from '../../public/assets/BackgroundImage3.png';
+import BackgroundImage4 from '../../public/assets/BackgroundImage4.png';
 import axios from 'axios';
 import { useUser } from '../api/Usercontext';
 
@@ -14,14 +15,12 @@ interface NicknameResponse {
 }
 
 interface MainChooseProps {
-  name : string;
+  name: string;
 }
 
 const MainChoose: React.FC<MainChooseProps> = () => {
-  const [activeButton, setActiveButton] = useState<string | null>(null);
-  const [Rayout, setRayout] = useState<string | null>(null);
+  const [Rayout, setRayout] = useState<boolean>(false);
   const [data, setData] = useState<string>('');
-  const navigate = useNavigate();
   const { userid } = useUser();
 
   useEffect(() => {
@@ -29,7 +28,7 @@ const MainChoose: React.FC<MainChooseProps> = () => {
       try {
         if (userid) {
           const response = await axios.get<NicknameResponse>(`http://localhost:8000/api/v1/nicknames/${userid}`);
-          setData(response.data.data.nickname); // 응답 데이터에서 닉네임을 추출하여 상태로 설정
+          setData(response.data.data.nickname);
         }
       } catch (error) {
         console.error('Error fetching nickname:', error);
@@ -38,66 +37,65 @@ const MainChoose: React.FC<MainChooseProps> = () => {
     fetchData();
   }, [userid]);
 
-  const handleButtonClick = (buttonType: string) => {
-    setActiveButton(buttonType);
-    setRayout(buttonType);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRayout(true);
+    }, 3000); // 3초 후에 Rayout 상태 변경
 
-  const handleStartClick = () => {
-    if (activeButton === '상품 배경을') {
-      navigate('/background');
-    } else if (activeButton === '광고 배너를') {
-      navigate('/banner');
-    }
-  };
+    return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+  }, []);
 
   return (
-    <div className='flex min-h-screen bg-black place-items-center place-content-center'>
-      <div className="flex flex-row w-10/12 gap-40 p-2.5 place-content-center">
-        {/* 왼쪽 레이아웃 */}
-        <div className="justify-center w-7/12 gap-14 place-content-center">
-          <div className="relative flex flex-col overflow-hidden">
-            {Rayout ? (
-              <div className="">
-                <p className="my-12 text-4xl text-left text-white font-PR_BO">
-                  {activeButton} 생성해 드릴게요
-                </p>
-              </div>
-            ) : (
-              <div>
-                <p className="absolute left-0 text-3xl text-left text-gray-200 font-PR_BO">
-                  안녕하세요!
-                </p>
-                <p className="my-12 text-4xl text-left text-white font-PR_BO">
-                  {data}님
-                </p>
+    <div className="flex min-h-screen bg-black justify-center items-center">
+      <div className="flex flex-col justify-center items-center gap-7">
+        {/* 상단 레이아웃 */}
+        <div className="h-20 flex flex-col items-center justify-center">
+          <div className={`transition-opacity duration-800 ease-in-out ${Rayout ? 'opacity-0' : 'opacity-100'}`}>
+            {!Rayout && (
+              <div className="text-4xl text-gray-200 font-PR_BO flex items-center space-x-4">
+                <span>안녕하세요!</span>
+                <span className="text-white">{data}</span>
+                <span className="space-x-4 text-white">님</span>
               </div>
             )}
           </div>
-          {activeButton ? (
-            <div
-              onClick={handleStartClick}
-              className='bg-green-Normal w-full h-14 rounded-[10px] overflow-hidden place-content-center hover:scale-[1.03] translate-transform ease-in-out hover duration-200'
-            >
-              <MainButton value='시작하기' />
-            </div>
-          ) : (
-            <div className="w-full h-14 rounded-[10px] bg-[#B8B8B8] overflow-hidden place-content-center">
-              <button className="w-full h-full text-xl text-center text-white font-PR_BO">
-                메뉴 선택 후 시작하기
-              </button>
-            </div>
-          )}
+          <div className={`transition-opacity duration-1000 ease-in-out ${Rayout ? 'opacity-100' : 'opacity-0'}`}>
+            {Rayout && (
+              <div className="text-4xl text-white font-PR_BO">
+                원하시는 광고 기능을 선택해주세요
+              </div>
+            )}
+          </div>
         </div>
-        {/* 오른쪽 레이아웃 */}
-        <div className="flex flex-col items-center justify-center w-full gap-10">
+        {/* 하단 레이아웃 */}
+        <div className="flex flex-row gap-6 place-items-center">
           <MoveChoose
-            isActive={activeButton === '상품 배경을'}
-            onButtonClick={() => handleButtonClick('상품 배경을')}
+            src={BackgroundImage1}
+            maintext={'광고 이미지 생성'}
+            servetext={'AI가 제품 이미지와 컨셉을 분석 후'}
+            servetext2={'적합한 광고문구와 이미지를 생성합니다.'}
+            index={1}
           />
-          <MoveChoose2
-            isActive={activeButton === '광고 배너를'}
-            onButtonClick={() => handleButtonClick('광고 배너를')}
+          <MoveChoose
+            src={BackgroundImage2}
+            maintext={'상품 배경 생성'}
+            servetext={'AI가 사용자의 제품 이미지를 분석하여'}
+            servetext2={'적합한 배경을 생성합니다. '}
+            index={2}
+          />
+          <MoveChoose
+            src={BackgroundImage3}
+            maintext={'텍스트 변환 영상 생성'}
+            servetext={'AI가 입력된 텍스트를 분석 후'}
+            servetext2={'적합한 영상을 생성합니다. '}
+            index={3}
+          />
+          <MoveChoose
+            src={BackgroundImage4}
+            maintext={'이미지 변환 영상 생성'}
+            servetext={'AI가 이미지를 분석하여 '}
+            servetext2={'적합한 광고 영상을 생성합니다.'}
+            index={4}
           />
         </div>
       </div>
