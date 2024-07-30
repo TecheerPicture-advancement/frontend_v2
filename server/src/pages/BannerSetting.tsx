@@ -7,7 +7,7 @@ import InputField from '../components/form/InputField';
 import SizeFields from '../components/form/SizeFields';
 import AspectRatioButtons from '../components/form/AspectRatioButtons';
 import { Link, useNavigate } from 'react-router-dom';
-import Loading from '../components/Loading'; // Import the Loading component
+import Loading from '../components/Loading'; 
 
 interface FormData {
   item_name: string;
