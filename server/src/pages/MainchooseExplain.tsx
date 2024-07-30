@@ -13,8 +13,8 @@ const MainchooseExplain: React.FC = () => {
   const nextPage = () => {
     if (index === 1) navigate('/banner/');
     else if (index === 2) navigate('/background/');
-    else if (index === 3) navigate('/TexttoVideo/');
-    else if (index === 4) navigate('/ImagetoVideo/');
+    else if (index === 3) navigate('/text-to-video/');
+    else if (index === 4) navigate('/image-to-video/');
   };
 
   let videoSource;
