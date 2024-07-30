@@ -49,11 +49,11 @@ const Nickname: React.FC = () => {
       <div className='flex-shrink-0'>
         <NavBar />
       </div>
-      <div className="flex flex-1 justify-center items-center bg-black">
-        <div className='flex flex-col justify-center items-center w-3/12 gap-3'>
+      <div className="flex items-center justify-center flex-1 bg-black">
+        <div className='flex flex-col items-center justify-center w-3/12 gap-3'>
           <div className='flex'>
-            <div className="font-PR_BO text-3xl text-white whitespace-nowrap">닉네임 입력</div>
-            <div className="ml-2 font-PR_BO text-3xl text-red">*</div>
+            <div className="text-3xl text-white font-PR_BO whitespace-nowrap">닉네임 입력</div>
+            <div className="ml-2 text-3xl font-PR_BO text-red">*</div>
           </div>
           <input
             type="text"

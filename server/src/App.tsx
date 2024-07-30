@@ -14,7 +14,7 @@ import ImageResizingBanner from './pages/ImageResizingBanner';
 import BannerEdit from './pages/BannerEdit';
 import { UserProvider } from './api/Usercontext';
 import MainchooseExplain from './pages/MainchooseExplain';
-import TexttoVideo from './components/ImagetoVideo';
+import TexttoVideo from './components/TexttoVideo';
 import ImagetoVideo from './components/ImagetoVideo';
 
 const App: React.FC = () => {

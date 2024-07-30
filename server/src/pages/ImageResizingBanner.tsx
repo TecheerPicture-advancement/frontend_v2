@@ -120,18 +120,18 @@ const ImageResizingBanner: React.FC = () => {
 
 
   return (
-    <div className="bg-black min-h-screen flex justify-center items-center">
+    <div className="flex items-center justify-center min-h-screen bg-black">
       <div className="flex flex-col justify-center items-center w-[1000px] relative gap-5 border-4 flex-grow-0 flex-shrink-0 border-white">
-        <div className="place-content-center w-full h-28 my-6 overflow-hidden">
+        <div className="w-full my-6 overflow-hidden place-content-center h-28">
           <p className="w-full text-4xl font-black text-center">
-            <span className="w-full text-4xl font-PR_BL text-center text-white">이미지</span>
-            <span className="w-full text-4xl font-PR_BL text-center text-green-Normal"> 크기 조절</span>
+            <span className="w-full text-4xl text-center text-white font-PR_BL">이미지</span>
+            <span className="w-full text-4xl text-center font-PR_BL text-green-Normal"> 크기 조절</span>
           </p>
         </div>
 
-        <div className="flex justify-center flex-row flex-grow-0 flex-shrink-0 w-10/12">
+        <div className="flex flex-row justify-center flex-grow-0 flex-shrink-0 w-10/12">
           <div className="flex-col w-1/2 h-full">
-            <div className="flex-col flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center">
               <ResultImageBanner
                 src={image}
                 isSelected={false}
@@ -142,14 +142,14 @@ const ImageResizingBanner: React.FC = () => {
               />
 
               <div className="flex-grow-0 flex-shrink-0 h-16 my-8 overflow-hidden">
-                <p className="w-full text-2xl font-PR_BO text-center text-white">
+                <p className="w-full text-2xl text-center text-white font-PR_BO">
                   가로 X 세로 : {row} X {col}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex-grow-0 flex-shrink-0 w-1/2 h-full flex-col justify-start overflow-hidden">
+          <div className="flex-col justify-start flex-grow-0 flex-shrink-0 w-1/2 h-full overflow-hidden">
             <div className="w-full">
               <SizeFields
                 width={formData.output_w}
@@ -164,7 +164,7 @@ const ImageResizingBanner: React.FC = () => {
                 <div className={`text-center text-sm ${isError ? 'text-red' : 'text-green-Normal'}`}>{message}</div>
               )}
             </div>
-            <div className="flex justify-center items-center overflow-hidden gap-7">
+            <div className="flex items-center justify-center overflow-hidden gap-7">
               <button
                 onClick={handleSubmit}
                 className={`flex justify-center items-center w-50 h-14 rounded-[10px] text-xl font-PR_M text-center text-black ${
