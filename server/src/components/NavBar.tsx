@@ -11,7 +11,8 @@ const NavBar: React.FC = () => {
     { name: '홈', url: '/' },
     { name: '배너생성', url: '/banner' },
     { name: '배경생성', url: '/background' },
-    { name: '닉네임', url: '/nickname' },
+    { name: '텍스트 변환 영상', url: '/text-to-video' },
+    { name: '이미지 변환 영상', url: '/image-to-video' },
   ];
 
   const handleLinkClick = (url: string) => {
@@ -24,7 +25,7 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className="w-auto h-full py-4 bg-black">
-      <div className="flex items-center justify-between w-full px-32">
+      <div className="flex items-center justify-between w-full pl-32 pr-20">
         <Link to="/" className="text-3xl text-white font-PR_BO hover:text-white">
           Logo
         </Link>

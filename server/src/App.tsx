@@ -14,7 +14,7 @@ import ImageResizingBanner from './pages/ImageResizingBanner';
 import BannerEdit from './pages/BannerEdit';
 import { UserProvider } from './api/Usercontext';
 import MainchooseExplain from './pages/MainchooseExplain';
-import TexttoVideo from './components/ImagetoVideo';
+import TexttoVideo from './components/TexttoVideo';
 import ImagetoVideo from './components/ImagetoVideo';
 
 const App: React.FC = () => {
@@ -31,8 +31,8 @@ const App: React.FC = () => {
         <Route path='/backgroundchoose' element={<BackgroundChoose/>}/>
         <Route path='/mainchoose' element={<MainChoose name={nickname}/>}/>
         <Route path='/mainchoose/explain' element={<MainchooseExplain />}/>
-        <Route path='/TexttoVideo' element={<TexttoVideo/>}/>
-        <Route path='/ImagetoVideo' element={<ImagetoVideo/>}/>
+        <Route path='/text-to-video' element={<TexttoVideo/>}/>
+        <Route path='/image-to-video' element={<ImagetoVideo/>}/>
         <Route path='/theme' element={<Theme/>}/>
         <Route path='/theme/result' element={<STResult/>}/>
         <Route path='/simple/result' element={<STResult/>}/>
