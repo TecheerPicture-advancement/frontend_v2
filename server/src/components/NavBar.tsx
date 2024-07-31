@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../api/Usercontext';
+import logo from '../../public/assets/logo.png'; // Import logo image
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
@@ -26,8 +27,8 @@ const NavBar: React.FC = () => {
   return (
     <nav className="w-auto h-full py-4 bg-black">
       <div className="flex items-center justify-between w-full pl-32 pr-20">
-        <Link to="/" className="text-3xl text-white font-PR_BO hover:text-white">
-          Logo
+        <Link to="/" className="flex items-center text-3xl text-white font-PR_BO hover:text-white">
+          <img src={logo} alt="Logo" className="h-10 w-auto" /> {/* Use img tag for logo */}
         </Link>
 
         <ul className="relative flex items-center justify-start flex-grow-0 flex-shrink-0 gap-6 md:gap-10">
