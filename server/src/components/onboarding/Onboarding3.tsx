@@ -4,9 +4,11 @@ import Fan from '../../../public/assets/fan.jpg';
 import Perfume from '../../../public/assets/perfume.jpg';
 import Lotion from '../../../public/assets/lotion.jpg';
 import Torretta from '../../../public/assets/torretta.jpg';
-import Chicken from '../../../public/assets/chicken.png';
-import Clothe from '../../../public/assets/clothes_spring.png';
 import '../../styles/AutoSilde.css';
+import diffuser from '../../../public/assets/diffuser.jpg';
+import cosmetics from '../../../public/assets/cosmetics.png';
+import bottle from '../../../public/assets/bottle.jpg';
+import Perfume1 from '../../../public/assets/perfume1.png';
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
@@ -54,8 +56,11 @@ const Onboarding3: React.FC = () => {
     { src: Perfume, alt: '향수 사진' },
     { src: Lotion, alt: '로션 사진' },
     { src: Torretta, alt: '토레타 사진' },
-    { src: Clothe, alt: '민희진 옷 사진' },
-    { src: Chicken, alt: '치킨 사진' },
+    { src: diffuser, alt: '디퓨저 사진' },
+    { src: cosmetics, alt: '화장품 사진' },
+    { src: bottle, alt: '물병 사진' },
+    { src: Perfume1, alt: '향수 사진' },
+
   ];
 
   return (
