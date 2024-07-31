@@ -46,7 +46,7 @@ const ImagetoVideo: React.FC = () => {
     if (uploadedImageId) {
       setIsUploading(true);
       try {
-        const response = await axios.get<ImageResponse>(`http://localhost:8000/api/v1/images/${uploadedImageId}/`);
+        const response = await axios.get<ImageResponse>(`/api/v1/images/${uploadedImageId}/`);
         setImage(response.data.data.image_url);
         setImageId(response.data.data.id);
         setIsUploaded(true);
@@ -67,7 +67,7 @@ const ImagetoVideo: React.FC = () => {
     console.log('user_id:', userid);
     console.log('prompt:', prompt);
     try {
-      const response = await axios.post<VideoResponse2>(`http://localhost:8000/api/v1/videos/`, {
+      const response = await axios.post<VideoResponse2>(`/api/v1/videos/`, {
         user_id: userid,
         image_id: imageId,
         text_prompt: prompt,
@@ -91,7 +91,7 @@ const ImagetoVideo: React.FC = () => {
     try {
       setIsLoading(true);
       for (let i = 0; i < retries; i++) {
-        const response = await axios.get<VideoResponse>(`http://localhost:8000/api/v1/videos/${videoId}/`);
+        const response = await axios.get<VideoResponse>(`/api/v1/videos/${videoId}/`);
         if (response.data.video_url) {
           handleDownload(response.data.video_url);
           break; // 응답값을 받으면 루프 종료

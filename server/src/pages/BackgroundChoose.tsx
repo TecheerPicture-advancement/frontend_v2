@@ -66,7 +66,7 @@ const BackgroundChoose: React.FC = () => {
           const postData = { ...postDataBase, gen_type: genType };
           console.log("post데이터", postData);
 
-          const response = await axios.post<ResponseData>('http://localhost:8000/api/v1/backgrounds/', postData, {
+          const response = await axios.post<ResponseData>('/api/v1/backgrounds/', postData, {
             headers: { 'Content-Type': 'application/json' },
           });
 

@@ -27,7 +27,7 @@ const MainChoose: React.FC<MainChooseProps> = () => {
     const fetchData = async () => {
       try {
         if (userid) {
-          const response = await axios.get<NicknameResponse>(`http://localhost:8000/api/v1/nicknames/${userid}`);
+          const response = await axios.get<NicknameResponse>(`/api/v1/nicknames/${userid}`);
           setData(response.data.data.nickname);
         }
       } catch (error) {

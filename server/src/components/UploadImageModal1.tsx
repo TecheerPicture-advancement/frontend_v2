@@ -56,7 +56,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
     formData.append('file', file);
   
     try {
-      const response = await axios.post<UploadResponse>('http://localhost:8000/api/v1/images/', formData, {
+      const response = await axios.post<UploadResponse>('/api/v1/images/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

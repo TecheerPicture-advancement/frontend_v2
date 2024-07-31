@@ -45,7 +45,7 @@ const STResult: React.FC = () => {
         try {
           const fetchedData = await Promise.all(
             conceptBackgroundIds.map(async (backgroundId) => {
-              const url = `http://localhost:8000/api/v1/backgrounds/${backgroundId}/`;
+              const url = `/api/v1/backgrounds/${backgroundId}/`;
               return await fetchWithRetry(url);
             })
           );
@@ -60,7 +60,7 @@ const STResult: React.FC = () => {
 
     const fetchRemoveBgData = async () => {
       try {
-        const url = `http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`;
+        const url = `/api/v1/backgrounds/${removeBgBackgroundId}/`;
         const data = await fetchWithRetry(url);
         setRemoveBgData(data as NukkiData);
       } catch (error) {
@@ -70,7 +70,7 @@ const STResult: React.FC = () => {
 
     const fetchImageData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/images/${imageId}/`);
+        const response = await axios.get(`/api/v1/images/${imageId}/`);
         const data = response.data as ImageResponse;
         setImageData(data.data.image_url);
 

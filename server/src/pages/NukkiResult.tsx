@@ -43,7 +43,7 @@ const NukkiResult: React.FC = () => {
     const fetchBackgroundData = async (retries = 30, delay = 3000) => {
       try {
         for (let i = 0; i < retries; i++) {
-        const response = await axios.get<BackgroundData>(`http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`);
+        const response = await axios.get<BackgroundData>(`/api/v1/backgrounds/${removeBgBackgroundId}/`);
         setBackgroundData(response.data);
         }
       } catch (error) {
@@ -83,8 +83,7 @@ const NukkiResult: React.FC = () => {
           for (const genType of genTypes) {
             const postData = { ...postDataBase, gen_type: genType };
             console.log("post데이터", postData);
-
-            const response = await axios.post<BackgroundData2>('http://localhost:8000/api/v1/backgrounds/', postData, {
+            const response = await axios.post<BackgroundData2>('/api/v1/backgrounds/', postData, {
               headers: { 'Content-Type': 'application/json' },
             });
             console.log("리스폰스 값",response.data.background_id);
