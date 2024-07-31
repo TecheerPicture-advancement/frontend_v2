@@ -6,6 +6,8 @@ import ResultImageBanner from '../components/ResultImageBanner';
 import ResultButton3 from '../components/ResultButton3';
 import LastImage, { LastImageRef } from '../components/LastImage';
 import NavBar from '../components/NavBar';
+import Loading from '../components/Loading';
+
 
 interface BannerResponse {
   code: number;
@@ -52,6 +54,8 @@ const BannerResult: React.FC = () => {
   const [selectedserveText, setSelecedtServeText] = useState<string>('');
   const [index, setindex] = useState<number>(0);
 
+  
+  const [isLoading, setIsLoading] = useState(false);
   const lastImageRef = useRef<LastImageRef>(null);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -79,6 +83,7 @@ const BannerResult: React.FC = () => {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
+        if(MainText==null) setIsLoading(true);//검사해보기
         const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${bannerId}/`);
         if (response.data && response.data.data) {
           const mainTextArray = new Array(backgroundids.length).fill(response.data.data.maintext);
@@ -119,20 +124,21 @@ const BannerResult: React.FC = () => {
     };
 
     fetchBanner();
-  }, [bannerId, backgroundids, Index, MaintextArr, ServetextArr, takeMaintext, takeServetext]);
+  }, [bannerId]);
 
   useEffect(() => {
-    const fetchBackgroundWithRetry = async (id: number, retries = 30, delay = 3000): Promise<string> => {
+    const fetchBackgroundWithRetry = async (id:number, retries = 30, delay = 3000) => {
       for (let i = 0; i < retries; i++) {
         try {
           const response = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`);
           if (response.data && response.data.image_url) {
             return response.data.image_url;
+            console.log("값 들어감");
           }
         } catch (error) {
           console.log(`Retry ${i + 1} failed for ID ${id}`);
         }
-        await new Promise(res => setTimeout(res, delay));
+        await new Promise(res => setTimeout(res, delay)); // Wait before retrying
       }
       throw new Error(`Failed to fetch image URL for ID ${id} after ${retries} retries`);
     };
@@ -151,13 +157,15 @@ const BannerResult: React.FC = () => {
             setHeight(firstBackground.data.output_h);
           }
         }
-      } catch (error: any) {
-        console.error('Failed to fetch background images:', error.message);
+      } catch (error) {
+        console.error('Failed to fetch background images:');
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchBackgrounds();
-  }, [backgroundids]);
+  }, []);
 
   const handleDownloadClick = async () => {
     if (lastImageRef.current) {
@@ -173,6 +181,10 @@ const BannerResult: React.FC = () => {
   };
 
   return (
+    <>
+    {isLoading ? (
+      <Loading />
+    ) : (
     <div className="flex flex-col w-full h-full min-h-screen px-10 pb-12 bg-black">
       <NavBar />
       <header className="flex items-center justify-center my-6 text-4xl font-PR_BL">
@@ -238,6 +250,8 @@ const BannerResult: React.FC = () => {
           />
       </div>
     </div>
+     )}
+    </>
   );
 };
 

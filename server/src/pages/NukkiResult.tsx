@@ -4,11 +4,17 @@ import axios from 'axios';
 import NavBar from '../components/NavBar';
 import ResultButton from '../components/ResultButton3';
 import { useUser } from '../api/Usercontext';
+import Loading from '../components/Loading';
 
 interface BackgroundData {
   image_url: string;
+  id: number;
+}
+
+interface BackgroundData2 {
   background_id: number;
 }
+
 
 interface PostData {
   user_id: string;
@@ -26,19 +32,24 @@ interface PostData {
 const NukkiResult: React.FC = () => {
   const location = useLocation();
   const { userid } = useUser();
+
   const { removeBgBackgroundId, imageId } = location.state as { removeBgBackgroundId: number; imageId: number; };
   const [backgroundData, setBackgroundData] = useState<BackgroundData | null>(null);
   const [tempConceptBackgroundIds, setTempConceptBackgroundIds] = useState<number[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBackgroundData = async () => {
+    setIsLoading(true);
+    const fetchBackgroundData = async (retries = 30, delay = 3000) => {
       try {
+        for (let i = 0; i < retries; i++) {
         const response = await axios.get<BackgroundData>(`http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`);
         setBackgroundData(response.data);
+        }
       } catch (error) {
         console.error('Error fetching background data:', error);
       }
+      await new Promise((resolve) => setTimeout(resolve, delay));
     };
 
     if (removeBgBackgroundId) {
@@ -46,10 +57,12 @@ const NukkiResult: React.FC = () => {
     } else {
       console.error('No removeBgBackgroundId provided in state');
     }
+    setIsLoading(false);
   }, [removeBgBackgroundId]);
 
-  useEffect(() => {
+  
     const generateConceptBackgroundIds = async () => {
+      console.log("이미지 아이디, 유저 아이디",imageId, userid);
       if (imageId && userid) {
         const postDataBase: PostData = {
           user_id: userid,
@@ -71,22 +84,23 @@ const NukkiResult: React.FC = () => {
             const postData = { ...postDataBase, gen_type: genType };
             console.log("post데이터", postData);
 
-            const response = await axios.post<{ background_id: number }>('http://localhost:8000/api/v1/backgrounds/', postData, {
+            const response = await axios.post<BackgroundData2>('http://localhost:8000/api/v1/backgrounds/', postData, {
               headers: { 'Content-Type': 'application/json' },
             });
+            console.log("리스폰스 값",response.data.background_id);
             tempIds.push(response.data.background_id);
-            console.log(tempIds);
+            console.log("확인",tempIds);
+            setTempConceptBackgroundIds(tempIds);
+             console.log("템프1",tempConceptBackgroundIds);
           }
-          setTempConceptBackgroundIds(tempIds);
+          console.log("템프2",tempConceptBackgroundIds);
         } catch (error) {
           console.error('Error sending data:', error);
         }
       }
-      setLoading(false);
+      console.log("처리안함");
     };
 
-    generateConceptBackgroundIds();
-  }, [imageId, userid]);
 
   const downloadImage = async () => {
     if (backgroundData?.image_url) {
@@ -123,24 +137,28 @@ const NukkiResult: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-col h-screen bg-black">
+     <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+      <div className="flex flex-col min-h-screen bg-black">
         <NavBar />
         <div className="flex flex-grow items-center justify-center">
           <div className="w-auto h-auto border border-green-Light shadow-md flex flex-col py-8 px-32">
             <div className="flex justify-center text-white text-3xl font-PR_BL">
-              누끼 결과 이미지
+              누끼 
+              <span className="text-green-Normal text-3xl font-PR_BL ml-2">결과 이미지</span> 
             </div>
             <div className="grid grid-cols-2">
               <div className="flex items-center justify-center m-18">
                 <img src={backgroundData?.image_url} alt="누끼 결과 이미지" className="w-80 h-80" />
               </div>
-              <div className="flex flex-col space-y-2 gap-10 px-10 py-20">
-                {!loading && (
-                  <Link to="/simple/result" state={{ conceptBackgroundIds: tempConceptBackgroundIds, removeBgBackgroundId, imageId }}>
+              <div className="flex flex-col space-y-2 gap-10 px-10 py-20" >
+                  <div onClick={generateConceptBackgroundIds}>  
+                  <Link to="/simple/result" state={{ conceptBackgroundIds:tempConceptBackgroundIds , removeBgBackgroundId, imageId }}>
                     <ResultButton value='심플 이미지 생성' />
                   </Link>
-                )}
+                  </div>
                 <div onClick={copyImage}>
                   <ResultButton value="복사하기" />
                 </div>
@@ -152,6 +170,7 @@ const NukkiResult: React.FC = () => {
           </div>
         </div>
       </div>
+     )}
     </>
   );
 };
