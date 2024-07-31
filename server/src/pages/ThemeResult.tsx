@@ -174,7 +174,7 @@ const ThemeResult: React.FC = () => {
                         <MainButton value="생성하러 가기" />
                       </div>
                     </div>
-                    
+
                   </div>
                 </div>
             </motion.div>

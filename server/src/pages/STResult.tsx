@@ -172,7 +172,6 @@ const STResult: React.FC = () => {
     const bgData = backgroundData.find((data) => data.image_url === selectedPhoto);
     return bgData ? bgData.background_id : null;
   })();
-  
 
   const selectedPhotoWidthHeight = selectedPhoto === imageData ? { imageWidth, imageHeight } : null;
 

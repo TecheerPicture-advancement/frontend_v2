@@ -1,141 +1,98 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import example from "../../../public/assets/example.gif"
+import ImagetoVideo from "../../../public/videos/imagetovideo_explain.mp4";
+import TexttoVideo from "../../../public/videos/texttovideo_explain.mp4";
 
 const Onboarding4: React.FC = () => {
-  // 애니메이션 제어를 위한 훅
-  const controls = useAnimation();
-  // 요소가 보이는지 확인하기 위한 훅
-  const [ref, inView] = useInView({
-    triggerOnce: false, // 여러 번 트리거
-    threshold: 0.2, // 요소의 40%가 보이면 트리거
-  });
+  const controls1 = useAnimation();
+  const controls2 = useAnimation();
 
-  // 요소가 보이면 애니메이션 시작, 사라지면 애니메이션 숨김
-  React.useEffect(() => {
-    if (inView) {
-      controls.start("visible");
-    } else {
-      controls.start("hidden");
+  const [ref1, inView1] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [ref2, inView2] = useInView({ triggerOnce: true, threshold: 0.2 });
+
+  useEffect(() => {
+    if (inView1) {
+      controls1.start("visible");
     }
-  }, [controls, inView]);
+  }, [controls1, inView1]);
+
+  useEffect(() => {
+    if (inView2) {
+      controls2.start("visible");
+    }
+  }, [controls2, inView2]);
+
+  const variants = {
+    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: 100 }
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black mb-44">
-
-      {/* 섹션 0번 */}
-      <div className="flex items-center justify-center w-full h-28 mb-44">
-        <p className="text-5xl text-white font-PR_BO">
-          이렇게 사용해 보세요!
-        </p>
-      </div>
-
-      {/* 섹션 1번 */}
-      <div className="grid w-full grid-cols-2 h-96 place-items-center mb-96" ref={ref}>
-        
-        {/* 왼쪽 */}
+    <>
+      <div className="flex flex-col bg-black">
         <motion.div
-          className="text-right"
+          ref={ref1}
           initial="hidden"
-          animate={controls}
-          variants={{
-            visible: { opacity: 1, x: 0 },
-            hidden: { opacity: 0, x: -100 }
-          }}
+          animate={controls1}
+          variants={variants}
           transition={{ duration: 1 }}
+          className="bg-black flex flex-col justify-center items-center py-36"
         >
-          <p className="text-4xl text-white font-PR_BO">
-            <span className="text-4xl text-white font-PR_BO">배경생성은 </span>
-            <span className="text-4xl font-PR_BO text-green-Normal">심플, 누끼, 테마</span>
-            <span className="text-4xl text-white font-PR_BO">를 선택하여</span>
-            <br />
-            <span className="text-4xl text-white font-PR_BO">이미지를 생성할 수 있습니다.</span>
-          </p>
+          <div className="flex justify-center items-center gap-40">
+            <div className="flex flex-col gap-2">
+              <span className="text-white font-PR_BL text-3xl"> 텍스트 변환 영상</span>
+              <span className="text-green-Normal font-PR_M text-lg">원하는 광고 문구와 이미지를 출력해줘요</span>
+              <span className="text-green-Light font-PR_L text-base mt-9">
+                브랜드 제품이 어떻게 나와야 할지 감이 안 잡히시나요?<br />
+                텍스트로 제품 정보를 상세하게 입력하고<br />
+                영상으로 확인해 보세요
+              </span>
+            </div>
+            <video
+              autoPlay
+              loop
+              muted
+              className="w-[400px]"
+              style={{ objectFit: 'cover' }}
+            >
+              <source src={TexttoVideo} type='video/mp4' />
+            </video>
+          </div>
         </motion.div>
-
-        {/* 오른쪽 */}
+      </div>
+      <div className="flex flex-col bg-black pb-44">
         <motion.div
-          className="relative flex-justify-center"
+          ref={ref2}
           initial="hidden"
-          animate={controls}
-          variants={{
-            visible: { opacity: 1, x: 0 },
-            hidden: { opacity: 0, x: 100 }
-          }}
+          animate={controls2}
+          variants={variants}
           transition={{ duration: 1 }}
+          className="bg-black flex flex-col justify-center items-center py-36"
         >
-
-          <div className="absolute z-10 overflow-hidden transform rounded-full place-content-center w-72 h-72 bg-green-Light -translate-x-72 -translate-y-44">
-            <div className="flex flex-col place-items-center">
-              <div className="w-24 h-8 overflow-hidden rounded-[33px] bg-[#A4EFBE] mb-3">
-                <p className="flex items-center justify-center h-full text-lg text-center text-black font-PR_M">
-                  심플
-                </p>
-              </div>
-              <span className="text-3xl text-center text-black font-PR_BO">
-                때로는
-              </span>
-              <span className="text-3xl text-center text-black font-PR_BO">
-                단순하게
-              </span>
-            </div>
-          </div>
-
-          <div className="absolute z-20 overflow-hidden transform rounded-full place-content-center w-72 h-72 bg-green-Normal -translate-x-28">
-            <div className="flex flex-col place-items-center">
-              <div className="w-24 h-8 overflow-hidden rounded-[33px] bg-white mb-3">
-                <p className="flex items-center justify-center h-full text-lg text-center text-black font-PR_M">
-                  컨셉
-                </p>
-              </div>
-              <span className="text-3xl text-center text-white font-PR_BO">
-                창의적인
-              </span>
-              <span className="text-3xl text-center text-white font-PR_BO">
-                아이디어 
+          <div className="flex justify-center items-center gap-40">
+            <video
+              autoPlay
+              loop
+              muted
+              className="w-[400px]"
+              style={{ objectFit: 'cover' }}
+            >
+              <source src={ImagetoVideo} type='video/mp4' />
+            </video>
+            <div className="flex flex-col gap-2">
+              <span className="text-white font-PR_BL text-3xl"> 이미지 변환 영상</span>
+              <span className="text-green-Normal font-PR_M text-lg">원하는 광고 문구와 이미지를 출력해줘요</span>
+              <span className="text-green-Light font-PR_L text-base mt-9">
+                제품 이미지는 있는데 영상으로 제작하기는 힘드신가요?<br />
+                이미지 업로드 후 AI가 생성한 이미지로 <br />
+                광고 영상 제작 완료
               </span>
             </div>
           </div>
-
-          <div className="absolute z-30 place-content-center w-72 h-72 rounded-full bg-[#A4EFBE] overflow-hidden transform -translate-x-12 -translate-y-60">
-            <div className="flex flex-col place-items-center">
-              <div className="w-24 h-8 overflow-hidden rounded-[33px] bg-green-Light mb-3">
-                <p className="flex items-center justify-center h-full text-lg text-center text-black font-PR_M">
-                  누끼
-                </p>
-              </div>
-              <span className="text-3xl text-center text-black font-PR_BO">
-                나에게
-              </span>
-              <span className="text-3xl text-center text-black font-PR_BO">
-                필요한 것만 
-              </span>
-            </div>
-          </div>
-
         </motion.div>
-
       </div>
-
-      {/* 섹션 2번 */}
-      <div className="grid w-full h-full grid-cols-2 place-items-center mb-96" >
-        <div className="flex items-center justify-center w-1/3 h-96" >
-          <img src={example} className="object-center" />
-        </div>
-        <div className="justify-center text-4xl text-center place-content-center font-PR_BO">
-          <span className="text-4xl text-white font-PR_BO">배너생성은 간단한 정보만 입력하면</span>
-          <p>
-            <span className="text-4xl text-white font-PR_BO">AI가 </span>
-            <span className="text-4xl font-PR_BO text-green-Normal">문구와 배경</span>
-            <span className="text-4xl text-white font-PR_BO">을 생성해줍니다.</span>
-          </p>
-        </div>
-      </div>
-
-      {/* 섹션 3번 */}
-
-    </div>
+    </>
   );
 };
 
