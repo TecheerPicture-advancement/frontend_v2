@@ -34,7 +34,7 @@ const NukkiResult: React.FC = () => {
   useEffect(() => {
     const fetchBackgroundData = async () => {
       try {
-        const response = await axios.get<BackgroundData>(`http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`);
+        const response = await axios.get<BackgroundData>(`/api/v1/backgrounds/${removeBgBackgroundId}/`);
         setBackgroundData(response.data);
       } catch (error) {
         console.error('Error fetching background data:', error);
@@ -71,7 +71,7 @@ const NukkiResult: React.FC = () => {
             const postData = { ...postDataBase, gen_type: genType };
             console.log("post데이터", postData);
 
-            const response = await axios.post<{ background_id: number }>('http://localhost:8000/api/v1/backgrounds/', postData, {
+            const response = await axios.post<{ background_id: number }>('/api/v1/backgrounds/', postData, {
               headers: { 'Content-Type': 'application/json' },
             });
             tempIds.push(response.data.background_id);

@@ -34,7 +34,7 @@ const TexttoVideo: React.FC = () => {
     console.log('prompt:', prompt);
 
     try {
-      const response = await axios.post<TexttoVideoResponse>('http://localhost:8000/api/v1/texttovideo/', {
+      const response = await axios.post<TexttoVideoResponse>('/api/v1/texttovideo/', {
         prompt: prompt,
         user_id: userid
       },)

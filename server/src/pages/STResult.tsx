@@ -57,7 +57,7 @@ const STResult: React.FC = () => {
         try {
           const fetchedData = await Promise.all(
             conceptBackgroundIds.map(async (backgroundId) => {
-              const url = `http://localhost:8000/api/v1/backgrounds/${backgroundId}/`;
+              const url = `/api/v1/backgrounds/${backgroundId}/`;
               return await fetchWithRetry(url);
             })
           );
@@ -72,7 +72,7 @@ const STResult: React.FC = () => {
 
     const fetchRemoveBgData = async () => {
       try {
-        const url = `http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`;
+        const url = `/api/v1/backgrounds/${removeBgBackgroundId}/`;
         const data = await fetchWithRetry(url);
         setRemoveBgData(data as NukkiData);
       } catch (error) {
@@ -82,7 +82,7 @@ const STResult: React.FC = () => {
 
     const fetchImageData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/images/${imageId}/`);
+        const response = await axios.get(`/api/v1/images/${imageId}/`);
         const data = response.data as ImageResponse;
         setImageData(data.data.image_url);
 
@@ -179,7 +179,7 @@ const STResult: React.FC = () => {
     <div className="flex flex-col justify-start min-h-screen bg-black">
       <NavBar />
       <header className="flex items-center justify-center text-4xl text-white font-PR_BL my-14">{getResultTitle()}</header>
-      <div className="flex flex-row items-start justify-center w-full shrink-0">
+      <div className="flex flex-row items-center justify-center w-full shrink-0">
         <div className="grid grid-cols-2 gap-10 shrink-0">
           {imageData && (
             <div className="flex flex-wrap items-center justify-center shrink-0 overflow-hidden">

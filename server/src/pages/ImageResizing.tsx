@@ -50,10 +50,10 @@ const ImageResizing: React.FC = () => {
   
       try {
         if (selectedPhotoIndex === 0) {
-          const response = await axios.get<ImageResponse>(`http://localhost:8000/api/v1/images/${selectedPhotoId}/`);
+          const response = await axios.get<ImageResponse>(`/api/v1/images/${selectedPhotoId}/`);
           setImage(response.data.data.image_url);
         } else {
-          const response = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${selectedPhotoId}/`);
+          const response = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${selectedPhotoId}/`);
           if (response.data) {
             setImage(response.data.image_url);
             setCol(response.data.output_h);
