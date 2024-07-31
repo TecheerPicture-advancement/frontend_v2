@@ -7,11 +7,13 @@ const Loading = () => {
 
   const tips = [
     "Tip. 설명이 자세할 수록 원하는 사진이 나올 확률이 올라갑니다!",
+    "Tip. 사진 생성 후 이미지를 바로 복사할 수 있습니다!",
     "Tip. 누끼 사진 생성 후 배경을 바로 만들 수 있습니다!",
     "Tip. AI생성으로 더 멋진사진을 만들어보세요!",
     "Tip. 배너 생성시 매력적인 문장을 직접 만들어보세요!",
     "Tip. 심플 이미지 생성시 누끼 이미지가 함께 생성됩니다.",
-    "Tip. 원하는 테마가 없다면 직접입력 테마에서 새로운 이미지를 생성하세요!"
+    "Tip. 원하는 테마가 없다면 직접입력 테마에서 새로운 이미지를 생성하세요!",
+    "Tip. 영상 설명이 자세할 수록 더 멋진 결과물이 만들어집니다!",
   ];
 
   // Function to shuffle the tips array
@@ -84,7 +86,7 @@ const Loading = () => {
     />
       </svg>
       <p className="mt-[30px] text-center text-lg font-bold">생성중</p>
-      <p className="absolute w-full text-sm font-medium text-center bottom-28">
+      <p className="absolute w-full text-base font-PR_L text-center bottom-28">
         {shuffledTips[tipIndex]}
       </p>
     </div>
