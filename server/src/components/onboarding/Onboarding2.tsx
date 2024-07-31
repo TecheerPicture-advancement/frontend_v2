@@ -6,7 +6,7 @@ import ResultImage from '../../../public/assets/BannerResult.jpg';
 import airpot from '../../../public/assets/airpot.png';
 import airpot2 from '../../../public/assets/airpot2.jpg';
 import Beauty from '../../../public/assets/Beauty.jpg';
-import BannerVideo from '../../../public/videos/Banner_explain.mp4'; // Import video file
+import BannerVideo from '../../../public/videos/Banner_explain.mp4';
 
 const Onboarding2: React.FC = () => {
   const controls1 = useAnimation();
