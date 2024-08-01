@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BackgroundChooseCom from '../components/BackgroundChooseCom';
@@ -9,7 +9,6 @@ import { useUser } from '../api/Usercontext';
 import BackgroundChooseComImage1 from '../../public/assets/BackgroundChooseComImage1.png';
 import BackgroundChooseComImage2 from '../../public/assets/BackgroundChooseComImage2.png';
 import BackgroundChooseComImage3 from '../../public/assets/BackgroundChooseComImage3.png';
-
 
 interface PostData {
   user_id: string;
@@ -34,6 +33,13 @@ const BackgroundChoose: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalSource, setModalSource] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!userid) {
+      alert('닉네임을 만들지 않았습니다.')
+      navigate('/nickname');
+    }
+  }, [userid, navigate]);
 
   const openModal = (source: string) => {
     setShowModal(true);
@@ -66,7 +72,7 @@ const BackgroundChoose: React.FC = () => {
           const postData = { ...postDataBase, gen_type: genType };
           console.log("post데이터", postData);
 
-          const response = await axios.post<ResponseData>('http://localhost:8000/api/v1/backgrounds/', postData, {
+          const response = await axios.post<ResponseData>('/api/v1/backgrounds/', postData, {
             headers: { 'Content-Type': 'application/json' },
           });
 
@@ -105,8 +111,8 @@ const BackgroundChoose: React.FC = () => {
         <div className="flex flex-col w-full min-h-screen bg-black">
           <NavBar />
           <div className="flex flex-col items-center justify-center h-3/6">
-            <div className="items-center w-full h-full px-20 py-14 overflow-clip">
-              <p className="text-center desktop:text-4xl laptop:text-3xl tablet:text-2xl font-PR_BL">
+            <div className="items-center w-full h-full px-20 py-10 overflow-clip">
+              <p className="text-center desktop:text-3xl laptop:text-2xl tablet:text-xl font-PR_BL">
                 <span className="mr-2 text-center text-white font-PR_BO">
                   내 마음대로 만드는
                 </span>
@@ -115,7 +121,7 @@ const BackgroundChoose: React.FC = () => {
                 </span>
               </p>
             </div>
-            <div className="grid flex-shrink-0 w-4/6 h-full grid-cols-3 gap-5 overflow-clip">
+            <div className="grid flex-shrink-0 w-7/12 h-full grid-cols-3 gap-5 overflow-clip">
               <div onClick={() => openModal('simple')}>
                 <BackgroundChooseCom
                   value="심플"

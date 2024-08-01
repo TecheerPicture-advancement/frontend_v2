@@ -71,7 +71,7 @@ const ImageResizingBanner: React.FC = () => {
   const handleSubmit = async () => {
     setMessage("생성 중");
     try {
-      const response = await axios.post<ResizingResponse>('http://localhost:8000/api/v1/resizings/', {
+      const response = await axios.post<ResizingResponse>('/api/v1/resizings/', {
         background_id: backgroundid,
         width: formData.output_w,
         height: formData.output_h,

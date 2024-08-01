@@ -90,12 +90,12 @@ const ThemeResult: React.FC = () => {
         const [conceptResponses, removeBgResponse] = await Promise.all([
           Promise.all(
             Array.from({ length: 2 }, () =>
-              axios.post<ResponseData>('http://localhost:8000/api/v1/backgrounds/', conceptPostData, {
+              axios.post<ResponseData>('/api/v1/backgrounds/', conceptPostData, {
                 headers: { 'Content-Type': 'application/json' },
               })
             )
           ),
-          axios.post<ResponseData>('http://localhost:8000/api/v1/backgrounds/', removeBgPostData, {
+          axios.post<ResponseData>('/api/v1/backgrounds/', removeBgPostData, {
             headers: { 'Content-Type': 'application/json' },
           }),
         ]);
@@ -104,7 +104,6 @@ const ThemeResult: React.FC = () => {
         const removeBgBackgroundId = removeBgResponse.data.background_id;
 
         setIsLoading(false);
-        alert('데이터를 성공적으로 전송했습니다.');
 
         navigate(`/theme/result`, {
           state: {
