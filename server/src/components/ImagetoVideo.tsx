@@ -91,7 +91,7 @@ const ImagetoVideo: React.FC = () => {
     try {
       setIsLoading(true);
       for (let i = 0; i < retries; i++) {
-        const response = await axios.get<VideoResponse>(`/api/v1/videos/${videoId}/`);
+        const response = await axios.get<VideoResponse>(`http://localhost:8000/api/v1/videos/${videoId}/`);
         if (response.data.video_url) {
           handleDownload(response.data.video_url);
           break; // 응답값을 받으면 루프 종료

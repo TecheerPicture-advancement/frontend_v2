@@ -45,7 +45,7 @@ const ImageResizingBanner: React.FC = () => {
     const fetchData = async () => {
       try {
         if (backgroundid) {
-          const response = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${backgroundid}/`);
+          const response = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${backgroundid}/`);
           if (response.data) {
             setImage(response.data.image_url);
             setCol(response.data.output_h);
@@ -71,7 +71,7 @@ const ImageResizingBanner: React.FC = () => {
   const handleSubmit = async () => {
     setMessage("생성 중");
     try {
-      const response = await axios.post<ResizingResponse>('/api/v1/resizings/', {
+      const response = await axios.post<ResizingResponse>('http://localhost:8000/api/v1/resizings/', {
         background_id: backgroundid,
         width: formData.output_w,
         height: formData.output_h,

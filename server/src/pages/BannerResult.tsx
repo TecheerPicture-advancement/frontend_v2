@@ -62,13 +62,13 @@ const BannerResult: React.FC = () => {
 
   const goToResizingBanner = () => {
     if (selectedBackgroundId !== null) {
-      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext: selectedMainText, Servetext: selectedserveText } });
+      navigate('http://localhost:8000/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext: selectedMainText, Servetext: selectedserveText } });
     }
   };
   
   const goToBannerEdit = () => {
     if (selectedBackgroundId !== null) {
-      navigate('/banner/result/edit', { state: { 
+      navigate('http://localhost:8000/banner/result/edit', { state: { 
         backgroundids: backgroundids, 
         MaintextArr: MainText, 
         ServetextArr: ServeText, 
@@ -84,7 +84,7 @@ const BannerResult: React.FC = () => {
     const fetchBanner = async () => {
       try {
         if(MainText==null) setIsLoading(true);//검사해보기
-        const response = await axios.get<BannerResponse>(`/api/v1/banners/${bannerId}/`);
+        const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${bannerId}/`);
         if (response.data && response.data.data) {
           const mainTextArray = new Array(backgroundids.length).fill(response.data.data.maintext);
           const serveTextArray = new Array(backgroundids.length).fill(response.data.data.servetext);
@@ -130,7 +130,7 @@ const BannerResult: React.FC = () => {
     const fetchBackgroundWithRetry = async (id:number, retries = 30, delay = 3000) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${id}/`);
+          const response = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`);
           if (response.data && response.data.image_url) {
             return response.data.image_url;
             console.log("값 들어감");
@@ -151,7 +151,7 @@ const BannerResult: React.FC = () => {
 
         setPhotos(responses);
         if (responses.length > 0) {
-          const firstBackground = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${backgroundids[0]}/`);
+          const firstBackground = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${backgroundids[0]}/`);
           if (firstBackground.data) {
             setWidth(firstBackground.data.output_w);
             setHeight(firstBackground.data.output_h);

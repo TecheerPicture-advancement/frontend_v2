@@ -27,7 +27,7 @@ const Nickname: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post<NicknameResponse>('/api/v1/nicknames/', { nickname });
+      const response = await axios.post<NicknameResponse>('http://localhost:8000/api/v1/nicknames/', { nickname });
       console.log('Nickname registered successfully:', response.data);
       setNicknameSuccess('닉네임이 성공적으로 생성되었습니다.');
       const userId = response.data.data.id;
