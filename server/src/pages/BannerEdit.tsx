@@ -48,7 +48,7 @@ const BannerEdit: React.FC = () => {
       console.log(selectMaintext);
       console.log(selectServetext);
       try {
-        const response = await axios.get<BannerResponse>(`/api/v1/banners/${banner_id}`);
+        const response = await axios.get<BannerResponse>(`http://localhost:8000/api/v1/banners/${banner_id}`);
         setMainText1(response.data.data.maintext);
         setMainText2(response.data.data.maintext2);
         setSubText1(response.data.data.servetext);
