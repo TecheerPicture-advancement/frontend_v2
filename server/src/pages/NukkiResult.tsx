@@ -44,7 +44,7 @@ const NukkiResult: React.FC = () => {
         setIsLoading(true); // 로딩 시작
         for (let i = 0; i < retries; i++) {
           try {
-            const response = await axios.get<BackgroundData>(`http://localhost:8000/api/v1/backgrounds/${removeBgBackgroundId}/`);
+            const response = await axios.get<BackgroundData>(`/api/v1/backgrounds/${removeBgBackgroundId}/`);
             if (response.data && response.data.image_url) {
               setBackgroundData(response.data);
               setIsLoading(false); // 데이터가 성공적으로 가져와졌을 때 로딩 종료
@@ -94,7 +94,9 @@ const NukkiResult: React.FC = () => {
             const postData = { ...postDataBase, gen_type: genType };
             console.log("post데이터", postData);
 
-            const response = await axios.post<BackgroundData2>('http://localhost:8000/api/v1/backgrounds/', postData, {
+            const response = await axios.post<BackgroundData2>('/api/v1/backgrounds/', postData, {
+
+            const response = await axios.post<BackgroundData2>('/api/v1/backgrounds/', postData, {
               headers: { 'Content-Type': 'application/json' },
             });
             console.log("리스폰스 값",response.data.background_id);

@@ -30,15 +30,14 @@ const STResult: React.FC = () => {
   const [imageData, setImageData] = useState<string | null>(null);
   const [imageWidth, setImageWidth] = useState<number | null>(null);
   const [imageHeight, setImageHeight] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
- 
+  const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
+
   const location = useLocation();
   const state = location.state as { conceptBackgroundIds: number[]; removeBgBackgroundId: number; imageId: number };
   const { conceptBackgroundIds, removeBgBackgroundId, imageId } = state;
-    
 
   useEffect(() => {
-    if(removeBgBackgroundId==null) setIsLoading(true);
+    let isMounted = true;
 
     const fetchBackgroundData = async () => {
       if (conceptBackgroundIds.length > 0) {
@@ -49,7 +48,9 @@ const STResult: React.FC = () => {
               return await fetchWithRetry(url);
             })
           );
-          setBackgroundData(fetchedData);
+          if (isMounted) {
+            setBackgroundData(fetchedData);
+          }
         } catch (error) {
           console.error('Error fetching background data:', error);
         }
@@ -62,7 +63,9 @@ const STResult: React.FC = () => {
       try {
         const url = `/api/v1/backgrounds/${removeBgBackgroundId}/`;
         const data = await fetchWithRetry(url);
-        setRemoveBgData(data as NukkiData);
+        if (isMounted) {
+          setRemoveBgData(data as NukkiData);
+        }
       } catch (error) {
         console.error('Error fetching removeBg background data:', error);
       }
@@ -72,15 +75,19 @@ const STResult: React.FC = () => {
       try {
         const response = await axios.get(`/api/v1/images/${imageId}/`);
         const data = response.data as ImageResponse;
-        setImageData(data.data.image_url);
+        if (isMounted) {
+          setImageData(data.data.image_url);
 
-        const img = new Image();
-        img.src = data.data.image_url;
-        img.onload = () => {
-          console.log(`Image dimensions: ${img.width}x${img.height}`);
-          setImageWidth(img.width);
-          setImageHeight(img.height);
-        };
+          const img = new Image();
+          img.src = data.data.image_url;
+          img.onload = () => {
+            if (isMounted) {
+              console.log(`Image dimensions: ${img.width}x${img.height}`);
+              setImageWidth(img.width);
+              setImageHeight(img.height);
+            }
+          };
+        }
       } catch (error) {
         console.error('Error fetching image data:', error);
       }
@@ -108,11 +115,16 @@ const STResult: React.FC = () => {
         fetchRemoveBgData(),
         fetchImageData()
       ]);
-      console.log("컨셉 아이디",conceptBackgroundIds);
-      setIsLoading(false);
+      if (isMounted) {
+        setIsLoading(false); // Set loading state to false after all fetches are complete
+      }
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [conceptBackgroundIds, removeBgBackgroundId, imageId]);
 
   const getResultTitle = () => {

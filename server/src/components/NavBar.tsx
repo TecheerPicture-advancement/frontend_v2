@@ -13,7 +13,7 @@ const NavBar: React.FC = () => {
     { name: '배너생성', url: '/banner' },
     { name: '배경생성', url: '/background' },
     { name: '텍스트 변환 영상', url: '/text-to-video' },
-    { name: '이미지 변환 영상', url: '/image-to-video' },
+    { name: '이미지 변환 영상', url: '/image-to-video' }
   ];
 
   const handleLinkClick = (url: string) => {

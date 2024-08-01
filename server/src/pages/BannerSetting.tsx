@@ -89,13 +89,13 @@ const BannerSetting: React.FC = () => {
         const requests2 = [];
         for (let i = 0; i < 4; i++) {
           requests.push(
-            axios.post<BackgroundResponse>('http://localhost:8000/api/v1/backgrounds/', backgroundData, {
+            axios.post<BackgroundResponse>('/api/v1/backgrounds/', backgroundData, {
               headers: { 'Content-Type': 'application/json' }
             })
           );
         }
         requests2.push(
-          axios.post<BannerResponse>('http://localhost:8000/api/v1/banners/', bannerData, {
+          axios.post<BannerResponse>('/api/v1/banners/', bannerData, {
             headers: { 'Content-Type': 'application/json' }
           })
         );
