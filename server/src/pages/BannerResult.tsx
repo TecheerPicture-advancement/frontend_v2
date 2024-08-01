@@ -62,13 +62,13 @@ const BannerResult: React.FC = () => {
 
   const goToResizingBanner = () => {
     if (selectedBackgroundId !== null) {
-      navigate('http://localhost:8000/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext: selectedMainText, Servetext: selectedserveText } });
+      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext: selectedMainText, Servetext: selectedserveText } });
     }
   };
   
   const goToBannerEdit = () => {
     if (selectedBackgroundId !== null) {
-      navigate('http://localhost:8000/banner/result/edit', { state: { 
+      navigate('/banner/result/edit', { state: { 
         backgroundids: backgroundids, 
         MaintextArr: MainText, 
         ServetextArr: ServeText, 
@@ -133,22 +133,22 @@ const BannerResult: React.FC = () => {
           const response = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${id}/`);
           if (response.data && response.data.image_url) {
             return response.data.image_url;
-            console.log("값 들어감");
           }
         } catch (error) {
           console.log(`Retry ${i + 1} failed for ID ${id}`);
         }
-        await new Promise(res => setTimeout(res, delay)); // Wait before retrying
+        await new Promise(res => setTimeout(res, delay)); // 재시도 전에 대기
       }
-      throw new Error(`Failed to fetch image URL for ID ${id} after ${retries} retries`);
+      throw new Error(`ID ${id}에 대해 ${retries}회 재시도 후 이미지 URL을 가져오는 데 실패했습니다`);
     };
-
+  
     const fetchBackgrounds = async () => {
       try {
+        setIsLoading(true); // 로딩 시작
         const responses = await Promise.all(
           backgroundids.map((id: number) => fetchBackgroundWithRetry(id))
         );
-
+  
         setPhotos(responses);
         if (responses.length > 0) {
           const firstBackground = await axios.get<BackgroundResponse>(`http://localhost:8000/api/v1/backgrounds/${backgroundids[0]}/`);
@@ -158,14 +158,15 @@ const BannerResult: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Failed to fetch background images:');
+        console.error('배경 이미지를 가져오는 데 실패했습니다:', error);
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // 데이터 가져오기 완료 후 로딩 종료
       }
     };
-
+  
     fetchBackgrounds();
   }, []);
+  
 
   const handleDownloadClick = async () => {
     if (lastImageRef.current) {
