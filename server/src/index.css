@@ -1,4 +1,38 @@
-@import "./font.css";
+@import "./font.css"; /* 폰트 import */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* body 스타일 설정 */
+body {
+  @apply bg-black;
+  color: white; /* 글자색을 흰색으로 설정 */
+  margin: 0; /* 기본 margin 제거 */
+  padding: 0; /* 기본 padding 제거 */
+  min-height: 100vh; /* 최소 높이를 화면의 100%로 설정 */
+  display: flex; /* flexbox 사용 */
+  flex-direction: column; /* 세로 방향으로 콘텐츠 배치 */
+  position: relative; /* 상대적 위치 설정 */
+}
+
+/* NavBar는 상단 고정 */
+.navbar {
+  position: fixed; /* 화면 상단에 고정 */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10; /* 다른 콘텐츠보다 위에 표시 */
+  @apply bg-black;
+  height: 80px; /* NavBar의 높이 설정 */
+}
+
+/* 아래 콘텐츠를 중앙 정렬 */
+.main-content {
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  position: relative; /* relative로 위치 조정 */
+  top: 80px; /* navbar의 높이만큼 아래로 내려서 시작 */
+  width: 100%; /* 화면의 전체 너비 */
+  height: calc(100vh - 80px); /* 화면의 남은 공간 */
+}

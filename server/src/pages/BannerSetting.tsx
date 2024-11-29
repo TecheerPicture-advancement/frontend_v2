@@ -60,7 +60,7 @@ const BannerSetting: React.FC = () => {
     setShowModal(false);
     if (uploadedImageId && userid) {
       setImageId(uploadedImageId);
-      setLoading(true); // Show loading screen
+      setLoading(true);
       try {
         const bannerData = {
           image_id: uploadedImageId,

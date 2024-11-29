@@ -25,7 +25,7 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="w-auto h-full py-4 bg-black">
+    <nav className="navbar w-auto py-5 bg-black">
       <div className="flex items-center justify-between w-full pl-32 pr-20">
         <Link to="/" className="flex items-center text-3xl text-white font-PR_BO hover:text-white">
           <img src={logo} alt="Logo" className="h-10 w-auto" /> {/* Use img tag for logo */}
