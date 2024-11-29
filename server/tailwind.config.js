@@ -15,6 +15,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
         },
         colors:{
           gray:{
+            50:"#F0F0F0",
             100:"#D9D9D9",
             200:"#B8B8B8",
             300:"#777777",
