@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    if: "!startsWith(github.ref, 'refs/heads/chore/')" && "!startsWith(github.ref, 'refs/heads/env/')" && "!startsWith(github.head_ref, 'chore/')" && "!startsWith(github.head_ref, 'env/')"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: npm run lint  
+        
+      - name: Run Tests
+        run: npm test --coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Prettier and commit changes if any
+        run: |
+          # Prettier로 코드 포맷팅
+          npx prettier --write "src/**/*.{js,jsx,ts,tsx,css}"
+          # 변경 사항이 있는지 확인
+          if [[ `git status --porcelain` ]]; then
+            # Git 사용자 설정
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            # 변경 사항 커밋
+            git add .
+            git commit -m "style: auto-format code using Prettier [skip ci]"
+            # 변경 사항 푸시
+            git push
+          fi
+
+      - name: Upload Artifacts
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build/
