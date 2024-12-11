@@ -3,12 +3,29 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          check-latest: true
+      - name: Check
+        run: |
+          npm ci
+          npm run lint-diff
+        env:
+          CI: true
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+
   build:
     runs-on: ubuntu-latest
 
@@ -16,7 +33,7 @@ jobs:
       matrix:
         node-version: [16.x, 18.x]
 
-    if: "!startsWith(github.ref, 'refs/heads/chore/')" && "!startsWith(github.ref, 'refs/heads/env/')" && "!startsWith(github.head_ref, 'chore/')" && "!startsWith(github.head_ref, 'env/')"
+    if: ${{ !startsWith(github.ref, 'refs/heads/chore/') && !startsWith(github.ref, 'refs/heads/env/') }}
 
     steps:
       - name: Checkout repository
@@ -33,28 +50,12 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint  
-        
+
       - name: Run Tests
         run: npm test --coverage
 
       - name: Build
         run: npm run build
-
-      - name: Run Prettier and commit changes if any
-        run: |
-          # Prettier로 코드 포맷팅
-          npx prettier --write "src/**/*.{js,jsx,ts,tsx,css}"
-          # 변경 사항이 있는지 확인
-          if [[ `git status --porcelain` ]]; then
-            # Git 사용자 설정
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            # 변경 사항 커밋
-            git add .
-            git commit -m "style: auto-format code using Prettier [skip ci]"
-            # 변경 사항 푸시
-            git push
-          fi
 
       - name: Upload Artifacts
         if: success()
