@@ -9,7 +9,7 @@ on:
       - develop
 
 jobs:
-  check:
+   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,14 +17,17 @@ jobs:
         with:
           node-version: "16"
           check-latest: true
+      - name: Install dependencies
+        run: |
+          npm install  # package-lock.json이 없으면 생성
       - name: Check
         run: |
-          npm ci
           npm run lint-diff
         env:
           CI: true
           BASE: ${{ github.base_ref }}
           HEAD: ${{ github.head_ref }}
+      
   build:
     runs-on: ubuntu-latest
 
