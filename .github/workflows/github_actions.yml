@@ -17,30 +17,19 @@ jobs:
         with:
           node-version: "16"
           check-latest: true
-      - name: Check if package.json exists in server directory
-        run: |
-          if [ ! -f frontend_v2/server/package.json ]; then
-            echo "package.json not found in frontend_v2/server directory! Exiting..."
-            exit 1
-          fi
-
       - name: Install dependencies
         run: |
-          cd frontend_v2/server 
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+          cd frontend_v2/server
+          npm install
       - name: Check
         run: |
-          cd frontend_v2/server 
+          cd frontend_v2/server  
           npm run lint-diff
         env:
           CI: true
           BASE: ${{ github.base_ref }}
           HEAD: ${{ github.head_ref }}
-      
+
   build:
     runs-on: ubuntu-latest
 
@@ -62,26 +51,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend_v2/server 
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+          cd frontend_v2/server  
+          npm install 
 
       - name: Run ESLint
         run: |
-          cd frontend_v2/server 
+          cd frontend_v2/server  
           npm run lint  
 
       - name: Run Tests
         run: |
-          cd frontend_v2/server 
+          cd frontend_v2/server  
           npm test --coverage
 
       - name: Build
         run: |
-          cd frontend_v2/server 
+          cd frontend_v2/server  
           npm run build
 
       - name: Upload Artifacts
