@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          check-latest: true
+      - name: Check
+        run: |
+          npm ci
+          npm run lint-diff
+        env:
+          CI: true
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    if: ${{ !startsWith(github.ref, 'refs/heads/chore/') && !startsWith(github.ref, 'refs/heads/env/') }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: npm run lint  
+
+      - name: Run Tests
+        run: npm test --coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Artifacts
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build/
