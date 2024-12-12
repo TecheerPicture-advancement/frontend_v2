@@ -17,11 +17,24 @@ jobs:
         with:
           node-version: "16"
           check-latest: true
+      - name: Check if package.json exists in server directory
+        run: |
+          if [ ! -f frontend_v2/server/package.json ]; then
+            echo "package.json not found in frontend_v2/server directory! Exiting..."
+            exit 1
+          fi
+
       - name: Install dependencies
         run: |
-          npm install  # package-lock.json이 없으면 생성
+          cd frontend_v2/server 
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
       - name: Check
         run: |
+          cd frontend_v2/server 
           npm run lint-diff
         env:
           CI: true
@@ -49,24 +62,31 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd frontend_v2/server 
           if [ -f package-lock.json ]; then
-            npm ci  # package-lock.json이 있으면 ci를 사용
+            npm ci
           else
-            npm install  # 없으면 npm install로 package-lock.json을 생성
+            npm install
           fi
 
       - name: Run ESLint
-        run: npm run lint  
+        run: |
+          cd frontend_v2/server 
+          npm run lint  
 
       - name: Run Tests
-        run: npm test --coverage
+        run: |
+          cd frontend_v2/server 
+          npm test --coverage
 
       - name: Build
-        run: npm run build
+        run: |
+          cd frontend_v2/server 
+          npm run build
 
       - name: Upload Artifacts
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: build/
+          path: frontend_v2/server/build/
