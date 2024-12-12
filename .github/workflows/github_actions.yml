@@ -25,7 +25,6 @@ jobs:
           CI: true
           BASE: ${{ github.base_ref }}
           HEAD: ${{ github.head_ref }}
-
   build:
     runs-on: ubuntu-latest
 
