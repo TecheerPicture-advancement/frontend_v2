@@ -10,7 +10,8 @@
     "types": [
       "node",
       "react",
-      "vite-plugin-react-svg" // 필요한 경우 추가
+      "vite-plugin-react-svg",
+      "vitest/globals"
     ]
   },
   "exclude": [
