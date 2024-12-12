@@ -9,7 +9,7 @@ on:
       - develop
 
 jobs:
-   check:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,7 +48,12 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --frozen-lockfile
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci  # package-lock.json이 있으면 ci를 사용
+          else
+            npm install  # 없으면 npm install로 package-lock.json을 생성
+          fi
 
       - name: Run ESLint
         run: npm run lint  
