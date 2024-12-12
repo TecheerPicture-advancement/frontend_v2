@@ -19,11 +19,11 @@ jobs:
           check-latest: true
       - name: Install dependencies
         run: |
-          cd frontend_v2/server
-          npm install
+          cd server  # server 디렉토리로 이동
+          npm install  # package-lock.json이 없으면 생성
       - name: Check
         run: |
-          cd frontend_v2/server  
+          cd server  # server 디렉토리로 이동
           npm run lint-diff
         env:
           CI: true
@@ -32,6 +32,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: check
 
     strategy:
       matrix:
@@ -51,22 +52,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend_v2/server  
-          npm install 
+          cd server  # server 디렉토리로 이동
+          npm install  # 해당 디렉토리에서 실행
 
       - name: Run ESLint
         run: |
-          cd frontend_v2/server  
+          cd server  # server 디렉토리로 이동
           npm run lint  
 
       - name: Run Tests
         run: |
-          cd frontend_v2/server  
+          cd server  # server 디렉토리로 이동
           npm test --coverage
 
       - name: Build
         run: |
-          cd frontend_v2/server  
+          cd server  # server 디렉토리로 이동
           npm run build
 
       - name: Upload Artifacts
@@ -74,4 +75,32 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: frontend_v2/server/build/
+          path: server/build/
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: build 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js for Coverage
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: |
+          cd server  # server 디렉토리로 이동
+          npm install  # 의존성 설치
+
+      - name: Install Codecov
+        run: |
+          cd server  # server 디렉토리로 이동
+          npm install --save-dev codecov  # Codecov 설치
+
+      - name: Upload coverage to Codecov
+        run: |
+          cd server  # server 디렉토리로 이동
+          npx codecov  # codecov을 실행하여 coverage 업로드
