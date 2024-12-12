@@ -41,19 +41,21 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/heads/chore/') && !startsWith(github.ref, 'refs/heads/env/') }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
       - name: Install dependencies
         run: |
           cd server  # server 디렉토리로 이동
           npm install  # 해당 디렉토리에서 실행
+          
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+       - name: Setup Node.js ${{ matrix.node-version }} for server
+        run: |
+          cd server  # server 디렉토리로 이동
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm'
 
       - name: Run ESLint
         run: |
