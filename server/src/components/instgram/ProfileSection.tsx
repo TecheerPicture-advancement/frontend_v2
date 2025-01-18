@@ -21,7 +21,7 @@ const ProfileSection: React.FC = () => {
                 <img
                     src="../../public/assets/fan.jpg"
                     className="object-cover w-full h-full"
-                    alt="background"
+                    alt="result image"
                 />
             </div>
         </section>

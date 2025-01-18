@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ProfileSection from '../components/instagram/ProfileSection';
-import MessageSection from '../components/instagram/MessageSection';
+import ProfileSection from '../components/instgram/ProfileSection';
+import MessageSection from '../components/instgram/MessageSection';
 
 const InstagramUpload: React.FC = () => {
     const [message1, setMessage1] = useState('');

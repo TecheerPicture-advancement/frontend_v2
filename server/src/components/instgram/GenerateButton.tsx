@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrowRight from '../assets/arrow_right.svg?react';
+import ArrowRight from '../../assets/arrow_right.svg?react';
 
 interface GenerateButtonProps {
     onClick: () => void;
