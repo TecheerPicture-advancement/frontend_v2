@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import InstagramUpload from './pages/Instagram_Upload';
 import NavBar from './components/NavBar';
 import { UserProvider } from './api/Usercontext';
+import Onboarding from './pages/Onboarding';
+import BannerSetting from './pages/BannerSetting';
 
 const App: React.FC = () => {
   const [nickname] = useState('');
@@ -13,8 +15,10 @@ const App: React.FC = () => {
         <NavBar /> {/* NavBar가 Router 내에 위치 */}
         <div className="main-content">
           <Routes>
+          {/* <Route path='/' element={<Onboarding />}/> */}
             <Route path="/" element={<InstagramUpload />} />
-                {/* <Route path='/' element={<Onboarding />}/>
+            <Route path="/banner" element={<BannerSetting />} />
+{/*                  
                   <Route path="/banner" element={<BannerSetting/>} />
                   <Route path="/background" element={<BackgroundChoose/>} />
                   <Route path="/nickname" element={<Nickname />} />
