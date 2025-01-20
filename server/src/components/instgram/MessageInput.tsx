@@ -4,7 +4,7 @@ interface MessageInputProps {
     value: string;
     placeholder: string;
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    heightClass?: string; // Tailwind height class
+    heightClass?: string;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({

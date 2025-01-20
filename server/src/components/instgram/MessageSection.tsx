@@ -23,8 +23,8 @@ const MessageSection: React.FC<MessageSectionProps> = ({
     onToggleChange,
     onGenerateMessage,
 }) => (
-    <section className="gap-5 flex flex-col p-7 bg-white w-[568px] h-[540px]">
-        <div className="flex flex-col gap-5 h-full items-center">
+    <section className="gap-5 flex flex-col p-7 bg-white w-[568px] h-[576px]">
+        <div className="flex flex-col justify-between h-full items-center">
             <ToggleControl isToggled={isToggled} onToggleChange={onToggleChange} />
             <section className="gap-5 flex flex-col w-full">
                 {isToggled ? (
@@ -46,9 +46,9 @@ ex) 새로운 시작에 대한 동기부여의 글을 써주고, 해시태그를
                     </div>
                 ) : (
                     <MessageInput
-                        value={message2}
+                        value={message1}
                         placeholder="직접 메시지를 입력하세요"
-                        onChange={onChangeMessage2}
+                        onChange={onChangeMessage1}
                         heightClass="h-[340px]"
                     />
                 )}
