@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../api/Usercontext';
-import logo from '../../public/assets/logo.png'; // Import logo image
+import logo from '../../public/assets/logo.png';
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();

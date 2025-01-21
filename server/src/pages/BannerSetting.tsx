@@ -169,21 +169,21 @@ const BannerSetting: React.FC = () => {
     setShowModal(true);
   };
 
-  if (!userid) {
-    console.error('userid is undefined');
-    return (
-      <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
-        <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
-          <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
-          <span>닉네̆̈임을 ગુ력하스Ι 않ヱ 왔군요̆̈</span>
-          <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
-        </div>
-        <Link to="/nickname">
-          <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
-        </Link>
-      </div>
-    );
-  }
+  // if (!userid) {
+  //   console.error('userid is undefined');
+  //   return (
+  //     <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
+  //       <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
+  //         <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
+  //         <span>닉네̆̈임을 ગુ력하스Ι 않ヱ 왔군요̆̈</span>
+  //         <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
+  //       </div>
+  //       <Link to="/nickname">
+  //         <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
+  //       </Link>
+  //     </div>
+  //   );
+  // }
 
   const buttons = [
     { label: '스토리 광고', width: 1080, height: 1920 },

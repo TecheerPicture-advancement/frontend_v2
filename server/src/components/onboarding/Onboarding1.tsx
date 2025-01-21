@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NavBar from '../NavBar';
 import Oboardingmain from '../../../public/assets/onboardingmain.jpg'
 
 const Onboarding1: React.FC = () => {
     return (
     <div>
-        <NavBar />
         <div className="relative overflow-hidden">
         <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-gray-400 to-white mix-blend-multiply"></div>

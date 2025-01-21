@@ -12,7 +12,9 @@
       "react",
       "vite-plugin-react-svg",
       "vitest/globals"
-    ]
+    ],
+    "typeRoots": ["node_modules/@types", "node_modules/vitest/globals"]
+    
   },
   "exclude": [
     "node_modules"
