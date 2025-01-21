@@ -23,7 +23,7 @@ const MessageSection: React.FC<MessageSectionProps> = ({
     onToggleChange,
     onGenerateMessage,
 }) => (
-    <section className="gap-5 flex flex-col p-7 bg-white w-[568px] h-[576px]">
+    <section className="gap-5 flex flex-col p-7 bg-white w-[580px] h-[507px]">
         <div className="flex flex-col justify-between h-full items-center">
             <ToggleControl isToggled={isToggled} onToggleChange={onToggleChange} />
             <section className="gap-5 flex flex-col w-full">
@@ -53,7 +53,7 @@ ex) 새로운 시작에 대한 동기부여의 글을 써주고, 해시태그를
                     />
                 )}
             </section>
-            <div className="w-[430px] h-[60px] bg-green-Normal rounded-[10px]">
+            <div className="w-full h-[52px] bg-green-Normal rounded-[10px]">
                 <MainButton value="인스타그램에 생성하기" />
             </div>
         </div>

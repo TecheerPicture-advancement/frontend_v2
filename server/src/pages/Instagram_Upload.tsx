@@ -27,7 +27,7 @@ const InstagramUpload: React.FC = () => {
     };
 
     return (
-        <main className="flex items-center justify-center h-screen gap-5">
+        <main className="flex flex-col tablet:flex-row items-center justify-center h-screen gap-5">
             <ProfileSection />
             <MessageSection
                 message1={message1}
