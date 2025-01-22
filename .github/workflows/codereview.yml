@@ -16,17 +16,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 17
+      - name: Set up JDK 16
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '16'
           distribution: 'temurin'
 
-      - name: Install Latest SonarQube Scanner
+      - name: Install SonarQube Scanner
         run: |
-          curl -L -o sonar-scanner-cli-5.0.0.3927-linux.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.3927-linux.zip
-          unzip sonar-scanner-cli-5.0.0.3927-linux.zip
-          mv sonar-scanner-5.0.0.3927-linux /opt/sonar-scanner
+          curl -L -o sonar-scanner-cli-7.0.0.4796-linux-x64.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.0.4796-linux-x64.zip
+          unzip sonar-scanner-cli-7.0.0.4796-linux-x64.zip
+          mv sonar-scanner-7.0.0.4796-linux-x64 /opt/sonar-scanner
           echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
 
       - name: SonarQube Scan
@@ -34,6 +34,7 @@ jobs:
           sonar-scanner -Dsonar.host.url=https://sonarcloud.io
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
 
   eslint-prettier:
