@@ -26,7 +26,7 @@ jobs:
         run: |
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.0.4796-linux-x64.zip
           unzip sonar-scanner-cli-7.0.0.4796-linux-x64.zip
-          mv sonar-scanner-7.0.0.4796-linux /opt/sonar-scanner
+          mv sonar-scanner-cli-7.0.0.4796-linux-x64 /opt/sonar-scanner
           echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
 
       - name: SonarQube Scan
