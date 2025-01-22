@@ -1,0 +1,56 @@
+name: codereview
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  eslint-prettier:
+    name: ESLint and Prettier
+    runs-on: ubuntu-latest
+    needs: sonarqube
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd server
+          npx eslint . --ext .js,.ts,.jsx,.tsx --fix 
+
+      - name: Run Prettier
+        run: |
+          cd server
+          npx prettier --check .
+
+      - name: Fix code with Prettier
+        run: |
+          cd server
+          npx prettier --write .
