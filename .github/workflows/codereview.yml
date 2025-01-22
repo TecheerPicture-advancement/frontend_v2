@@ -24,9 +24,13 @@ jobs:
 
       - name: Install SonarQube Scanner
         run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.0.4796-linux-x64.zip
-          unzip sonar-scanner-cli-7.0.0.4796-linux-x64.zip -d /tmp
-          mv /tmp/sonar-scanner-cli-7.0.0.4796-linux-x64 /opt/sonar-scanner
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-latest-linux.zip
+          if [ ! -f "sonar-scanner-cli-latest-linux.zip" ]; then
+            echo "Download failed. Exiting."
+            exit 1
+          fi
+          unzip sonar-scanner-cli-latest-linux.zip -d /tmp
+          mv /tmp/sonar-scanner-cli-* /opt/sonar-scanner
           echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
           ls -l /opt/sonar-scanner/jre/legal
 
