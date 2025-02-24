@@ -1,188 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NavBar from './NavBar';
+import { useNavigate } from 'react-router-dom';
 import MainButton from './MainButton';
-import ImageUploadModal from './UploadImageModal1';
+import useImageStore from '../store/useImageStore';
 import Loading from './Loading';
-import { useUser } from '../api/Usercontext';
-import { downloadFile } from './form/FileDownload'; // Adjust
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ImageResponse {
-  data: {
-    id: number;
-    image_url: string;
-  };
+  imageUrl: string;
 }
 
 interface VideoResponse {
-  id: number;
-  user: number;
-  video_url: string;
+  video: {
+    url: string;
+    content_type: string | null;
+    file_name: string | null;
+    file_size: number;
+  };
+  finalPrompt: string;
 }
-
-interface VideoResponse2 {
-  video_id: number;
-}
-
 
 const ImagetoVideo: React.FC = () => {
-  const [isUploaded, setIsUploaded] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [image, setImage] = useState<string>('');
-  const [imageId, setImageId] = useState<number>(0);
-  const [, setVideoId] = useState<number>(0);  
-  const [isUploading, setIsUploading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { userid } = useUser();
-  const [prompt, setPrompt] = useState<string>('');
-  const [error, setError] = useState('');
-  
-  const handleUpload = () => {
-    setShowModal(true);
-  };
+  const { imageId } = useImageStore();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleModalClose = async (uploadedImageId: number | null) => {
-    setShowModal(false);
-    if (uploadedImageId) {
-      setIsUploading(true);
-      try {
-        const response = await axios.get<ImageResponse>(`/api/v1/images/${uploadedImageId}/`);
-        setImage(response.data.data.image_url);
-        setImageId(response.data.data.id);
-        setIsUploaded(true);
-      } catch (error) {
-        console.error('Error fetching image data:', error);
-      } finally {
-        setIsUploading(false);
-      }
-    }
-  };
-
-  const Videohandleer = async () => {
-    if (!prompt) {
-      setError('Prompt cannot be empty');
-      return;
-    }
-    setError('');
-    console.log('user_id:', userid);
-    console.log('prompt:', prompt);
-    try {
-      const response = await axios.post<VideoResponse2>(`/api/v1/videos/`, {
-        user_id: userid,
-        image_id: imageId,
-        text_prompt: prompt,
-      });
-      const newVideoId = response.data.video_id;
-      setVideoId(newVideoId);
-      create(newVideoId);
-    } catch (error) {
-      setError('오류가 발생했습니다. 다시 한 번 시도해보세요.1');
-      console.error('Error:', error);
-    } 
-  };
-  
-  const create = async (videoId: number, retries = 30, delay = 10000) => {
-    if (!prompt) {
-      setError('Prompt cannot be empty');
-      return;
-    }
-    setError('');
-
-    try {
-      setIsLoading(true);
-      for (let i = 0; i < retries; i++) {
-        const response = await axios.get<VideoResponse>(`/api/v1/videos/${videoId}/`);
-        if (response.data.video_url) {
-          handleDownload(response.data.video_url);
-          break; // 응답값을 받으면 루프 종료
+  useEffect(() => {
+    if (imageId) {
+      const fetchImageUrl = async () => {
+        try {
+          const response = await axios.get<ImageResponse>(`${BASE_URL}/images/${imageId}`);
+          if (response.data && response.data.imageUrl) {
+            setImageUrl(response.data.imageUrl);
+          }
+        } catch (error) {
+          console.error("Error fetching image URL:", error);
         }
-        console.log("비디오 아이디",videoId);
-        await new Promise((resolve) => setTimeout(resolve, delay));
+      };
+
+      fetchImageUrl();
+    }
+  }, [imageId]);
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPrompt(e.target.value);
+  };
+
+  const handleGenerateVideo = async () => {
+    if (!prompt) {
+      alert('프롬프트를 입력해주세요!');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // 이미지 ID와 프롬프트를 함께 전송
+      const response = await axios.post<VideoResponse>(`${BASE_URL}/imagetovideo`, {
+        imageId,
+        prompt,
+      });
+
+      if (response.data.video && response.data.video.url) {
+        // 비디오 URL을 다운로드 링크로 생성하여 자동 다운로드
+        const link = document.createElement('a');
+        link.href = response.data.video.url;
+        link.download = 'video.mp4';
+        link.click();
+
+        // 다운로드 완료 후 홈으로 돌아가기
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+      } else {
+        console.error('Video URL not found in response');
       }
     } catch (error) {
-      setError('오류가 발생했습니다. 다시 한 번 시도해보세요.2');
-      console.error('Error:', error);
+      console.error('Error generating video:', error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
-  
-
-const handleDownload = (url: string) => {
-    if (url) {
-      downloadFile(url, 'video.mp4');
-    }
-};
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="flex flex-col min-h-screen bg-black">
-          <NavBar />
-          <div className="w-full flex-grow flex flex-col items-center justify-center mb-10">
-            
-            {/*상단 레이아웃*/}
-            {!isUploaded && (
-              <div className="flex flex-col items-center justify-center">
-                <h1 className="text-3xl leading-tight font-PR_BL text-center text-white">
-                  자유롭게 만드는<br />
-                  <span className="text-green-Normal">광고 동영상</span>
-                </h1>
-                <div className="w-[300px] h-[44px] mt-6">
-                  {isUploading ? (
-                    <p className="font-PR_L text-center text-xl text-white">업로드 중...</p>
-                  ) : (
-                    <MainButton value="이미지 업로드" onClick={handleUpload} />
-                  )}
-                </div>
-              </div>
-            )}
-            {showModal && (
-              <ImageUploadModal onClose={handleModalClose} />
-            )}
-
-            {/*하단 레이아웃 */}
-            {isUploaded && (
-              <div className="flex flex-col items-center justify-center">
-                <h1 className="text-3xl leading-tight font-PR_BL text-center text-white mb-6">
-                  자유롭게 만드는<br />
-                  <span className="text-green-Normal">광고 동영상</span>
-                </h1>
-                <div className="flex flex-row items-center justify-center gap-16">
-                  <div className="w-[380px] h-[380px] relative overflow-hidden rounded-[30px] bg-[#e6ffef]">
-                    <img src={image} className="w-full h-full object-cover rounded-[30px]" />
-                    <div className="absolute inset-0 bg-gradient-to-b from-white to-black opacity-50 mix-blend-multiply rounded-[30px]" />
-                  </div>
-                  <div className="flex flex-col items-center justify-between w-[300px]">
-                    <div className="w-full">
-                      <p className="text-sm text-left text-gray-200 font-PR_BO">동영상 생성을 위해 설명을 입력해주세요</p>
-                    </div>
-                    <div className="w-full mt-2 mb-8">
-                      <p className="text-2xl text-white font-PR_BO">텍스트 입력</p>
-                    </div>
-                    <div className="w-full h-[150px] border-[1px] border-solid border-white rounded-[6px] overflow-hidden">
-                      <textarea 
-                        placeholder="텍스트 입력" 
-                        className="w-full h-full p-2 text-sm text-white bg-black font-PR_M" 
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                      />
-                    </div>
-                    {error && (
-                      <p className="text-red mt-2">{error}</p>
-                    )}
-                    <div className="w-full h-[44px] mt-10">
-                      <MainButton value="생성하러 가기" onClick={Videohandleer} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+    {loading && <Loading />}
+    <div className="min-h-screen flex justify-center items-center gap-2.5 w-[1180px] mx-auto my-auto bg-black">
+      <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[1171px] overflow-hidden gap-5">
+        <div
+          className="w-[480px] h-[640px]"
+          style={{
+            backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[640px] w-[671px] gap-10 p-[30px] bg-white">
+          <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[490px] w-[611px] relative gap-[30px]">
+            <p className="text-xl font-PR_BO text-left text-black">
+              이미지를 비디오로 생성하기
+            </p>
+            <textarea
+              className="flex flex-col justify-start items-start resize-none focus:outline-none self-stretch flex-grow relative gap-5 p-6 rounded-lg font-PR_M text-base text-black bg-gray-50 placeholder-gray-300"
+              placeholder="비디오를 생성하기 전 원하는 내용을 적어주세요 
+              ex) 향수에서 느껴지는 상큼함과 달콤함을 표현하고 싶어요"
+              value={prompt}
+              onChange={handlePromptChange}
+            />
           </div>
+          <MainButton value="생성하기" onClick={handleGenerateVideo} />
         </div>
-      )}
+      </div>
+    </div>
     </>
   );
 };

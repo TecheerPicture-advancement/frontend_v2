@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import ImageUploadModal from '../components/UploadImageModal1';
-import NavBar from '../components/NavBar';
-import { useUser } from '../api/Usercontext';
+import ImageUploadModal from '../components/UploadImageModal';
 import InputField from '../components/form/InputField';
 import SizeFields from '../components/form/SizeFields';
 import AspectRatioButtons from '../components/form/AspectRatioButtons';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading'; 
 
 interface FormData {
@@ -34,7 +32,6 @@ interface BackgroundResponse {
 }
 
 const BannerSetting: React.FC = () => {
-  const { userid } = useUser();
   const [formData, setFormData] = useState<FormData>({
     item_name: '',
     item_concept: '',
@@ -48,7 +45,7 @@ const BannerSetting: React.FC = () => {
   const [, setImageId] = useState<number | null>(null);
   const [isSizeFieldsDisabled, setIsSizeFieldsDisabled] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState<string>('');
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,20 +55,18 @@ const BannerSetting: React.FC = () => {
 
   const handleModalClose = async (uploadedImageId: number | null) => {
     setShowModal(false);
-    if (uploadedImageId && userid) {
+    if (uploadedImageId) {
       setImageId(uploadedImageId);
       setLoading(true);
       try {
         const bannerData = {
           image_id: uploadedImageId,
-          user_id: userid,
           item_name: formData.item_name,
           item_concept: formData.item_concept,
           item_category: formData.item_category,
           add_information: formData.add_information,
         };
         const backgroundData = {
-          user_id: userid,
           image_id: uploadedImageId,
           gen_type: 'concept',
           output_w: formData.output_w,
@@ -169,22 +164,6 @@ const BannerSetting: React.FC = () => {
     setShowModal(true);
   };
 
-  // if (!userid) {
-  //   console.error('userid is undefined');
-  //   return (
-  //     <div className='flex flex-col items-center justify-center min-h-screen gap-4 bg-black'>
-  //       <div className='flex flex-col items-center text-3xl text-white font-PR_BO'>
-  //         <span> \ \ \٩( ′ㅂ`)و ̑̑/ / / </span>
-  //         <span>닉네̆̈임을 ગુ력하스Ι 않ヱ 왔군요̆̈</span>
-  //         <span>닉네̆̈임을 ગુ력하ヱ 다̆̎⋌∣ 돌타와주⋌⫣요̆̈ </span>
-  //       </div>
-  //       <Link to="/nickname">
-  //         <button className='p-4 text-lg text-black rounded-lg font-PR_M bg-green-Normal' type="button"> 닉네임 창으로 가기</button>
-  //       </Link>
-  //     </div>
-  //   );
-  // }
-
   const buttons = [
     { label: '스토리 광고', width: 1080, height: 1920 },
     { label: '피드 광고', width: 1080, height: 1080 },
@@ -201,7 +180,6 @@ const BannerSetting: React.FC = () => {
         <Loading />
       ) : (
         <>
-          <NavBar />
           <div className='flex flex-col items-center justify-center'>
             <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 bg-black my-14">
               <span className="flex items-center justify-center text-4xl text-center text-white font-PR_BO">
