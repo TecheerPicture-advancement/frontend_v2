@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',  // Vitest의 브라우저 환경 시뮬레이션
     globals: true,         // Jest와 비슷한 글로벌 API 사용
-    setupFiles: './vitest.setup.ts', // 테스트 초기 설정 파일
+    setupFiles: './vitest.setup.ts',
   },
   build: {
     rollupOptions: {
@@ -18,5 +18,10 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 1000
+  },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8080',
+    },
   }
 });

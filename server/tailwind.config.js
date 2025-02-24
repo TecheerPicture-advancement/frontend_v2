@@ -23,7 +23,8 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           }
         },
         fontSize: {
-          xxs: '0.625rem', // 10px
+          xxs: '0.625rem',
+          xs: '0.75rem',
           sm: '0.875rem',
           base: '1rem',
           lg:"1.125rem",
@@ -38,6 +39,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
         extend: {
           fontFamily: {
             PR_L: ['"Pretendard-Light"', ...fontFamily.sans],
+            PR_R: ['"Pretendard-Regular"', ...fontFamily.sans],
             PR_M: ['"Pretendard-Medium"', ...fontFamily.sans],
             PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
             PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],

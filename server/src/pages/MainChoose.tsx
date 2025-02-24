@@ -2,40 +2,10 @@ import React, { useState, useEffect } from 'react';
 import MoveChoose from '../components/MoveChoose';
 import BackgroundImage1 from '../../public/assets/BackgroundImage1.png';
 import BackgroundImage2 from '../../public/assets/BackgroundImage2.png';
-import BackgroundImage3 from '../../public/assets/BackgroundImage3.png';
 import BackgroundImage4 from '../../public/assets/BackgroundImage4.png';
-import axios from 'axios';
-import { useUser } from '../api/Usercontext';
 
-interface NicknameResponse {
-  data: {
-    id: string;
-    nickname: string;
-  };
-}
-
-interface MainChooseProps {
-  name: string;
-}
-
-const MainChoose: React.FC<MainChooseProps> = () => {
+const MainChoose: React.FC = () => {
   const [Rayout, setRayout] = useState<boolean>(false);
-  const [data, setData] = useState<string>('');
-  const { userid } = useUser();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (userid) {
-          const response = await axios.get<NicknameResponse>(`/api/v1/nicknames/${userid}`);
-          setData(response.data.data.nickname);
-        }
-      } catch (error) {
-        console.error('Error fetching nickname:', error);
-      }
-    };
-    fetchData();
-  }, [userid]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,13 +21,6 @@ const MainChoose: React.FC<MainChooseProps> = () => {
         {/* 상단 레이아웃 */}
         <div className="h-20 flex flex-col items-center justify-center">
           <div className={`transition-opacity duration-800 ease-in-out ${Rayout ? 'opacity-0' : 'opacity-100'}`}>
-            {!Rayout && (
-              <div className="text-4xl text-gray-200 font-PR_BO flex items-center space-x-4">
-                <span>안녕하세요!</span>
-                <span className="text-white">{data}</span>
-                <span className="space-x-4 text-white">님</span>
-              </div>
-            )}
           </div>
           <div className={`transition-opacity duration-1000 ease-in-out ${Rayout ? 'opacity-100' : 'opacity-0'}`}>
             {Rayout && (
@@ -82,13 +45,6 @@ const MainChoose: React.FC<MainChooseProps> = () => {
             servetext={'AI가 사용자의 제품 이미지를 분석하여'}
             servetext2={'적합한 배경을 생성합니다. '}
             index={2}
-          />
-          <MoveChoose
-            src={BackgroundImage3}
-            maintext={'텍스트 변환 영상 생성'}
-            servetext={'AI가 입력된 텍스트를 분석 후'}
-            servetext2={'적합한 영상을 생성합니다. '}
-            index={3}
           />
           <MoveChoose
             src={BackgroundImage4}

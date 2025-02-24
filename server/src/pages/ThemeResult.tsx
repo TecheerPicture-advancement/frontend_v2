@@ -2,11 +2,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useUser } from '../api/Usercontext';
 import ImageBox from '../components/ImageBox';
 import NavBar from '../components/NavBar';
 import Loading from '../components/Loading';
-import ImageUploadModal from '../components/UploadImageModal1';
+import ImageUploadModal from '../components/UploadImageModal';
 import MainButton from '../components/MainButton';
 
 interface ThemeDetails {
@@ -42,7 +41,6 @@ const ThemeResult: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [customTheme, setCustomTheme] = useState('');
-  const { userid } = useUser();
   const navigate = useNavigate();
 
   const handleThemeSelect = (themeDetails: ThemeDetails) => {
@@ -64,11 +62,10 @@ const ThemeResult: React.FC = () => {
   const handleModalClose = async (uploadedImageId: number | null) => {
     setShowModal(false);
 
-    if (uploadedImageId && userid) {
+    if (uploadedImageId) {
       const themeToUse = selectedTheme.theme === '직접입력' ? customTheme : selectedTheme.theme;
 
       const conceptPostData: PostData = {
-        user_id: userid,
         image_id: uploadedImageId,
         gen_type: 'concept',
         concept_option: {
@@ -79,7 +76,6 @@ const ThemeResult: React.FC = () => {
       };
 
       const removeBgPostData: PostData = {
-        user_id: userid,
         image_id: uploadedImageId,
         gen_type: 'remove_bg',
       };
@@ -197,45 +193,45 @@ const ThemeResult: React.FC = () => {
             </AnimatePresence>
             <main className="flex flex-row items-center justify-center w-full h-full gap-5 z-0">
               <div className="relative w-[200px] max-w-4xl h-[900px] shrink-0 flex items-center justify-center">
-                {selectedTheme.theme !== 'AI' && (
+                {selectedTheme.theme !== '대리석' && (
                   <ImageBoxPosition
                     className="bottom-[75%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/AI.png"
                     detail="적합한 이미지 추천"
-                    theme="AI"
+                    theme="대리석"
                     sentence="AI가 사진을 분석 후 최적의 사진을 제공해드립니다."
                     onClick={handleThemeSelect}
                   />
                 )}
-                {selectedTheme.theme !== '봄' && (
+                {selectedTheme.theme !== '집' && (
                   <ImageBoxPosition
                     className="bottom-[50%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/spring.png"
                     detail="흩날리는"
-                    theme="봄"
+                    theme="집"
                     sentence="따뜻한 봄날에 어울리는 이미지를 생성해드립니다."
                     onClick={handleThemeSelect}
                   />
                 )}
-                {selectedTheme.theme !== '스튜디오' && (
+                {selectedTheme.theme !== '나무' && (
                   <ImageBoxPosition
                     className="bottom-[25%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/studio.png"
                     detail="감성적인 디자인"
-                    theme="스튜디오"
+                    theme="나무"
                     sentence="스튜디오에서 찍은 것처럼 이미지를 생성해드립니다."
                     onClick={handleThemeSelect}
                   />
                 )}
               </div>
               <div className="relative w-[200px] max-w-4xl h-[900px] shrink-0 flex items-center justify-center">
-                {selectedTheme.theme !== '명소' && (
+                {selectedTheme.theme !== '파리' && (
                   <ImageBoxPosition
                     className="bottom-[62.5%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/place.png"
                     detail="아름답고 현실적인"
-                    theme="명소"
-                    sentence="유명한 명소를 배경으로 이미지를 생성해드립니다."
+                    theme="파리"
+                    sentence="유명한 파리를 배경으로 이미지를 생성해드립니다."
                     onClick={handleThemeSelect}
                   />
                 )}
@@ -244,7 +240,7 @@ const ThemeResult: React.FC = () => {
                     className="bottom-[37.5%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/summer.png"
                     detail="시원한 바닷가"
-                    theme="여름"
+                    theme="바다"
                     sentence="여름철 시원한 배경으로 이미지를 생성해드립니다."
                     onClick={handleThemeSelect}
                   />
@@ -281,12 +277,12 @@ const ThemeResult: React.FC = () => {
                     onClick={handleThemeSelect}
                   />
                 )}
-                {selectedTheme.theme !== '카페' && (
+                {selectedTheme.theme !== '다채로운' && (
                   <ImageBoxPosition
                     className="bottom-[25%] lg:w-[280px] lg:h-[280px] font-PR_M"
                     imageSource="ThemeImage/cafe.png"
                     detail="모던한 디자인"
-                    theme="카페"
+                    theme="다채로운"
                     sentence="카페처럼 모던한 디자인의 이미지를 생성해드립니다."
                     onClick={handleThemeSelect}
                   />
