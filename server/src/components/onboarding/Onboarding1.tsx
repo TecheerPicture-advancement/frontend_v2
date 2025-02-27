@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../MainButton'
-import Oboardingmain from '../../../public/assets/onboardingmain.jpg';
 
 const Onboarding1: React.FC = () => {
     return (

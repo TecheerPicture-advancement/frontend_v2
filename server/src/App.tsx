@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useThemeStore } from './store/useThemeStore';
+
 import InstagramUpload from './pages/Instagram_Upload';
 import NavBar from './components/NavBar';
 import Onboarding from './pages/Onboarding';
@@ -12,13 +15,24 @@ import STResult from './pages/STResult';
 import BannerResult from './pages/BannerResult';
 import NukkiResult from './pages/NukkiResult';
 import BannerEdit from './pages/BannerEdit';
-import './App.css';
+import { useLanguageStore } from './store/useLanguageStore';
+
+
 
 const App: React.FC = () => {
+  const initializeTheme = useThemeStore((state) => state.initializeTheme);
+  const { initializeLanguage } = useLanguageStore();
+
+
+  useEffect(() => {
+    initializeTheme();
+    initializeLanguage();
+  }, []);
+
 
   return (
       <Router> 
-        <NavBar /> {/* NavBar가 Router 내에 위치 */}
+        <NavBar />
         <div className="main-content">
           <Routes>
           {/* <Route path='/' element={<Onboarding />}/> */}
