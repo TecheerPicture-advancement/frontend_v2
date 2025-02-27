@@ -12,7 +12,6 @@ import BackgroundChooseComImage3 from '../../public/assets/BackgroundChooseComIm
 
 const BackgroundChoose: React.FC = () => {
 
-
   return (
     <>
         <div className="flex flex-col w-full min-h-screen bg-black">

@@ -3,47 +3,32 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../public/assets/logo.png';
 import Moon from '../assets/dark/moon.svg?react';
 import Sun from '../assets/dark/sun.svg?react';
+import { useThemeStore } from '../store/useThemeStore';
+import { useLanguageStore } from '../store/useLanguageStore';
+
+
 
 const NavBar: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate(); 
+    const { isDarkMode, toggleDarkMode } = useThemeStore();
+    const { language, setLanguage } = useLanguageStore();
+    const location = useLocation();
+    const navigate = useNavigate();
+  
+    const [hasBg, setHasBg] = useState<boolean>(false);
+  
+    useEffect(() => {
+      const handleScroll = () => {
+        setHasBg(window.scrollY > 760);
+      };
+  
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('theme') === 'dark';
-  });
-
-  const [language, setLanguage] = useState<'KOR' | 'ENG'>('KOR');
-
-  const [hasBg, setHasBg] = useState<boolean>(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setHasBg(window.scrollY > window.innerHeight);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
-  const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'KOR' ? 'ENG' : 'KOR'));
-  };
-
-  const handleNavigation = (url: string) => {
-    navigate(url);
-  };
+    const handleLanguageChange = () => {
+      setLanguage(language === 'KOR' ? 'ENG' : 'KOR');
+    };    
+  
 
   const navLinks = [
     { name: language === 'KOR' ? '배너생성' : 'Banner', url: '/banner' },
@@ -52,7 +37,7 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className={`z-10 fixed top-0 left-0 w-full py-4 transition-colors duration-300 ${hasBg ? 'bg-black' : 'bg-transparent'}`}>
+    <nav className={`z-10 fixed top-0 left-0 w-full py-4 transition-colors duration-300 ${hasBg ? 'bg-white dark:bg-black' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between w-full pl-32 pr-20">
         {/* 로고 */}
         <Link to="/" className="flex items-center text-3xl text-white font-PR_BO hover:text-white">
@@ -64,7 +49,7 @@ const NavBar: React.FC = () => {
           {navLinks.map((link, index) => (
             <li key={index} className="text-max-lg">
               <button
-                onClick={() => handleNavigation(link.url)}
+                onClick={() => navigate(link.url)}
                 className={`${
                   location.pathname === link.url
                     ? 'font-PR_BO text-green-Normal hover:text-green-Normal'
@@ -78,14 +63,14 @@ const NavBar: React.FC = () => {
 
           {/* 다크모드 토글 버튼 */}
           <li>
-            <button onClick={toggleDarkMode} className="p-2 transition-transform duration-200 hover:scale-110">
+            <button onClick={toggleDarkMode} className="p-2 hover:scale-110 ">
               {isDarkMode ? <Sun /> : <Moon />}
             </button>
           </li>
 
           {/* 언어 변경 버튼 */}
           <li>
-            <button onClick={toggleLanguage} className="text-white font-PR_L hover:text-green-Normal">
+            <button onClick={handleLanguageChange} className=" text-gray-200 font-PR_L hover:text-green-Normal">
               {language}
             </button>
           </li>
