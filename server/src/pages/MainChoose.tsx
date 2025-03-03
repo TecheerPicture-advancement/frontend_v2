@@ -10,9 +10,9 @@ const MainChoose: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setRayout(true);
-    }, 3000); // 3초 후에 Rayout 상태 변경
+    }, 3000);
 
-    return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearTimeout(timer);
   }, []);
 
   return (

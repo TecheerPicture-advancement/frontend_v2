@@ -1,123 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import useImageStore from '../store/useImageStore';
 import NavBar from '../components/NavBar';
 import ResultButton from '../components/ResultButton3';
 import ResultImage from '../components/ResultImage';
 import Loading from '../components/Loading';
 
-interface SimpleData {
-  id: number;
-  image_url: string | null;
-}
-
-interface NukkiData {
-  id: number;
-  image_url: string | null;
-}
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ImageResponse {
-  data: {
-    id: number;
-    image_url: string;
-  };
+  imageUrl: string;
 }
 
 const STResult: React.FC = () => {
+  const { imageId } = useImageStore();
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const [backgroundData, setBackgroundData] = useState<SimpleData[]>([]);
-  const [removeBgData, setRemoveBgData] = useState<NukkiData | null>(null);
-  const [imageData, setImageData] = useState<string | null>(null);
-  const [imageWidth, setImageWidth] = useState<number | null>(null);
-  const [imageHeight, setImageHeight] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [optimizedPhoto, setOptimizedPhoto] = useState<string | null>(null);
   const location = useLocation();
-  const state = location.state as { conceptBackgroundIds: number[]; removeBgBackgroundId: number; imageId: number };
-  const { conceptBackgroundIds, removeBgBackgroundId, imageId } = state;
+  const { imageUrls } = (location.state as { imageUrls?: string[] }) || {};
+  const [generatedImages, setGeneratedImages] = useState<string[]>(imageUrls || []);
+
+
+  useEffect(() => {
+    if (!imageId) {
+      console.error("No imageId found in store");
+      return;
+    }
+    if (!imageUrls || imageUrls.length === 0) {
+      console.error("No imageUrls received");
+      return;
+    }
+
+    setGeneratedImages(imageUrls);
+  }, [imageId, imageUrls]);
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchBackgroundData = async () => {
-      if (conceptBackgroundIds.length > 0) {
-        try {
-          const fetchedData = await Promise.all(
-            conceptBackgroundIds.map(async (backgroundId) => {
-              const url = `/api/v1/backgrounds/${backgroundId}/`;
-              return await fetchWithRetry(url);
-            })
-          );
-          if (isMounted) {
-            setBackgroundData(fetchedData);
-          }
-        } catch (error) {
-          console.error('Error fetching background data:', error);
-        }
-      } else {
-        console.error('No backgroundIds provided in state');
-      }
-    };
+    if (!imageId) {
+      console.error("No imageId found in store");
+      setIsLoading(false);
+      return;
+    }
+    if (!imageUrls || imageUrls.length === 0) {
+      console.error("No imageUrls received");
+      return;
+    }
 
-    const fetchRemoveBgData = async () => {
+    setGeneratedImages(imageUrls);
+
+    const fetchOriginalImage = async () => {
       try {
-        const url = `/api/v1/backgrounds/${removeBgBackgroundId}/`;
-        const data = await fetchWithRetry(url);
+        const response = await axios.get<ImageResponse>(`${BASE_URL}/images/${imageId}`);
         if (isMounted) {
-          setRemoveBgData(data as NukkiData);
+          setOriginalImage(response.data.imageUrl);
+          setSelectedPhoto(response.data.imageUrl);
         }
       } catch (error) {
-        console.error('Error fetching removeBg background data:', error);
+        console.error("Error fetching original image:", error);
       }
-    };
-
-    const fetchImageData = async () => {
-      try {
-        const response = await axios.get(`/api/v1/images/${imageId}/`);
-        const data = response.data as ImageResponse;
-        if (isMounted) {
-          setImageData(data.data.image_url);
-
-          const img = new Image();
-          img.src = data.data.image_url;
-          img.onload = () => {
-            if (isMounted) {
-              console.log(`Image dimensions: ${img.width}x${img.height}`);
-              setImageWidth(img.width);
-              setImageHeight(img.height);
-            }
-          };
-        }
-      } catch (error) {
-        console.error('Error fetching image data:', error);
-      }
-    };
-
-    const fetchWithRetry = async (url: string, retries = 30, delay = 3000): Promise<SimpleData | NukkiData> => {
-      for (let i = 0; i < retries; i++) {
-        try {
-          const response = await axios.get(url);
-          const data = response.data as SimpleData | NukkiData;
-          if (data.image_url) {
-            return data;
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-      throw new Error(`Failed to fetch valid data from ${url} after ${retries} attempts`);
     };
 
     const fetchData = async () => {
-      await Promise.all([
-        fetchBackgroundData(),
-        fetchRemoveBgData(),
-        fetchImageData()
-      ]);
-      if (isMounted) {
-        setIsLoading(false); // Set loading state to false after all fetches are complete
-      }
+      await fetchOriginalImage();
+      if (isMounted) setIsLoading(false);
     };
 
     fetchData();
@@ -125,154 +74,149 @@ const STResult: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [conceptBackgroundIds, removeBgBackgroundId, imageId]);
-
-  const getResultTitle = () => {
-    if (location.pathname.includes('theme')) {
-      return '테마';
+  }, [imageId, imageUrls]);
+  
+  // WEBP 변환 후 이미지 설정
+  useEffect(() => {
+    if (selectedPhoto) {
+      loadImage(selectedPhoto).then((img) => {
+        const webpDataUrl = resizeAndConvertToWebp(img);
+        setOptimizedPhoto(webpDataUrl);
+      });
     }
-    if (location.pathname.includes('simple')) {
-      return '심플';
-    }
-    return '결과 이미지';
-  };
-
-  const getResizingLink = () => {
-    if (location.pathname.includes('theme')) {
-      return '/theme/result/resizing';
-    }
-    if (location.pathname.includes('simple')) {
-      return '/simple/result/resizing';
-    }
-    return '/result/resizing';
-  };
-
-  const downloadImage = async (url: string) => {
+  }, [selectedPhoto]);
+  
+  const downloadImage = async (imageUrl: string, format: "png" | "jpg" = "png") => {
     try {
-      const response = await axios.get(url, { responseType: 'blob' });
-      const blob = new Blob([response.data as BlobPart], { type: response.headers['content-type'] });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.setAttribute('download', 'result.png');
+      const img = await loadImage(imageUrl);
+      const dataUrl = format === "png" ? resizeAndConvertToPng(img) : resizeAndConvertToJpeg(img);
+      
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.setAttribute("download", `result.${format}`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Error downloading image:', error);
+      console.error("Error downloading image:", error);
     }
-  };
-
-  const copyImage = async (url: string) => {
-    try {
-      const response = await axios.get(url, { responseType: 'blob' });
-      const blob = new Blob([response.data as BlobPart], { type: response.headers['content-type'] });
-      const data = [new ClipboardItem({ [blob.type]: blob })];
-      await navigator.clipboard.write(data);
-      alert('이미지가 클립보드에 복사되었습니다.');
-      console.log('Image copied to clipboard');
-    } catch (error) {
-      console.error('Error copying image:', error);
-    }
-  };
-
-  const getSelectedPhotoIndex = (): number | null => {
-    if (selectedPhoto === imageData) {
-      return 0;
-    }
-    if (selectedPhoto === removeBgData?.image_url) {
-      return 1;
-    }
-    const bgData = backgroundData.find((data) => data.image_url === selectedPhoto);
-    return bgData ? 1 : null;
   };
   
-  const selectedPhotoId = (() => {
-    if (selectedPhoto === imageData) {
-      return imageId;
+  const copyImage = async (imageUrl: string) => {
+    try {
+      const img = await loadImage(imageUrl);
+      const dataUrl = resizeAndConvertToJpeg(img);
+  
+      const blob = dataURLtoBlob(dataUrl);
+      const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+      await navigator.clipboard.write([clipboardItem]);
+  
+      alert("이미지가 클립보드에 복사되었습니다.");
+    } catch (error) {
+      console.error("Error copying image:", error);
     }
-    if (selectedPhoto === removeBgData?.image_url) {
-      return removeBgBackgroundId;
+  };
+  
+  const loadImage = (url: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
+  
+  const resizeAndConvertToWebp = (img: HTMLImageElement): string => {
+    return resizeAndConvert(img, "image/webp", 0.8);
+  };
+  
+  const resizeAndConvertToPng = (img: HTMLImageElement): string => {
+    return resizeAndConvert(img, "image/png");
+  };
+  
+  const resizeAndConvertToJpeg = (img: HTMLImageElement): string => {
+    return resizeAndConvert(img, "image/jpeg", 0.8);
+  };
+  
+  const resizeAndConvert = (img: HTMLImageElement, format: string, quality = 1): string => {
+    const maxWidth = 1080;
+    const scale = maxWidth / img.width;
+    const newWidth = img.width * scale;
+    const newHeight = img.height * scale;
+  
+    const canvas = document.createElement("canvas");
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+  
+    const ctx = canvas.getContext("2d");
+    ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+  
+    return canvas.toDataURL(format, quality);
+  };
+  
+  const dataURLtoBlob = (dataUrl: string): Blob => {
+    const arr = dataUrl.split(",");
+    const mime = arr[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
     }
-    const bgData = backgroundData.find((data) => data.image_url === selectedPhoto);
-    console.log("뭐야이게", bgData);
-    return bgData ? bgData.id : null;
-  })();
-
-  const selectedPhotoWidthHeight = selectedPhoto === imageData ? { imageWidth, imageHeight } : null;
+    return new Blob([u8arr], { type: mime });
+  };  
+  
 
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="flex flex-col justify-start min-h-screen bg-black">
+        <div className="flex flex-col justify-start min-h-screen">
           <NavBar />
-          <header className="flex items-center justify-center text-4xl text-white font-PR_BL my-14">{getResultTitle()}
-            <span className="text-4xl text-green-Normal font-PR_BL ml-2">결과이미지</span> 
+          <header className="flex items-center justify-center text-4xl text-white dark:text-black font-PR_BL my-14">
+            심플결과 이미지
           </header>
           <div className="flex flex-row items-start justify-center w-full shrink-0">
             <div className="grid grid-cols-2 gap-10 shrink-0">
-              {imageData && (
-                <div className="flex flex-wrap items-center justify-center shrink-0 overflow-hidden">
-                  <ResultImage
-                    src={imageData}
-                    onClick={() => setSelectedPhoto(imageData)}
-                    isSelected={selectedPhoto === imageData}
-                    width="64"
-                    height="64"
-                    maintext={''}
-                    servetext={'변경 전'}
-                  />
-                </div>
-              )}
-
-              {removeBgData?.image_url && (
+              {originalImage && (
                 <div className="flex flex-wrap items-center justify-center shrink-0">
                   <ResultImage
-                    src={removeBgData.image_url}
-                    onClick={() => setSelectedPhoto(removeBgData.image_url)}
-                    isSelected={selectedPhoto === removeBgData.image_url}
+                    src={originalImage}
+                    onClick={() => setSelectedPhoto(originalImage)}
+                    isSelected={selectedPhoto === originalImage}
                     width="64"
                     height="64"
-                    maintext={''}
-                    servetext={''}
+                    maintext=""
+                    servetext="원본 이미지"
                   />
                 </div>
               )}
 
-              {backgroundData.map((data) => (
-                data.image_url && (
-                  <div className="flex flex-wrap items-center justify-center shrink-0" key={data.id}>
-                    <ResultImage
-                      src={data.image_url}
-                      onClick={() => setSelectedPhoto(data.image_url)}
-                      isSelected={selectedPhoto === data.image_url}
-                      width="64"
-                      height="64"
-                      maintext={''}
-                      servetext={''}
-                    />
-                  </div>
-                )
+              {generatedImages.map((url, index) => (
+                <div className="flex flex-wrap items-center justify-center shrink-0" key={index}>
+                  <ResultImage
+                    src={url}
+                    onClick={() => setSelectedPhoto(url)}
+                    isSelected={selectedPhoto === url}
+                    width="64"
+                    height="64"
+                    maintext=""
+                    servetext=""
+                  />
+                </div>
               ))}
             </div>
             <div className="flex flex-col items-center shrink-0">
               {selectedPhoto && (
                 <div className="ml-24">
-                  <img src={selectedPhoto || ''} alt="selected" className="w-64 h-64 mb-5 border border-gray-300" />
+                  <img src={optimizedPhoto || selectedPhoto} alt="selected img" className="w-64 h-64 mb-5 border border-gray-300 object-cover" />
+
                   <div className="flex flex-col gap-10 mt-10">
-                    <Link
-                      to={getResizingLink()}
-                      state={{
-                        selectedPhotoId,
-                        selectedPhotoIndex: getSelectedPhotoIndex(),
-                        ...selectedPhotoWidthHeight
-                      }}
-                    >
-                      <ResultButton value="이미지 크기 조절" />
-                    </Link>
-                    <div onClick={() => downloadImage(selectedPhoto)}>
-                      <ResultButton value="다운로드" />
+                    <ResultButton value="인스타그램 피드 올리기" />
+                    <div onClick={() => downloadImage(selectedPhoto)}>  
+                    <ResultButton value="다운로드" />
                     </div>
                     <div onClick={() => copyImage(selectedPhoto)}>
                       <ResultButton value="복사하기" />

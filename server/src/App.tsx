@@ -33,7 +33,6 @@ const App: React.FC = () => {
   return (
       <Router> 
         <NavBar />
-        <div className="main-content">
           <Routes>
           {/* <Route path='/' element={<Onboarding />}/> */}
             <Route path="/" element={<Onboarding />} />            
@@ -58,7 +57,6 @@ const App: React.FC = () => {
                   <Route path='/simple/result/edit' element={<ImageEdit/>}/> */} 
                   <Route path='/instagram-upload' element={<InstagramUpload/>}/>
           </Routes>
-        </div>
       </Router>
   );
 };
