@@ -6,10 +6,7 @@ const Onboarding1: React.FC = () => {
     return (
     <div>
         <div className="relative overflow-hidden w-auto h-[760px] bg-[url('/assets/onboardingmain.jpg')] bg-cover bg-center">
-            <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-tr from-black  to-white mix-blend-multiply"></div>
-            </div>
-            <div className='absolute inset-0 flex items-center mx-12 desktop:mx-80 laptop:mx-64 tablet:mx-52'>
+            <div className='relative w-[1180px] mx-auto h-full flex items-center z-20'>
                 <div className='flex flex-col'>
                     <h2 className="text-[28px] text-white font-PR_BO">AI기반 광고 이미지 생성 서비스</h2>
                     <h1 className="text-7xl text-green-Normal font-PR_BL">테커픽처</h1>
@@ -21,6 +18,7 @@ const Onboarding1: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-black  to-white mix-blend-multiply z-10"/>
         </div>
     </div>
     );

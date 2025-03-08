@@ -69,7 +69,7 @@ const BackgroundChoose: React.FC = () => {
     <>
     {isModalOpen && <ImageUploadModal onClose={handleUploadComplete} />}
     {isLoading && <Loading/>}
-    <div className="flex flex-col w-full min-h-screen justify-center items-center">
+    <div className="flex flex-col w-full justify-center items-center">
       <div className="flex flex-col items-center justify-center h-3/6">
         <div className="items-center w-full h-full px-20 py-10">
           <p className="text-center text-3xl dark:text-white text-black font-PR_BO">

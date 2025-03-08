@@ -32,7 +32,7 @@ const ResultImage: React.FC<ResultImageProps> = ({ src, onClick, isSelected, wid
     <p className="bottom-[36px] absolute w-full text-xs font-PR_BO text-center text-white">
     {maintext}
     </p>
-    <p className="bottom-[16px] absolute w-full text-xs font-PR_BO text-center text-white">
+    <p className="relative bottom-10 z-10 w-full text-xs font-PR_BO text-center text-white">
     {servetext}
     </p>
     </div>

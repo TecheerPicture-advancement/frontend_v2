@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className={`z-10 fixed top-0 left-0 w-full py-4 transition-colors duration-300 ${hasBg ? 'bg-white dark:bg-black' : 'bg-transparent'}`}>
+    <nav className={`z-10 w-full py-4 transition-colors duration-300 ${hasBg ? 'bg-white dark:bg-black' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between w-full pl-32 pr-20">
         {/* 로고 */}
         <Link to="/" className="flex items-center text-3xl text-white font-PR_BO hover:text-white">

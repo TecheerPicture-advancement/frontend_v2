@@ -10,7 +10,7 @@ import BackgroundChoose from './pages/BackgroundChoose';
 import MainChoose from './pages/MainChoose';
 import MainchooseExplain from './pages/MainchooseExplain';
 import ImagetoVideo from './components/ImagetoVideo';
-import Theme from './pages/ThemeResult';
+import Theme from './pages/ThemeSelect';
 import STResult from './pages/STResult';
 import BannerResult from './pages/BannerResult';
 import NukkiResult from './pages/NukkiResult';
@@ -45,8 +45,7 @@ const App: React.FC = () => {
                   {/* <Route path='/text-to-video' element={<TexttoVideo/>}/> */}
                   <Route path='/image-to-video' element={<ImagetoVideo/>}/>
                   <Route path='/theme' element={<Theme/>}/>
-                  <Route path='/theme/result' element={<STResult/>}/>
-                  <Route path='/simple/result' element={<STResult/>}/>
+                  <Route path='/:type/result' element={<STResult />} />
                   <Route path='/banner/result' element={<BannerResult/>}/>
                   <Route path='/nukki/result' element={<NukkiResult/>}/>
                   {/* <Route path='/banner/result/resizing' element={<ImageResizingBanner/>}/>
