@@ -16,7 +16,7 @@ const MainChoose: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-black justify-center items-center">
+    <div className="flex bg-black justify-center items-center">
       <div className="flex flex-col justify-center items-center gap-7">
         {/* 상단 레이아웃 */}
         <div className="h-20 flex flex-col items-center justify-center">

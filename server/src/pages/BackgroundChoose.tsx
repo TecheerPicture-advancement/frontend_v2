@@ -21,7 +21,6 @@ const BackgroundChoose: React.FC = () => {
     setSelectedIndex(index);
     setIsModalOpen(true);
   };
-
   const handleUploadComplete = async (uploadedImageId: number | null) => {
     setIsModalOpen(false);
     
@@ -57,54 +56,72 @@ const BackgroundChoose: React.FC = () => {
         setIsLoading(false);
       }
     } else if (selectedIndex === 2) {
-      navigate('/nukki/result');
-      setIsLoading(false);
+      try {
+        const response = await axios.post<{ resultUrl: string }>(
+          `${BASE_URL}/removebackgrounds`,
+          { imageId: uploadedImageId }
+        );
+  
+        navigate('/nukki/result', {
+          state: { resultUrl: response.data.resultUrl },
+        });
+      } catch (error) {
+        console.error("Error removing background:", error);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       navigate('/');
       setIsLoading(false);
     }
   };
+  
 
   return (
     <>
-    {isModalOpen && <ImageUploadModal onClose={handleUploadComplete} />}
-    {isLoading && <Loading/>}
-    <div className="flex flex-col w-full justify-center items-center">
-      <div className="flex flex-col items-center justify-center h-3/6">
-        <div className="items-center w-full h-full px-20 py-10">
-          <p className="text-center text-3xl dark:text-white text-black font-PR_BO">
-            내 마음대로 만드는 상품 이미지
-          </p>
+      {isModalOpen && <ImageUploadModal onClose={handleUploadComplete} />}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
+          <Loading />
         </div>
-        <div className="grid w-7/12 h-full grid-cols-3 gap-5">
-          <div onClick={() => openModal(1)}>
-            <BackgroundChooseCom
-              value="심플"
-              value2="상품에 어울리는"
-              value3="단순한 배경"
-              image={BackgroundChooseComImage1}
-            />
+      )}
+  
+      <div className="flex flex-col w-full justify-center items-center">
+        <div className="flex flex-col items-center justify-center h-3/6">
+          <div className="items-center w-full h-full px-20 py-10">
+            <p className="text-center text-3xl dark:text-white text-black font-PR_BO">
+              내 마음대로 만드는 상품 이미지
+            </p>
           </div>
-          <Link to="/theme">
-            <BackgroundChooseCom
-              value="테마"
-              value2="테마 선택 후 맞춤형"
-              value3="맞춤형 이미지 생성"
-              image={BackgroundChooseComImage2}
-            />
-          </Link>
-          <div onClick={() => openModal(2)}>
-            <BackgroundChooseCom
-              value="누끼"
-              value2="배경을 제거한"
-              value3="아이템 이미지 생성"
-              image={BackgroundChooseComImage3}
-            />
+          <div className="grid w-7/12 h-full grid-cols-3 gap-5">
+            <div onClick={() => openModal(1)}>
+              <BackgroundChooseCom
+                value="심플"
+                value2="상품에 어울리는"
+                value3="단순한 배경"
+                image={BackgroundChooseComImage1}
+              />
+            </div>
+            <Link to="/theme">
+              <BackgroundChooseCom
+                value="테마"
+                value2="테마 선택 후 맞춤형"
+                value3="맞춤형 이미지 생성"
+                image={BackgroundChooseComImage2}
+              />
+            </Link>
+            <div onClick={() => openModal(2)}>
+              <BackgroundChooseCom
+                value="누끼"
+                value2="배경을 제거한"
+                value3="아이템 이미지 생성"
+                image={BackgroundChooseComImage3}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-</>
+    </>
   );
 };
 
