@@ -172,6 +172,7 @@ const STResult: React.FC = () => {
               <div className="flex flex-col items-center gap-10 w-full sm:w-auto">
                 <img src={optimizedPhoto || selectedPhoto} alt="selected img" className="w-64 h-64 border border-gray-300 object-cover" onContextMenu={(e) => e.preventDefault()} />
                 <div className="w-full flex flex-col gap-10">
+                  <ResultButton value="인스타그램 썸네일 제작"  />
                   <ResultButton value="인스타그램 피드 올리기" onClick={handleNavigateToInstagram} />
                   <ResultButton value="다운로드" onClick={handleDownload} />
                   <ResultButton value="복사하기" onClick={handleCopyToClipboard} />
