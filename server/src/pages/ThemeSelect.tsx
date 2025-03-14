@@ -122,7 +122,7 @@ const ThemeResult: React.FC = () => {
       ) : (
           <div className="w-full h-full flex flex-col items-center justify-start gap-10 md:gap-20 lg:gap-[90px] overflow-hidden">
             <header className="flex flex-col items-center gap-2.5 md:gap-3 overflow-hidden">
-              <h1 className="text-xl md:text-2xl lg:text-[40px] leading-tight font-PR_BL text-center text-white">
+              <h1 className="text-5xl leading-tight font-PR_BL text-center text-white">
                 내 마음대로 만드는<br />
                 <span className="text-green-Normal">상품 이미지</span>
               </h1>
@@ -137,7 +137,7 @@ const ThemeResult: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -50 }}
                 >
-                  <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[35px] px-2.5 h-full">
+                  <div className="flex justify-center items-center  relative overflow-hidden gap-[35px] px-2.5 h-full">
                     <div className="flex-grow-0 flex-shrink-0 w-[250px] h-[250px] relative overflow-hidden rounded-[30px]">
                       <div
                         className="w-[250px] h-[250px] absolute left-0 top-[-0.5px] bg-green-Light rounded-[30px]"
@@ -187,7 +187,7 @@ const ThemeResult: React.FC = () => {
               )}
               {showModal && <ImageUploadModal onClose={handleModalClose} />}
             </AnimatePresence>
-            <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <main className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {themeList.map((theme, index) => (
                 <motion.div
                   key={theme.theme}
