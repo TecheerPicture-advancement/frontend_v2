@@ -112,7 +112,8 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
           )}
 
           <div className="flex items-end justify-end w-full mt-4 space-x-4">
-            <button onClick={() => onClose(null)} className="px-6 py-2 text-black rounded font-PR_BO hover:bg-gray-100">
+            
+          <button onClick={() => onClose(null)} className="px-6 py-2 text-black rounded font-PR_BO hover:bg-gray-100">
               닫기
             </button>
             {file && !uploading && (

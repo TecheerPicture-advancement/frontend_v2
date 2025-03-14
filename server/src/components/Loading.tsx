@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../styles/Loading.css'; // 사용자 정의 CSS 가져오기
+import '../styles/Loading.css';
 
 const Loading = () => {
   const [loading, setLoading] = useState(true);
@@ -8,7 +8,6 @@ const Loading = () => {
   const tips = [
     "Tip. 설명이 자세할 수록 원하는 사진이 나올 확률이 올라갑니다!",
     "Tip. 사진 생성 후 이미지를 바로 복사할 수 있습니다!",
-   // "Tip. 누끼 사진 생성 후 배경을 바로 만들 수 있습니다!",
     "Tip. AI생성으로 더 멋진사진을 만들어보세요!",
     "Tip. 배너 생성시 매력적인 문장을 직접 만들어보세요!",
     "Tip. 심플 이미지 생성시 누끼 이미지가 함께 생성됩니다.",
@@ -16,7 +15,6 @@ const Loading = () => {
     "Tip. 영상 설명이 자세할 수록 더 멋진 결과물이 만들어집니다!",
   ];
 
-  // Function to shuffle the tips array
   const shuffleTips = (tipsArray: string[]) => {
     const shuffled = [...tipsArray];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -29,12 +27,10 @@ const Loading = () => {
   const shuffledTips = shuffleTips(tips);
 
   useEffect(() => {
-    // Simulate a loading delay
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 1000000);
 
-    // Change tip every 5 seconds
     const interval = setInterval(() => {
       setTipIndex((prevIndex) => (prevIndex + 1) % shuffledTips.length);
     }, 4000);
@@ -61,9 +57,9 @@ const Loading = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen text-white bg-black">
+    <div className=" flex flex-col items-center justify-center w-full min-h-screen text-white bg-black bg-opacity-30">
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center mb-[25px] bg-opacity-0">
+        <div className="absolute flex items-center justify-center mb-[25px] bg-opacity-0">
           <Loader />
         </div>
       )}
@@ -86,7 +82,7 @@ const Loading = () => {
     />
       </svg>
       <p className="mt-[30px] text-center text-lg font-bold">생성중</p>
-      <p className="absolute w-full text-base font-PR_L text-center bottom-28">
+      <p className="w-full text-base font-PR_L text-center bottom-28">
         {shuffledTips[tipIndex]}
       </p>
     </div>

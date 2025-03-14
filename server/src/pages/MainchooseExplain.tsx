@@ -1,49 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ImageUploadModal from '../components/UploadImageModal';
-import useImageStore from '../store/useImageStore';
 
 const MainchooseExplain: React.FC = () => {
   const location = useLocation();
   const { index } = location.state || {};
   const navigate = useNavigate();
-  const { setImageId } = useImageStore(); // Zustand 전역 상태 사용
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleClose = () => {
     navigate(-1);
   };
 
-  const handleUploadComplete = (uploadedImageId: number | null) => {
-    if (uploadedImageId) {
-      console.log('uploadedImageId:', uploadedImageId);
-      setImageId(uploadedImageId); // Zustand & sessionStorage 업데이트  
-      // 페이지 이동
-      switch (index) {
-        case 1:
-          navigate('/banner/');
-          break;
-        case 2:
-          navigate('/background/');
-          break;
-        case 3:
-          navigate('/text-to-video/');
-          break;
-        case 4:
-          navigate('/image-to-video/');
-          break;
-        default:
-          navigate('/');
-      }
-      setIsModalOpen(false);
-    } else {
-      setIsModalOpen(false); // 만약 imageId가 없다면 모달만 닫음
+  const handleNavigate = () => {
+    switch (index) {
+      case 1:
+        navigate('/banner/');
+        break;
+      case 2:
+        navigate('/background/');
+        break;
+      case 3:
+        navigate('/text-to-video/');
+        break;
+      case 4:
+        navigate('/image-to-video/');
+        break;
+      default:
+        navigate('/');
     }
-  };
-  
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
   };
 
   let videoSource;
@@ -102,7 +85,7 @@ const MainchooseExplain: React.FC = () => {
         <p className="text-lg font-PR_L text-white">{serveText2}</p>
         <button
           className="mt-8 flex flex-row place-items-center text-lg font-PR_M text-white gap-2 rounded-md border-white"
-          onClick={handleOpenModal} // 버튼 클릭 시 모달 열기
+          onClick={handleNavigate}
         >
           생성하러가기 →
         </button>
@@ -110,9 +93,6 @@ const MainchooseExplain: React.FC = () => {
       <button onClick={handleClose} className="absolute top-7 left-9 font-PR_L text-white px-2 py-1">
         Close
       </button>
-
-      {/* 이미지 업로드 모달 */}
-      {isModalOpen && <ImageUploadModal onClose={handleUploadComplete} />    }
     </div>
   );
 };
