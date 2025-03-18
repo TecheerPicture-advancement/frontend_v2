@@ -4,7 +4,6 @@ import NavBar from '../components/NavBar';
 import RadioButton from '../components/RadioButton';
 import RadioButton2 from '../components/RadioButton2';
 import ResultButton from '../components/ResultButton';
-import ResultImageBanner from '../components/ResultImageBanner';
 import axios from 'axios';
 import { useEffect } from 'react';
 

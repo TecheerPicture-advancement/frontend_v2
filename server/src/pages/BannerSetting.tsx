@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Loading from '../components/Loading'; 
 import InputField from '../components/form/InputField';
 import useImageStore from '../store/useImageStore';
+import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-interface BannerSettingProps {
-  imageUrl: string;
-}
-
-const BannerSetting: React.FC<BannerSettingProps> = () => {
+const BannerSetting: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const imageUrl = location.state?.imageUrl;
@@ -25,7 +21,13 @@ const BannerSetting: React.FC<BannerSettingProps> = () => {
     addInformation: '',
   });
 
-  // 입력값 변경 핸들러
+  useEffect(() => {
+    if (!imageUrl) {
+      alert('업로드한 이미지가 없습니다. 처음부터 다시 시작해주세요');
+      navigate('/');
+    }
+  }, [imageUrl, navigate]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -33,33 +35,45 @@ const BannerSetting: React.FC<BannerSettingProps> = () => {
     });
   };
 
-  // 썸네일 생성하기 버튼 클릭 핸들러
   const handleSubmit = async () => {
-    // 필수 항목 체크
     if (!formData.itemName || !formData.itemConcept || !formData.itemCategory) {
       alert('필수 항목을 다 작성하지 않았습니다.');
       return;
     }
-
+  
     const payload = {
       ...formData,
       imageId,
     };
-
+  
     try {
       setLoading(true);
-      const response = await axios.post<{ id: number }>(`${BASE_URL}/banners`, payload);
-      const { id } = response.data;
-
-      console.log('응답:', response.data);
-      navigate('/banner/result', { state: { id } }); // 응답 받은 id 전달
+      
+      const response = await axios.post<{ code: number; message: string; data: { id: number } }>(
+        `${BASE_URL}/banners`, 
+        payload
+      );
+  
+      console.log("응답:", response.data); 
+  
+      const id = response.data?.data?.id;
+      if (!id) {
+        console.error("배너 ID가 없습니다.");
+        alert("배너 생성에 실패했습니다.");
+        return;
+      }
+  
+      console.log("ID:", id, "ImageUrl:", imageUrl);
+  
+      navigate('/banner/result', { state: { id, imageUrl } });
     } catch (error) {
-      console.error('에러 발생:', error);
-      alert('썸네일 생성 중 오류가 발생했습니다.');
+      console.error("에러 발생:", error);
+      alert("썸네일 생성 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <>      
@@ -68,17 +82,23 @@ const BannerSetting: React.FC<BannerSettingProps> = () => {
       ) : (
         <>
           <div className="flex flex-col items-center w-[980px] mx-auto justify-center">
-            <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 my-14">
-              <span className="flex items-center justify-center text-4xl text-center text-white font-Jalnan">
+            <div className="relative flex items-center justify-center flex-grow-0 flex-shrink-0 my-10">
+              <span className="flex items-center justify-center text-4xl text-center text-white font-PR_BO">
                 내 마음대로 만드는
               </span>
               <span className="ml-2 text-4xl text-center font-PR_BO text-green-Normal">
-                광고 이미지
+                인스타그램 썸네일
               </span>
             </div>
             <div className='flex flex-col items-center justify-center w-full gap-8'>
-              <div className='grid grid-cols-[26.25rem_auto] gap-8'>
-                <img src={imageUrl} alt="Selected Image" className="w-[420px] h-[420px] border border-gray-300 object-cover" />
+              <div className='grid grid-cols-[21rem_auto] gap-16'>
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Selected Image"
+                    className="w-[336px] h-[448px] border border-gray-300 object-cover"
+                  />
+                )}
                 <div className="w-[420px]">
                   <div className="flex flex-col justify-center gap-8">
                     <div className="flex flex-col">
@@ -130,7 +150,7 @@ const BannerSetting: React.FC<BannerSettingProps> = () => {
                 <button
                   type="button"
                   className="px-20 py-4 mt-4 text-lg text-black bg-green-Normal font-PR_BO rounded-xl"
-                  onClick={handleSubmit} // 버튼 클릭 시 POST 요청 및 페이지 이동
+                  onClick={handleSubmit}
                 >
                   썸네일 생성하기
                 </button>

@@ -33,7 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const displayValue = type === 'number' && (value === '' || isNaN(value as number)) ? '' : value;
 
   return (
-    <div className={`relative ${isFocused ? 'border-green-Normal focus:border-green-Normal' : 'border-green-Light'} rounded-lg flex flex-col justify-start items-start w-full`}>
+    <div className={`relative ${isFocused ? 'border-green-Normal focus:border-green-Normal' : 'border-green-Light'} rounded-lg flex flex-col justify-start items-start w-full gap-2`}>
       <div>
         <label className="flex-grow-0 flex-shrink-0 text-lg font-PR_M text-left text-green-Light">
           {label}

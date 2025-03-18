@@ -1,4 +1,6 @@
 const { fontFamily } = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
+
     /** @type {import('tailwindcss').Config} */
     module.exports = {
       content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
@@ -64,5 +66,20 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
           },
         },
       },
-      plugins: [],
-      };
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.text-stroke': {
+          '-webkit-text-stroke': '1.5px black',
+          '-webkit-text-fill-color': 'white',
+        },
+        '.text-stroke-sm': {
+          '-webkit-text-stroke': '0.5px black',
+        },
+        '.text-stroke-lg': {
+          '-webkit-text-stroke': '3px black',
+        },
+      });
+    }),
+  ],
+};

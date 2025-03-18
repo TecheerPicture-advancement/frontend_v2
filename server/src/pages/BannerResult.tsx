@@ -1,261 +1,189 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import ResultImageBanner from '../components/ResultImageBanner';
-import ResultButton3 from '../components/ResultButton3';
-import LastImage, { LastImageRef } from '../components/LastImage';
-import NavBar from '../components/NavBar';
-import Loading from '../components/Loading';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import html2canvas from "html2canvas";
 
+import Loading from "../components/Loading";
+import ResultButton3 from "../components/ResultButton3";
+import PRthumbnail from "../components/banner/PRthumbnail";
+import Gongthumbnail from "../components/banner/Gongthumbnail";
+import Jalthumbnail from "../components/banner/Jalthumbnail";
 
-interface BannerResponse {
-  code: number;
-  message: string;
-  data: {
-    maintext: string;
-    servetext: string;
-    maintext2: string;
-    servetext2: string;
-  };
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+interface BannerData {
+  maintext: string;
+  servetext: string;
+  maintext2?: string;
+  servetext2?: string;
 }
 
-interface BackgroundResponse {
-  id: number;
-  user: number;
-  image_url: string;
-  output_h: number;
-  output_w: number;  
-}
+  type PhotoComponent = React.FC<{
+    imageUrl: string;
+    maintext?: string;
+    servetext?: string;
+    scale?: number;
+  }>;
 
-const BannerResult: React.FC = () => {
-  const location = useLocation(); 
-  const { bannerId, backgroundids = [] } = location.state || {}; 
-  const { takeMaintext, takeServetext, Index } = location.state || {};
-  const { MaintextArr = [] } = location.state || {}; 
-  const { ServetextArr = [] } = location.state || {}; 
-  if (!bannerId || backgroundids.length === 0) {
-    console.error('Missing data: bannerId or backgroundids');
-    return <div>Required data is missing. Please try again.</div>;
-  }
-  
-  // 배너 텍스트 배열 상태 변수
-  const [MainText, setMainText] = useState<string[]>([]);
-  const [ServeText, setServeText] = useState<string[]>([]);
-
-  // 사진 배열 상태 변수
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
-
-  const [selectedBackgroundId, setSelectedBackgroundId] = useState<number | null>(null);
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const [selectedMainText, setSelectedMainText] = useState<string>('');
-  const [selectedserveText, setSelecedtServeText] = useState<string>('');
-  const [index, setindex] = useState<number>(0);
-
-  
-  const [isLoading, setIsLoading] = useState(false);
-  const lastImageRef = useRef<LastImageRef>(null);
-  const [isImageVisible, setIsImageVisible] = useState<boolean>(false);
+const BannerResult = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const bannerId = location.state?.id;
+  const originalImageUrl = location.state?.imageUrl;
 
-  const goToResizingBanner = () => {
-    if (selectedBackgroundId !== null) {
-      navigate('/banner/result/resizing', { state: { backgroundid: selectedBackgroundId, Maintext: selectedMainText, Servetext: selectedserveText } });
-    }
-  };
-  
-  const goToBannerEdit = () => {
-    if (selectedBackgroundId !== null) {
-      navigate('/banner/result/edit', { state: { 
-        backgroundids: backgroundids, 
-        MaintextArr: MainText, 
-        ServetextArr: ServeText, 
-        banner_id: bannerId, 
-        Photo: selectedPhoto, 
-        selectMaintext: selectedMainText, 
-        selectServetext: selectedserveText, 
-        index: index } });
-    }
-  };
+  const [isLoading, setIsLoading] = useState(true);
+  const [bannerData, setBannerData] = useState<BannerData | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<React.FC<{ imageUrl: string; maintext?: string; servetext?: string; scale?: number }> | "original">("original");
 
   useEffect(() => {
-    const fetchBanner = async () => {
+    if (!bannerId) return;
+
+    interface BannerResponse {
+      code: number;
+      data: BannerData;
+    }
+
+    const fetchBannerData = async () => {
       try {
-        if(MainText==null) setIsLoading(true);//검사해보기
-        const response = await axios.get<BannerResponse>(`/api/v1/banners/${bannerId}/`);
-        if (response.data && response.data.data) {
-          const mainTextArray = new Array(backgroundids.length).fill(response.data.data.maintext);
-          const serveTextArray = new Array(backgroundids.length).fill(response.data.data.servetext);
-          
-          if (MaintextArr.length > 0) {
-            setMainText(MaintextArr);
-          } else {
-            setMainText(mainTextArray);
-          }
-
-          if (ServetextArr.length > 0) {
-            setServeText(ServetextArr);
-          } else {
-            setServeText(serveTextArray);
-          }
-
-          if (Index !== undefined) {
-            setMainText(prevMainText => {
-              const newMainText = [...prevMainText];
-              newMainText[Index] = takeMaintext || prevMainText[Index];
-              return newMainText;
-            });
-          
-            setServeText(prevServeText => {
-              const newServeText = [...prevServeText];
-              newServeText[Index] = takeServetext || prevServeText[Index];
-              return newServeText;
-            });
-          }
-
-        } else {
-          console.log('유효한 데이터를 가져오지 못했습니다.');
+        const { data } = await axios.get<BannerResponse>(`${BASE_URL}/banners/${bannerId}`);
+        if (data.code === 200) {
+          setBannerData(data.data);
         }
       } catch (error) {
-        console.error('배너 데이터를 가져오는 중 오류가 발생했습니다.');
+        console.error("배너 데이터를 불러오는 중 오류 발생", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchBanner();
+    fetchBannerData();
   }, [bannerId]);
 
-  useEffect(() => {
-    const fetchBackgroundWithRetry = async (id:number, retries = 30, delay = 3000) => {
-      for (let i = 0; i < retries; i++) {
-        try {
-          const response = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${id}/`);
-          if (response.data && response.data.image_url) {
-            return response.data.image_url;
-          }
-        } catch (error) {
-          console.log(`Retry ${i + 1} failed for ID ${id}`);
-        }
-        await new Promise(res => setTimeout(res, delay)); // 재시도 전에 대기
-      }
-      throw new Error(`ID ${id}에 대해 ${retries}회 재시도 후 이미지 URL을 가져오는 데 실패했습니다`);
-    };
-  
-    const fetchBackgrounds = async () => {
-      try {
-        setIsLoading(true); // 로딩 시작
-        const responses = await Promise.all(
-          backgroundids.map((id: number) => fetchBackgroundWithRetry(id))
-        );
-  
-        setPhotos(responses);
-        if (responses.length > 0) {
-          const firstBackground = await axios.get<BackgroundResponse>(`/api/v1/backgrounds/${backgroundids[0]}/`);
-          if (firstBackground.data) {
-            setWidth(firstBackground.data.output_w);
-            setHeight(firstBackground.data.output_h);
-          }
-        }
-      } catch (error) {
-        console.error('배경 이미지를 가져오는 데 실패했습니다:', error);
-      } finally {
-        setIsLoading(false); // 데이터 가져오기 완료 후 로딩 종료
-      }
-    };
-  
-    fetchBackgrounds();
-  }, []);
+  if (isLoading) return <Loading />;
+
+
+  const photos: {
+    id: string;
+    component: PhotoComponent | "original";
+    imageUrl: string;
+  }[] = [
+    { id: "original", component: "original", imageUrl: originalImageUrl },
+    { id: "pr", component: () => <PRthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext} servetext={bannerData?.servetext}/>, imageUrl: originalImageUrl },
+    { id: "gong", component: () => <Gongthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext} servetext={bannerData?.servetext}/>, imageUrl: originalImageUrl },
+    { id: "jal", component: () => <Jalthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext}/>, imageUrl: originalImageUrl },
+  ];
   
 
-  const handleDownloadClick = async () => {
-    if (lastImageRef.current) {
-      setIsImageVisible(true); // Show the image component
-      // Allow time for the component to render before capturing
-      setTimeout(async () => {
-        if (lastImageRef.current) { // Double-check if the ref is still non-null
-          await lastImageRef.current.downloadImage();
-        }
-        setIsImageVisible(false); // Hide the image component
-      }, 500); // Small delay to ensure the component is visible
+  // 조건문 수정
+  if (selectedComponent !== "original" && typeof selectedComponent !== "function") {
+    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
+    return <div>잘못된 컴포넌트입니다.</div>;
+  }
+  console.log("Jalthumbnail",Jalthumbnail)
+
+  const handleUpload = async () => {
+    if (!selectedPhoto) return;
+    const captureElement = document.getElementById("capture-area");
+
+    if (!captureElement) {
+      console.error("캡처할 요소를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(captureElement);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      if (!blob) {
+        console.error("Blob 생성 실패");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", blob, "result.png");
+
+      const response = await axios.post(`${BASE_URL}/images`, formData);
+
+      if (response.status === 200) {
+        alert("이미지 업로드 성공!");
+        navigate("/upload");
+      }
+    } catch (error) {
+      console.error("이미지 업로드 실패", error);
     }
   };
+
+  if (typeof selectedComponent !== "function" && selectedComponent !== "original") {
+    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
+    return <p>잘못된 컴포넌트입니다.</p>;
+  }
+
+  console.log("maintext",bannerData?.maintext)
 
   return (
     <>
-    {isLoading ? (
-      <Loading />
-    ) : (
-    <div className="flex flex-col w-full h-full min-h-screen px-10 pb-12 bg-black">
-      <NavBar />
       <header className="flex items-center justify-center my-6 text-4xl font-PR_BL">
-        <span className="text-white">배너 </span>
-        <span className="ml-2 text-green-Normal">결과 이미지</span>
+        <span className="font-PR_BO text-black dark:text-white "> 인스타그램 썸네일 제작 결과</span>
       </header>
+
       <div className="flex flex-row items-start justify-center w-full h-full">
         <div className="grid h-full grid-cols-2 gap-10">
-          {photos.map((photo, index) => (
-            <div key={index} className="flex flex-wrap items-center justify-center h-full">
-              <ResultImageBanner 
-                src={photo} 
-                onClick={() => {
-                  setSelectedPhoto(photo);
-                  setSelectedBackgroundId(backgroundids[index]); // Update selected background id
-                  setSelectedMainText(MainText[index]);
-                  setSelecedtServeText(ServeText[index]);
-                  setindex(index);
-                }}
-                isSelected={selectedPhoto === photo}
-                width={256}
-                height={256}
-                maintext={MainText[index]}
-                servetext={ServeText[index]}
-              />
+        {photos.map((photo) => (
+          <div key={photo.id} className="flex flex-wrap items-center justify-center h-full">
+            <div
+              onClick={() => {
+                setSelectedPhoto(photo.imageUrl);
+                setSelectedComponent(() =>
+                  photo.component === "original" ? "original" : photo.component
+                );
+              }}
+              className={`cursor-pointer ${selectedPhoto === photo.imageUrl ? "border-2 border-green-500" : ""}`}
+            >
+              {photo.component === "original" ? (
+                <img src={photo.imageUrl} alt="original" className="w-64 aspect-[3/4] object-cover" />
+              ) : (
+                React.createElement(photo.component, {
+                  imageUrl: photo.imageUrl,
+                  maintext: bannerData?.maintext,
+                  servetext: bannerData?.servetext,
+                  scale: 1,
+                })
+              )}
+
             </div>
-          ))}
+          </div>
+        ))}
         </div>
-       
-        {selectedPhoto && 
-          <div className="flex flex-col gap-10 ml-24 minHeight">
-            <ResultImageBanner
-              src={selectedPhoto}
-              isSelected={false}
-              width={256}
-              height={256}
-              maintext={selectedMainText}
-              servetext={selectedserveText} />
-            
+
+        {selectedPhoto && (
+          <div className="flex flex-col gap-10 ml-24 minHeight" id="capture-area">
+            {selectedComponent === "original" ? (
+              <img src={selectedPhoto} alt="Selected" className="w-64 aspect-[3/4] object-cover" />
+            ) : (
+              selectedComponent &&
+              typeof selectedComponent === "function" &&
+              React.createElement(selectedComponent, {
+                imageUrl: selectedPhoto || "",
+                maintext: bannerData?.maintext,
+                servetext: bannerData?.servetext,
+                scale: 1,
+              })
+            )}
             <div className="flex flex-col gap-10 mt-[4px]">
-              <div onClick={goToBannerEdit}>
-                <ResultButton3 value='문구 편집' />
+              <div onClick={() => navigate("/banner/edit", { state: { bannerId } })}>
+                <ResultButton3 value="문구 편집" />
               </div>
-              <div onClick={handleDownloadClick}>
-                <ResultButton3 value='다운로드' />
+              <div onClick={handleUpload}>
+                <ResultButton3 value="인스타그램 업로드" />
               </div>
-              <div onClick={goToResizingBanner}>
-                <ResultButton3 value='이미지 크기 조절' />
+              <div>
+              <ResultButton3 value="다운로드" />
               </div>
             </div>
           </div>
-        }
+        )}
       </div>
-      {/* The component for invisible rendering */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', visibility: isImageVisible ? 'visible' : 'hidden', pointerEvents: 'none' }}>
-        <LastImage
-          ref={lastImageRef}
-          src={selectedPhoto || ''} // Ensure src is always provided
-          width={width}
-          height={height}
-          maintext={selectedMainText}
-          servetext={selectedserveText}
-          />
-      </div>
-    </div>
-     )}
     </>
   );
 };
 
 export default BannerResult;
-
-
