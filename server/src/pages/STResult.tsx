@@ -5,6 +5,7 @@ import useImageStore from '../store/useImageStore';
 import ResultButton from '../components/ResultButton3';
 import ResultImage from '../components/ResultImage';
 import Loading from '../components/Loading';
+import BannerSetting from './BannerSetting';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,6 +24,7 @@ const STResult: React.FC = () => {
   const location = useLocation();
   const { imageUrls } = (location.state as { imageUrls?: string[] }) || {};
   const [generatedImages, setGeneratedImages] = useState<string[]>(imageUrls || []);
+  const [isBannerSettingVisible, setIsBannerSettingVisible] = useState<boolean>(false);
   
   const navigate = useNavigate();
 
@@ -89,7 +91,13 @@ const STResult: React.FC = () => {
       navigate('/instagram-upload', { state: { imageUrl: selectedPhoto } });
     }
   };
-  
+
+  const handleShowBannerSetting = () => {
+    if (selectedPhoto) {
+      console.log("selectedPhoto:", selectedPhoto);
+      navigate('/banner', { state: { imageUrl: selectedPhoto } });
+    }
+  };
 
   const handleDownload = async () => {
     if (!selectedPhoto) return;
@@ -112,19 +120,6 @@ const STResult: React.FC = () => {
     }
   };
 
-  const handleCopyToClipboard = async () => {
-    if (selectedPhoto) {
-      try {
-        const response = await fetch(selectedPhoto);
-        const blob = await response.blob();
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        alert("이미지가 복사되었습니다!");
-      } catch (error) {
-        console.error("이미지 복사 실패:", error);
-      }
-    }
-  };
-
   return (
     <>
       {isLoading ? (
@@ -136,13 +131,13 @@ const STResult: React.FC = () => {
           </header>
           <div className="flex flex-row items-start justify-center w-full shrink-0 gap-20">
             <div className="grid grid-cols-2 gap-10 shrink-0 w-full sm:w-auto">
-            {originalImage && (
+              {originalImage && (
                 <div className="relative flex flex-wrap items-center justify-center shrink-0 cursor-pointer"
-                onClick={() => {
-                  setSelectedPhoto(originalImage);
-                }}
+                  onClick={() => {
+                    setSelectedPhoto(originalImage);
+                  }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-300  to-white mix-blend-multiply z-10"/>
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-300 to-white mix-blend-multiply z-10"/>
                   <ResultImage
                     src={originalImage}
                     isSelected={selectedPhoto === originalImage}
@@ -172,15 +167,18 @@ const STResult: React.FC = () => {
               <div className="flex flex-col items-center gap-10 w-full sm:w-auto">
                 <img src={optimizedPhoto || selectedPhoto} alt="selected img" className="w-64 h-64 border border-gray-300 object-cover" onContextMenu={(e) => e.preventDefault()} />
                 <div className="w-full flex flex-col gap-10">
-                  <ResultButton value="인스타그램 썸네일 제작"  />
+                  <ResultButton value="인스타그램 썸네일 제작" onClick={handleShowBannerSetting} />
                   <ResultButton value="인스타그램 피드 올리기" onClick={handleNavigateToInstagram} />
                   <ResultButton value="다운로드" onClick={handleDownload} />
-                  <ResultButton value="복사하기" onClick={handleCopyToClipboard} />
                 </div>
               </div>
             )}
           </div>
         </div>
+      )}
+      
+      {isBannerSettingVisible && selectedPhoto && (
+        <BannerSetting imageUrl={selectedPhoto} />
       )}
     </>
   );
