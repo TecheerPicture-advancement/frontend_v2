@@ -34,6 +34,8 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
             PR_M: ['"Pretendard-Medium"', ...fontFamily.sans],
             PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
             PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],
+            GongL:[ '"GongGothicLight"', ...fontFamily.sans],
+            Jalnan:['"yg-jalnan"', ...fontFamily.sans],
          },
          
         width: {
