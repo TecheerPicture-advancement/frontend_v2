@@ -62,7 +62,6 @@ const BannerResult = () => {
 
   if (isLoading) return <Loading />;
 
-
   const photos: {
     id: string;
     component: PhotoComponent | "original";
@@ -74,30 +73,47 @@ const BannerResult = () => {
     { id: "jal", component: () => <Jalthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext}/>, imageUrl: originalImageUrl },
   ];
   
-
-  // 조건문 수정
   if (selectedComponent !== "original" && typeof selectedComponent !== "function") {
     console.error("selectedComponent가 올바르지 않음:", selectedComponent);
     return <div>잘못된 컴포넌트입니다.</div>;
   }
-  console.log("Jalthumbnail",Jalthumbnail)
 
-  const handleUpload = async () => {
-    if (!selectedPhoto) return;
-    const captureElement = document.getElementById("capture-area");
+  if (typeof selectedComponent !== "function" && selectedComponent !== "original") {
+    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
+    return <p>잘못된 컴포넌트입니다.</p>;
+  }
 
-    if (!captureElement) {
-      console.error("캡처할 요소를 찾을 수 없습니다.");
+  const handleCapture = async () => {
+    if (!selectedComponent) {
+      alert("먼저 썸네일을 선택해주세요!");
       return;
     }
 
     try {
-      const canvas = await html2canvas(captureElement);
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-      if (!blob) {
-        console.error("Blob 생성 실패");
+      const captureElement = document.getElementById("thumbnail-capture");
+      if (!captureElement) {
+        console.error("캡처할 요소를 찾을 수 없습니다.");
         return;
       }
+
+      const canvas = await html2canvas(captureElement, {
+        useCORS: true,
+        scale: 2,
+      });
+
+      return canvas.toDataURL("image/png");
+    } catch (error) {
+      console.error("캡처 실패", error);
+      return null;
+    }
+  };
+
+  const handleUpload = async () => {
+    const imageData = await handleCapture();
+    if (!imageData) return;
+
+    try {
+      const blob = await (await fetch(imageData)).blob();
       const formData = new FormData();
       formData.append("file", blob, "result.png");
 
@@ -112,12 +128,19 @@ const BannerResult = () => {
     }
   };
 
-  if (typeof selectedComponent !== "function" && selectedComponent !== "original") {
-    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
-    return <p>잘못된 컴포넌트입니다.</p>;
-  }
+  const handleDownload = async () => {
+    const imageData = await handleCapture();
+    if (!imageData) return;
 
-  console.log("maintext",bannerData?.maintext)
+    const link = document.createElement("a");
+    link.href = imageData;
+    link.download = "thumbnail.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -156,28 +179,24 @@ const BannerResult = () => {
 
         {selectedPhoto && (
           <div className="flex flex-col gap-10 ml-24 minHeight" id="capture-area">
-            {selectedComponent === "original" ? (
-              <img src={selectedPhoto} alt="Selected" className="w-64 aspect-[3/4] object-cover" />
-            ) : (
-              selectedComponent &&
-              typeof selectedComponent === "function" &&
-              React.createElement(selectedComponent, {
-                imageUrl: selectedPhoto || "",
-                maintext: bannerData?.maintext,
-                servetext: bannerData?.servetext,
-                scale: 1,
-              })
-            )}
+            <div id="thumbnail-capture" className="relative">
+              {selectedComponent === "original" ? (
+                <img src={selectedPhoto} alt="Selected" className="w-64 aspect-[3/4] object-cover" />
+              ) : (
+                selectedComponent &&
+                typeof selectedComponent === "function" &&
+                React.createElement(selectedComponent, {
+                  imageUrl: selectedPhoto || "",
+                  maintext: bannerData?.maintext,
+                  servetext: bannerData?.servetext,
+                  scale: 1,
+                })
+              )}
+            </div>
             <div className="flex flex-col gap-10 mt-[4px]">
-              <div onClick={() => navigate("/banner/edit", { state: { bannerId } })}>
-                <ResultButton3 value="문구 편집" />
-              </div>
-              <div onClick={handleUpload}>
-                <ResultButton3 value="인스타그램 업로드" />
-              </div>
-              <div>
-              <ResultButton3 value="다운로드" />
-              </div>
+            <ResultButton3 value="문구 편집" onClick={() => navigate("/banner/edit", { state: { bannerId } })} />
+            <ResultButton3 value="인스타그램 업로드" onClick={handleUpload}/>
+              <ResultButton3 value="다운로드" onClick={handleDownload} />
             </div>
           </div>
         )}
