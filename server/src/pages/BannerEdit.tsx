@@ -47,6 +47,11 @@ const BannerEdit: React.FC = () => {
         const { data } = await axios.get<BannerResponse>(`${BASE_URL}/banners/${bannerId}`);
         if (data.code === 200) {
           setBannerData(data.data);
+  
+          setSelectedTexts((prev) => ({
+            maintext: prev.maintext || data.data.maintext,
+            servetext: prev.servetext || data.data.servetext,
+          }));
         }
       } catch (error) {
         console.error("배너 데이터 불러오기 실패", error);
@@ -58,12 +63,23 @@ const BannerEdit: React.FC = () => {
   
   useEffect(() => {
     if (location.state) {
+      const { maintext, servetext } = location.state;
+  
       setSelectedTexts({
-        maintext: location.state.maintext || "",
-        servetext: location.state.servetext || "",
+        maintext: maintext || "",
+        servetext: servetext || "",
       });
+  
+      if (maintext && ![bannerData.maintext, bannerData.maintext2].includes(maintext)) {
+        setCustomMainText(maintext);
+      }
+      if (servetext && ![bannerData.servetext, bannerData.servetext2].includes(servetext)) {
+        setCustomServeText(servetext);
+      }
     }
-  }, [location.state]);
+  }, [location.state]);  
+  
+  
   
 
     const handleConfirm = () => {
@@ -72,7 +88,7 @@ const BannerEdit: React.FC = () => {
       });     
       navigate("/banner/result", {
         state: {
-          bannerId,
+          id: bannerId,
           imageUrl,
           selectedComponentId,
           maintext: selectedTexts.maintext,
@@ -80,6 +96,8 @@ const BannerEdit: React.FC = () => {
         },
       });
     };
+
+    
 
     const handleTextChange = (type: "maintext" | "servetext", value: string, isCustom = false) => {
       setSelectedTexts((prev) => ({
