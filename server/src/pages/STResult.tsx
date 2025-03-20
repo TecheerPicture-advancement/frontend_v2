@@ -5,7 +5,6 @@ import useImageStore from '../store/useImageStore';
 import ResultButton from '../components/ResultButton3';
 import ResultImage from '../components/ResultImage';
 import Loading from '../components/Loading';
-import BannerSetting from './BannerSetting';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,9 +22,7 @@ const STResult: React.FC = () => {
   const [optimizedPhoto] = useState<string | null>(null);
   const location = useLocation();
   const { imageUrls } = (location.state as { imageUrls?: string[] }) || {};
-  const [generatedImages, setGeneratedImages] = useState<string[]>(imageUrls || []);
-  const [isBannerSettingVisible, setIsBannerSettingVisible] = useState<boolean>(false);
-  
+  const [generatedImages, setGeneratedImages] = useState<string[]>(imageUrls || []);  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -120,6 +117,8 @@ const STResult: React.FC = () => {
     }
   };
 
+  
+
   return (
     <>
       {isLoading ? (
@@ -175,10 +174,6 @@ const STResult: React.FC = () => {
             )}
           </div>
         </div>
-      )}
-      
-      {isBannerSettingVisible && selectedPhoto && (
-        <BannerSetting imageUrl={selectedPhoto} />
       )}
     </>
   );
