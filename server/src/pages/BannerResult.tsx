@@ -195,7 +195,11 @@ const BannerResult = () => {
               className={`cursor-pointer ${selectedPhoto === photo.imageUrl ? "border-2 border-green-500" : ""}`}
             >
               {photo.component === "original" ? (
-                <img src={photo.imageUrl} alt="original" className="w-64 aspect-[3/4] object-cover" />
+                <div className="w-64 aspect-[3/4] relative">
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#c6c6c6] to-[#1e1e1e] mix-blend-hard-light" />
+                  <img src={photo.imageUrl} alt="original" className="w-64 aspect-[3/4] object-cover" />
+                  <p className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 text-gray-100 font-PR_M">[ 원본이미지 ]</p>
+                </div>
               ) : (
                 React.createElement(photo.component, {
                   imageUrl: photo.imageUrl,
