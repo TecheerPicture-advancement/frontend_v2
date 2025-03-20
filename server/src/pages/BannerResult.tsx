@@ -25,25 +25,43 @@ interface BannerData {
     scale?: number;
   }>;
 
+  interface BannerResponse {
+    code: number;
+    data: BannerData;
+  }
+
 const BannerResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const bannerId = location.state?.id;
   const originalImageUrl = location.state?.imageUrl;
+  console.log("location",location.state)
 
   const [isLoading, setIsLoading] = useState(true);
-  const [bannerData, setBannerData] = useState<BannerData | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [selectedComponent, setSelectedComponent] = useState<React.FC<{ imageUrl: string; maintext?: string; servetext?: string; scale?: number }> | "original">("original");
+  const [bannerData, setBannerData] = useState<BannerData | null>({
+    maintext: location.state?.maintext || "",
+    servetext: location.state?.servetext || "",
+  });
+
+  console.log("location.state:", location.state);
+
 
   useEffect(() => {
-    if (!bannerId) return;
-
-    interface BannerResponse {
-      code: number;
-      data: BannerData;
+    console.log("Received location state:", location.state);
+  
+    if (location.state?.maintext && location.state?.servetext) {
+      setBannerData({
+        maintext: location.state.maintext,
+        servetext: location.state.servetext,
+      });
+      setIsLoading(false);
+      return;
     }
-
+  
+    if (!bannerId) return;
+  
     const fetchBannerData = async () => {
       try {
         const { data } = await axios.get<BannerResponse>(`${BASE_URL}/banners/${bannerId}`);
@@ -56,9 +74,10 @@ const BannerResult = () => {
         setIsLoading(false);
       }
     };
-
+  
     fetchBannerData();
-  }, [bannerId]);
+  }, [bannerId, location.state]);
+  
 
   if (isLoading) return <Loading />;
 
@@ -68,20 +87,10 @@ const BannerResult = () => {
     imageUrl: string;
   }[] = [
     { id: "original", component: "original", imageUrl: originalImageUrl },
-    { id: "pr", component: () => <PRthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext} servetext={bannerData?.servetext}/>, imageUrl: originalImageUrl },
-    { id: "gong", component: () => <Gongthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext} servetext={bannerData?.servetext}/>, imageUrl: originalImageUrl },
-    { id: "jal", component: () => <Jalthumbnail imageUrl={originalImageUrl} maintext={bannerData?.maintext}/>, imageUrl: originalImageUrl },
+    { id: "pr", component: PRthumbnail, imageUrl: originalImageUrl },
+    { id: "gong", component: Gongthumbnail, imageUrl: originalImageUrl },
+    { id: "jal", component: Jalthumbnail, imageUrl: originalImageUrl },
   ];
-  
-  if (selectedComponent !== "original" && typeof selectedComponent !== "function") {
-    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
-    return <div>잘못된 컴포넌트입니다.</div>;
-  }
-
-  if (typeof selectedComponent !== "function" && selectedComponent !== "original") {
-    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
-    return <p>잘못된 컴포넌트입니다.</p>;
-  }
 
   const handleCapture = async () => {
     if (!selectedComponent) {
@@ -140,6 +149,31 @@ const BannerResult = () => {
     document.body.removeChild(link);
   };
 
+  console.log("BannerId", bannerId)
+  const handleEditText = () => {
+    if (!bannerData) return;
+
+    const selectedComponentId =
+      selectedComponent === "original"
+        ? "original"
+        : photos.find((p) => p.component === selectedComponent)?.id;
+  
+    navigate("/banner/result/edit", {
+      state: {
+        bannerId,
+        imageUrl: selectedPhoto,
+        selectedComponentId,
+      },
+    });
+  };
+  
+  if (selectedComponent !== "original" && typeof selectedComponent !== "function") {
+    console.error("selectedComponent가 올바르지 않음:", selectedComponent);
+    return <div>잘못된 컴포넌트입니다.</div>;
+  }
+  
+  console.log("photos:", photos);
+  console.log("selectedComponent:", selectedComponent);
   if (isLoading) return <Loading />;
 
   return (
@@ -147,7 +181,6 @@ const BannerResult = () => {
       <header className="flex items-center justify-center my-6 text-4xl font-PR_BL">
         <span className="font-PR_BO text-black dark:text-white "> 인스타그램 썸네일 제작 결과</span>
       </header>
-
       <div className="flex flex-row items-start justify-center w-full h-full">
         <div className="grid h-full grid-cols-2 gap-10">
         {photos.map((photo) => (
@@ -180,22 +213,20 @@ const BannerResult = () => {
         {selectedPhoto && (
           <div className="flex flex-col gap-10 ml-24 minHeight" id="capture-area">
             <div id="thumbnail-capture" className="relative">
-              {selectedComponent === "original" ? (
-                <img src={selectedPhoto} alt="Selected" className="w-64 aspect-[3/4] object-cover" />
-              ) : (
-                selectedComponent &&
-                typeof selectedComponent === "function" &&
-                React.createElement(selectedComponent, {
-                  imageUrl: selectedPhoto || "",
-                  maintext: bannerData?.maintext,
-                  servetext: bannerData?.servetext,
-                  scale: 1,
-                })
-              )}
+            {selectedComponent === "original" ? (
+              <img src={selectedPhoto} alt="Selected" className="w-64 aspect-[3/4] object-cover" />
+            ) : (
+              React.createElement(selectedComponent, {
+                imageUrl: selectedPhoto || "",
+                maintext: bannerData?.maintext,
+                servetext: bannerData?.servetext,
+                scale: 1,
+              })
+            )}
             </div>
             <div className="flex flex-col gap-10 mt-[4px]">
-            <ResultButton3 value="문구 편집" onClick={() => navigate("/banner/edit", { state: { bannerId } })} />
-            <ResultButton3 value="인스타그램 업로드" onClick={handleUpload}/>
+              <ResultButton3 value="문구 편집" onClick={handleEditText} />
+              <ResultButton3 value="인스타그램 업로드" onClick={handleUpload}/>
               <ResultButton3 value="다운로드" onClick={handleDownload} />
             </div>
           </div>
