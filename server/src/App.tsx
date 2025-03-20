@@ -44,7 +44,7 @@ const App: React.FC = () => {
         <Route path="/nukki/result" element={<NukkiResult />} />
         <Route path="/banner/result/edit" element={<BannerEdit />} />
         <Route
-          path="/instagram-upload"
+          path="/upload"
           element={
             <Suspense fallback={<Loading/>}>
               <InstagramUpload />

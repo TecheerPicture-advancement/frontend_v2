@@ -120,74 +120,74 @@ const ThemeResult: React.FC = () => {
       {isLoading ? (
         <Loading />
       ) : (
-          <div className="w-full h-full flex flex-col items-center justify-start gap-10 md:gap-20 lg:gap-[90px] overflow-hidden">
-            <header className="flex flex-col items-center gap-2.5 md:gap-3 overflow-hidden">
-              <h1 className="text-5xl leading-tight font-PR_BL text-center text-black dark:text-white">
-                내 마음대로 만드는<br />
-                <span className="text-green-Normal">상품 이미지</span>
-              </h1>
-              <span className="text-center text-black dark:text-white font-PR_L">원하는 상품 이미지를 클릭해주세요</span>
-            </header>
-
+          <div className="w-full h-full flex flex-col items-center justify-start overflow-hidden gap-20">
             <div ref={themeSectionRef}>
-            <AnimatePresence>
-            {isThemeSelected && (
-                <motion.div
-                  key={selectedTheme?.theme}
-                  layoutId={selectedTheme?.theme}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -50 }}
-                >
-                  <div className="flex relative overflow-hidden gap-9">
-                    <div className="flex-grow-0 flex-shrink-0 w-[250px] h-[250px] relative overflow-hidden rounded-[30px]">
-                      <div
-                        className="w-[260px] h-[260px] absolute inset-0 bg-white rounded-3xl"
-                        style={{
-                          boxShadow:
-                            '10.5px 123.5px 34.5px 0 rgba(255,255,255,0), 6.5px 79px 31.5px 0 rgba(255,255,255,0.01), 4px 44.5px 27px 0 rgba(255,255,255,0.05), 1.5px 19.5px 20px 0 rgba(255,255,255,0.09), 0.5px 5px 11px 0 rgba(255,255,255,0.1)',
-                        }}
-                      />
-                      <img
-                        src={selectedTheme?.imageSource}
-                        className="w-[260px] h-[260px] absolute left-[0px] top-[0px] object-cover rounded-[30px]"
-                      />
-                      <div className="w-[250px] h-[250px] absolute left-0 top-[0px] opacity-50 bg-gradient-to-b from-white to-black mix-blend-multiply" />
-                    </div>
-                    <div className="relative flex flex-col justify-between">
-                      <div className="w-full overflow-hidden">
-                        <p className="text-sm font-PR_M text-left text-gray-300 dark:text-white">
-                          {selectedTheme?.detail}
-                        </p>
-                        <p className="w-full text-2xl font-PR_BO text-left text-black dark:text-green-Light">
-                          {selectedTheme?.theme}
-                        </p>
-                        <p className="w-full text-sm font-PR_M text-left text-gray-300 dark:text-gray-100">
-                          {selectedTheme?.sentence}
-                        </p>
-                      </div>
-                      {selectedTheme && selectedTheme.theme === '직접입력' && (
-                        <textarea
-                          className="w-full resize-none p-4 rounded-md border z-10 text-sm font-PR_L border-gray-300 dark:border-green-Light bg-white dark:bg-black text-gray-400 dark:text-green-Light placeholder:text-gray-200"
-                          placeholder="테마를 입력하세요..."
-                          value={customTheme}
-                          onClick={() => {
-                            if (selectedTheme) {
-                              handleThemeSelect({ imageSource: selectedTheme.imageSource, detail: selectedTheme.detail, theme: '직접입력', sentence: selectedTheme.sentence });
-                            }
+              <header className="flex flex-col items-center gap-2.5 md:gap-3 overflow-hidden">
+                <h1 className="text-5xl leading-tight font-PR_BL text-center text-black dark:text-white">
+                  내 마음대로 만드는<br />
+                  <span className="text-green-Normal">상품 이미지</span>
+                </h1>
+                <span className="text-center text-black dark:text-white font-PR_L">원하는 상품 이미지를 클릭해주세요</span>
+              </header>
+
+              <AnimatePresence>
+              {isThemeSelected && (
+                  <motion.div
+                    key={selectedTheme?.theme}
+                    layoutId={selectedTheme?.theme}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -50 }}
+                  >
+                    <div className="flex relative overflow-hidden gap-9 mt-20">
+                      <div className="flex-grow-0 flex-shrink-0 w-[250px] h-[250px] relative overflow-hidden rounded-[30px]">
+                        <div
+                          className="w-[260px] h-[260px] absolute inset-0 bg-white rounded-3xl"
+                          style={{
+                            boxShadow:
+                              '10.5px 123.5px 34.5px 0 rgba(255,255,255,0), 6.5px 79px 31.5px 0 rgba(255,255,255,0.01), 4px 44.5px 27px 0 rgba(255,255,255,0.05), 1.5px 19.5px 20px 0 rgba(255,255,255,0.09), 0.5px 5px 11px 0 rgba(255,255,255,0.1)',
                           }}
-                          onChange={(e) => setCustomTheme(e.target.value)}
                         />
-                      )}
-                        <div onClick={openModal}>
-                          <MainButton value="생성하러 가기" width='[430px]' height='11' />
+                        <img
+                          src={selectedTheme?.imageSource}
+                          className="w-[260px] h-[260px] absolute left-[0px] top-[0px] object-cover rounded-[30px]"
+                        />
+                        <div className="w-[250px] h-[250px] absolute left-0 top-[0px] opacity-50 bg-gradient-to-b from-white to-black mix-blend-multiply" />
+                      </div>
+                      <div className="relative flex flex-col justify-between w-full">
+                        <div className="w-full overflow-hidden">
+                          <p className="text-sm font-PR_M text-left text-gray-300 dark:text-white">
+                            {selectedTheme?.detail}
+                          </p>
+                          <p className="w-full text-2xl font-PR_BO text-left text-black dark:text-green-Light">
+                            {selectedTheme?.theme}
+                          </p>
+                          <p className="w-full text-sm font-PR_M text-left text-gray-300 dark:text-gray-100">
+                            {selectedTheme?.sentence}
+                          </p>
                         </div>
+                        {selectedTheme && selectedTheme.theme === '직접입력' && (
+                          <textarea
+                            className="w-full resize-none p-4 rounded-md border z-10 text-sm font-PR_L border-gray-300 dark:border-green-Light bg-white dark:bg-black text-gray-400 dark:text-green-Light placeholder:text-gray-200"
+                            placeholder="테마를 입력하세요..."
+                            value={customTheme}
+                            onClick={() => {
+                              if (selectedTheme) {
+                                handleThemeSelect({ imageSource: selectedTheme.imageSource, detail: selectedTheme.detail, theme: '직접입력', sentence: selectedTheme.sentence });
+                              }
+                            }}
+                            onChange={(e) => setCustomTheme(e.target.value)}
+                          />
+                        )}
+                          <div onClick={openModal}>
+                            <MainButton value="생성하러 가기" width='[430px]' height='11' textSize='text-lg' />
+                          </div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              )}
-              {showModal && <ImageUploadModal onClose={handleModalClose} />}
-            </AnimatePresence>
+                  </motion.div>
+                )}
+                {showModal && <ImageUploadModal onClose={handleModalClose} />}
+              </AnimatePresence>
             </div>
 
             {/* 테마 목록 */}

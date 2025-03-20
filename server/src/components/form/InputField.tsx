@@ -33,9 +33,9 @@ const InputField: React.FC<InputFieldProps> = ({
   const displayValue = type === 'number' && (value === '' || isNaN(value as number)) ? '' : value;
 
   return (
-    <div className={`relative ${isFocused ? 'border-green-Normal focus:border-green-Normal' : 'border-green-Light'} rounded-lg px-3 py-2 flex flex-col justify-start items-start w-full`}>
+    <div className={`relative ${isFocused ? 'border-green-Normal focus:border-green-Normal' : 'border-green-Light'} rounded-lg flex flex-col justify-start items-start w-full gap-2`}>
       <div>
-        <label className="flex-grow-0 flex-shrink-0 text-lg font-PR_BO text-left text-green-Light">
+        <label className="flex-grow-0 flex-shrink-0 text-lg font-PR_M text-left text-green-Light">
           {label}
           {essential && <span className="text-red">*</span>}
         </label>
@@ -48,7 +48,7 @@ const InputField: React.FC<InputFieldProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         placeholder={placeholder}
-        className="mt-2 flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-1 px-3 py-2.5 rounded-md border-[1.5px] bg-transparent border-green-Light bg-black text-gray-100 font-PR_L placeholder-gray-100"
+        className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 gap-1 px-3 py-2.5 rounded-md border-[1.5px] bg-transparent border-green-Light bg-black text-gray-100 font-PR_L placeholder-gray-100"
       />
       <style>{`
         input[type='number']::-webkit-outer-spin-button,

@@ -1,12 +1,12 @@
-import { defineConfig } from 'vitest/config'; // Vitest의 defineConfig 사용
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [react(), svgr()],
   test: {
-    environment: 'jsdom',  // Vitest의 브라우저 환경 시뮬레이션
-    globals: true,         // Jest와 비슷한 글로벌 API 사용
+    environment: 'jsdom',
+    globals: true,
     setupFiles: './vitest.setup.ts',
   },
   build: {
@@ -20,8 +20,5 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000
   },
   server: {
-    proxy: {
-      '/api': 'http://localhost:8080',
-    },
   }
 });

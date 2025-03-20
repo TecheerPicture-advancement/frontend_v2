@@ -3,22 +3,21 @@ import axios from 'axios';
 import Uploadcloud from '../assets/uploadcloud.svg?react';
 import Loading from './Loading';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 interface ImageUploadModalProps {
   onClose: (uploadedImageId: number | null) => void;
 }
 
 interface UploadResponse {
-  imageId: number; 
+  imageId: number;
 }
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // 파일 선택
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -27,13 +26,11 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
     }
   };
 
-  // 파일 삭제
   const handleRemoveFile = () => {
     setFile(null);
     setPreview(null);
   };
 
-  // 드래그 앤 드롭
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
@@ -47,31 +44,24 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
     }
   };
 
-  // 이미지 업로드
   const handleUpload = async () => {
     if (!file) return;
-  
+
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
-  
+
     try {
       const response = await axios.post<UploadResponse>(`${BASE_URL}/images`, formData);
-  
-      if (response.data && response.data.imageId) {
-        console.log('Upload success:', response.data);
-        console.log('Calling onClose with imageId:', response.data.imageId);
-        onClose(response.data.imageId); 
-      } else {
-        console.error('No imageId returned from server');
-      }
+      const imageId = response.data.imageId;
+      console.log('이미지 업로드 성공:', imageId);
+      onClose(imageId);
     } catch (error) {
-      console.error('Upload failed:', error);
+      console.error('업로드 실패:', error);
     } finally {
       setUploading(false);
     }
   };
-  
 
   return (
     <div 
@@ -83,8 +73,9 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
         <Loading />
       ) : (
         <div className="flex flex-col items-center w-6/12 p-6 bg-white rounded-lg shadow-lg min-h-3/4">
-          <h2 className="flex items-center justify-center m-6 text-2xl font-PR_BL">변경하고 싶은 이미지를 업로드 해주세요</h2>
-          
+          <h2 className="flex items-center justify-center m-6 text-2xl font-PR_BL">
+            변경하고 싶은 이미지를 업로드 해주세요
+          </h2>
           {!preview ? (
             <div className="mb-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-4 w-5/6 h-4/6 text-center">
               <Uploadcloud className="mx-auto mt-10 mb-6" />
@@ -110,10 +101,8 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onClose }) => {
               </button>
             </div>
           )}
-
           <div className="flex items-end justify-end w-full mt-4 space-x-4">
-            
-          <button onClick={() => onClose(null)} className="px-6 py-2 text-black rounded font-PR_BO hover:bg-gray-100">
+            <button onClick={() => onClose(null)} className="px-6 py-2 text-black rounded font-PR_BO hover:bg-gray-100">
               닫기
             </button>
             {file && !uploading && (
