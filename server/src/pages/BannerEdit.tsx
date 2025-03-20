@@ -20,7 +20,6 @@ const BannerEdit: React.FC = () => {
     maintext: "",
     servetext: "",
   });
-  console.log("location.state:", location.state);
 
   const [bannerData, setBannerData] = useState({
     maintext: "",
@@ -82,10 +81,7 @@ const BannerEdit: React.FC = () => {
   
   
 
-    const handleConfirm = () => {
-      console.log("Navigating with:", { 
-        bannerId, imageUrl, selectedComponentId, selectedTexts 
-      });     
+    const handleConfirm = () => { 
       navigate("/banner/result", {
         state: {
           id: bannerId,

@@ -35,7 +35,6 @@ const BannerResult = () => {
   const navigate = useNavigate();
   const bannerId = location.state?.id;
   const originalImageUrl = location.state?.imageUrl;
-  console.log("location",location.state)
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -45,12 +44,9 @@ const BannerResult = () => {
     servetext: location.state?.servetext || "",
   });
 
-  console.log("location.state:", location.state);
 
 
-  useEffect(() => {
-    console.log("Received location state:", location.state);
-  
+  useEffect(() => {  
     if (location.state?.maintext && location.state?.servetext) {
       setBannerData({
         maintext: location.state.maintext,
@@ -149,7 +145,6 @@ const BannerResult = () => {
     document.body.removeChild(link);
   };
 
-  console.log("BannerId", bannerId)
   const handleEditText = () => {
     if (!bannerData) return;
 
@@ -172,8 +167,6 @@ const BannerResult = () => {
     return <div>잘못된 컴포넌트입니다.</div>;
   }
   
-  console.log("photos:", photos);
-  console.log("selectedComponent:", selectedComponent);
   if (isLoading) return <Loading />;
 
   return (

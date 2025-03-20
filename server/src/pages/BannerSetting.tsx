@@ -53,18 +53,14 @@ const BannerSetting: React.FC = () => {
         `${BASE_URL}/banners`, 
         payload
       );
-  
-      console.log("응답:", response.data); 
-  
+    
       const id = response.data?.data?.id;
       if (!id) {
         console.error("배너 ID가 없습니다.");
         alert("배너 생성에 실패했습니다.");
         return;
       }
-  
-      console.log("ID:", id, "ImageUrl:", imageUrl);
-  
+    
       navigate('/banner/result', { state: { id, imageUrl } });
     } catch (error) {
       console.error("에러 발생:", error);
