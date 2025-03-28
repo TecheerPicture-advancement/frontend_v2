@@ -8,7 +8,7 @@ import ResultButton3 from "../components/ResultButton3";
 import PRthumbnail from "../components/banner/PRthumbnail";
 import Gongthumbnail from "../components/banner/Gongthumbnail";
 import Jalthumbnail from "../components/banner/Jalthumbnail";
-import { saveAuthData } from "../utils/instaAuth";
+import { saveAuthData, getAuthData, clearAuthData } from "../utils/instaAuth";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -45,7 +45,33 @@ const BannerResult = () => {
     servetext: location.state?.servetext || "",
   });
 
-
+  const handleUpload = async () => {
+    try {
+      setIsLoading(true);
+  
+      // 기존 인증 정보 가져오기
+      const authData = getAuthData();
+      if (authData) {
+        console.log("저장된 Instagram 인증 정보 사용", authData);
+        await handleCaptureAndUpload();
+        return;
+      }
+  
+      // 인증 정보 없으면 로그인 진행
+      const { data: loginUrl } = await axios.get(`${BASE_URL}/instagram/login`);
+      if (!loginUrl) throw new Error("Instagram 로그인 URL 가져오기 실패");
+  
+      const loginWindow = window.open(String(loginUrl), "_blank", "width=600,height=700");
+      if (!loginWindow) {
+        console.error("팝업 창 열기 실패");
+        return;
+      }
+    } catch (error) {
+      console.error("Instagram 로그인 실패", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {  
     if (location.state?.maintext && location.state?.servetext) {
@@ -57,7 +83,6 @@ const BannerResult = () => {
       return;
     }
     
-  
     if (!bannerId) return;
   
     const fetchBannerData = async () => {
@@ -79,23 +104,45 @@ const BannerResult = () => {
   }, [bannerId, location.state]);
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
+    const handleMessage = async (event: MessageEvent) => {
       if (!event.origin.includes(window.location.origin)) return;
   
       const { accessToken, userId } = event.data;
       if (accessToken && userId) {
-        console.log("✅ Instagram 인증 완료!", { accessToken, userId });
-  
+        console.log("✅ Instagram 인증 완료", { accessToken, userId });
         saveAuthData(accessToken, userId);
+        
+        await handleCaptureAndUpload();
       }
     };
   
     window.addEventListener("message", handleMessage);
   
-    return () => {
-      window.removeEventListener("message", handleMessage);
+    // 토큰 만료 검사 & 자동 로그아웃
+    const checkTokenExpiry = () => {
+      const authData = getAuthData();
+      if (!authData) {
+        console.log("⏳ Instagram 토큰 만료됨. 다시 로그인 필요!");
+        handleUpload();
+      } else {
+        const timeLeft = authData.issuedAt + 60 * 60 * 1000 - Date.now();
+        console.log(`⏳ 토큰 만료까지 남은 시간: ${Math.floor(timeLeft / 1000)}초`);
+  
+        // 1시간 후 토큰 자동 삭제 & 재로그인
+        setTimeout(() => {
+          console.log("🚨 Instagram 토큰 만료됨. 자동 로그아웃 처리.");
+          clearAuthData();
+          handleUpload();
+        }, timeLeft);
+      }
     };
+  
+    checkTokenExpiry();
+  
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
+  
+  
   
   if (isLoading) return <Loading />;
 
@@ -134,30 +181,46 @@ const BannerResult = () => {
       return null;
     }
   };
+  
 
-  const handleUpload = async () => {
+  const handleCaptureAndUpload = async () => {
+    if (!selectedComponent) {
+      alert("먼저 썸네일을 선택해주세요");
+      return;
+    }
+  
     try {
       setIsLoading(true);
   
-      // Instagram 로그인 URL 요청
-      const { data: loginUrl } = await axios.get(`${BASE_URL}/instagram/login`);
-      if (!loginUrl) throw new Error("Instagram 로그인 URL 가져오기 실패");
+      const imageData = await handleCapture();
+      if (!imageData) throw new Error("이미지 캡처 실패");
   
-      // 팝업 창 열기
-      const loginWindow = window.open(String(loginUrl), "_blank", "width=600,height=700");
+      const formData = new FormData();
+      formData.append("file", dataURItoBlob(imageData), "thumbnail.png");
+        
+      const { data }: { data: { imageId: string } } = await axios.post(`${BASE_URL}/images`, formData);
+      if (!data.imageId) throw new Error("이미지 업로드 실패");
   
-      if (!loginWindow) {
-        console.error("❌ 팝업 창 열기 실패");
-        return;
-      }
+      console.log("이미지 업로드 완료!", data.imageId);
   
+      navigate("/upload", { state: { imageId: data.imageId } });
     } catch (error) {
-      console.error("❌ Instagram 로그인 실패", error);
+      console.error("업로드 실패:", error);
     } finally {
       setIsLoading(false);
     }
   };
   
+  const dataURItoBlob = (dataURI: string) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
 
   const handleDownload = async () => {
     const imageData = await handleCapture();
