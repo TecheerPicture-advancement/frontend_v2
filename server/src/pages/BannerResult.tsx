@@ -8,6 +8,7 @@ import ResultButton3 from "../components/ResultButton3";
 import PRthumbnail from "../components/banner/PRthumbnail";
 import Gongthumbnail from "../components/banner/Gongthumbnail";
 import Jalthumbnail from "../components/banner/Jalthumbnail";
+import { saveAuthData } from "../utils/instaAuth";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -55,6 +56,7 @@ const BannerResult = () => {
       setIsLoading(false);
       return;
     }
+    
   
     if (!bannerId) return;
   
@@ -70,11 +72,31 @@ const BannerResult = () => {
         setIsLoading(false);
       }
     };
+    
   
     fetchBannerData();
-  }, [bannerId, location.state]);
-  
 
+  }, [bannerId, location.state]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.origin.includes(window.location.origin)) return;
+  
+      const { accessToken, userId } = event.data;
+      if (accessToken && userId) {
+        console.log("✅ Instagram 인증 완료!", { accessToken, userId });
+  
+        saveAuthData(accessToken, userId);
+      }
+    };
+  
+    window.addEventListener("message", handleMessage);
+  
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+  
   if (isLoading) return <Loading />;
 
   const photos: {
@@ -114,24 +136,28 @@ const BannerResult = () => {
   };
 
   const handleUpload = async () => {
-    const imageData = await handleCapture();
-    if (!imageData) return;
-
     try {
-      const blob = await (await fetch(imageData)).blob();
-      const formData = new FormData();
-      formData.append("file", blob, "result.png");
-
-      const response = await axios.post(`${BASE_URL}/images`, formData);
-
-      if (response.status === 200) {
-        alert("이미지 업로드 성공!");
-        navigate("/upload");
+      setIsLoading(true);
+  
+      // Instagram 로그인 URL 요청
+      const { data: loginUrl } = await axios.get(`${BASE_URL}/instagram/login`);
+      if (!loginUrl) throw new Error("Instagram 로그인 URL 가져오기 실패");
+  
+      // 팝업 창 열기
+      const loginWindow = window.open(String(loginUrl), "_blank", "width=600,height=700");
+  
+      if (!loginWindow) {
+        console.error("❌ 팝업 창 열기 실패");
+        return;
       }
+  
     } catch (error) {
-      console.error("이미지 업로드 실패", error);
+      console.error("❌ Instagram 로그인 실패", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
 
   const handleDownload = async () => {
     const imageData = await handleCapture();

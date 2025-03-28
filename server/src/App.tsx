@@ -16,6 +16,7 @@ import STResult from './pages/STResult';
 import BannerResult from './pages/BannerResult';
 import NukkiResult from './pages/NukkiResult';
 import BannerEdit from './pages/BannerEdit';
+import InstagramAuthRedirect from './components/instgram/InstagramAuthRedirect';
 
 const InstagramUpload = lazy(() => import('./pages/Instagram_Upload'));
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         <Route path="/banner/result" element={<BannerResult />} />
         <Route path="/nukki/result" element={<NukkiResult />} />
         <Route path="/banner/result/edit" element={<BannerEdit />} />
+        <Route path="/instagram" element={<InstagramAuthRedirect />} />
         <Route
           path="/upload"
           element={

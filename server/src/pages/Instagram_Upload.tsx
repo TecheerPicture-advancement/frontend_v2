@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import ProfileSection from '../components/instgram/ProfileSection';
 import MessageSection from '../components/instgram/MessageSection';
+import { getAuthData } from "../utils/instaAuth";
 
 const InstagramUpload: React.FC = () => {
     const [message1, setMessage1] = useState('');
     const [message2, setMessage2] = useState('');
     const [isToggled, setIsToggled] = useState(false);
+
+    const authData = getAuthData();
+
+    if (!authData) {
+    alert("❌ 로그인 정보 없음. 다시 로그인하세요!");
+    window.location.href = "/";
+    } else {
+    console.log("🔑 저장된 Access Token:", authData.accessToken);
+    console.log("👤 저장된 User ID:", authData.userId);
+    }
 
     const handleChange1 = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage1(event.target.value);
