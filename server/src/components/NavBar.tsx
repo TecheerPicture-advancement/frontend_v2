@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import logo from '../../public/assets/logo.png';
 import Moon from '../assets/dark/moon.svg?react';
 import Sun from '../assets/dark/sun.svg?react';
 import { useThemeStore } from '../store/useThemeStore';
 import { useLanguageStore } from '../store/useLanguageStore';
-
 
 
 const NavBar: React.FC = () => {
@@ -31,7 +29,6 @@ const NavBar: React.FC = () => {
   
 
   const navLinks = [
-    { name: language === 'KOR' ? '배너생성' : 'Banner', url: '/banner' },
     { name: language === 'KOR' ? '배경생성' : 'Background', url: '/background' },
     { name: language === 'KOR' ? '이미지 변환 영상' : 'Image to Video', url: '/image-to-video' }
   ];
@@ -41,7 +38,7 @@ const NavBar: React.FC = () => {
       <div className="flex items-center justify-between w-full pl-32 pr-20">
         {/* 로고 */}
         <Link to="/" className="flex items-center text-3xl text-white font-PR_BO hover:text-white">
-          <img src={logo} alt="Logo" className="h-10 w-auto" />
+          <span className='font-PR_BL text-xl text-green-Normal'>TEPI</span>
         </Link>
 
         {/* 내비게이션 링크 */}
@@ -53,7 +50,7 @@ const NavBar: React.FC = () => {
                 className={`${
                   location.pathname === link.url
                     ? 'font-PR_BO text-green-Normal hover:text-green-Normal'
-                    : 'font-PR_L text-gray-200 hover:text-green-Normal active:text-green-Normal'
+                    : 'font-PR_L text-gray-400 dark:text-gray-200 hover:text-green-Normal active:text-green-Normal'
                 }`}
               >
                 {link.name}

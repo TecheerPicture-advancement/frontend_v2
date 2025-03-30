@@ -1,0 +1,93 @@
+const { fontFamily } = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
+
+    /** @type {import('tailwindcss').Config} */
+    export const content = ['./src/**/*.{js,jsx,ts,tsx,css}', './public/index.html'];
+    export const darkMode = 'class';
+    export const theme = {
+      colors: {
+        gray: {
+          50: "#F0F0F0",
+          100: "#D9D9D9",
+          200: "#B8B8B8",
+          300: "#777777",
+          400: "#333333"
+        }
+      },
+      fontSize: {
+        xxs: '0.625rem',
+        xs: '0.75rem',
+        sm: '0.875rem',
+        base: '1rem',
+        lg: "1.125rem",
+        xl: '1.25rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
+        '4xl': '2.25rem',
+        '5xl': '2.5rem',
+        '6xl': "3rem",
+        '7xl': "4rem"
+      },
+      extend: {
+        fontFamily: {
+          PR_L: ['"Pretendard-Light"', ...fontFamily.sans],
+          PR_R: ['"Pretendard-Regular"', ...fontFamily.sans],
+          PR_M: ['"Pretendard-Medium"', ...fontFamily.sans],
+          PR_BO: ['"Pretendard-Bold"', ...fontFamily.sans],
+          PR_BL: ['"Pretendard-Black"', ...fontFamily.sans],
+          GongL: ['"GongGothicLight"', ...fontFamily.sans],
+          Jalnan: ['"yg-jalnan"', ...fontFamily.sans],
+        },
+
+        width: {
+          '50': '12.5rem',
+          '370': '92.5rem',
+        },
+        height: {
+          '88': '22rem',
+        },
+        colors: {
+          white: "#ffffff",
+          black: "#111111",
+          red: "#ff3939",
+          green: {
+            "Light": "#e6fbed",
+            "Light :hover": "#d9f9e4",
+            "Light :active": "#b0f2c7",
+            "Normal": "#00d54b",
+            "Normal :hover": "#00c044",
+            "Normal :active": "#00aa3c",
+            "Dark": "#00a038",
+            "Dark :hover": "#00802d",
+            "Dark :active": "#006022",
+            "Darker": "#004b1a"
+          },
+        },
+        backgroundImage: {
+          'light-gradient': 'radial-gradient(circle, #C3FFD8, #FFFFFF)',
+          'dark-gradient': 'radial-gradient(circle, #434F52, #111111)',      },
+      },
+    };
+    export const plugins = [
+      plugin(function ({ addUtilities }) {
+        addUtilities({
+          '.text-stroke': {
+            '-webkit-text-stroke': '1.5px black',
+            '-webkit-text-fill-color': 'white',
+          },
+          '.text-stroke-sm': {
+            '-webkit-text-stroke': '0.5px black',
+          },
+          '.text-stroke-lg': {
+            '-webkit-text-stroke': '3px black',
+          },
+          '.scrollbar-hidden': {
+            '-ms-overflow-style': 'none',
+            'scrollbar-width': 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+          },
+        });
+      }),
+    ];
