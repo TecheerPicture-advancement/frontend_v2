@@ -1,4 +1,4 @@
-interface AuthData {
+export interface AuthData {
   accessToken: string;
   userId: string;
   issuedAt: number;
