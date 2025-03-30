@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import html2canvas from "html2canvas";
+
+import { captureElementAsPng } from '../utils/captureUtils'
+import { saveAuthData } from "../utils/instaAuth";
+import { handleCaptureDownload } from "../utils/downloadImage";
+import { loginToInstagram, checkInstagramToken } from '../apis/instagram'
+import { uploadImage } from '../apis/upload'
 
 import Loading from "../components/Loading";
 import ResultButton3 from "../components/ResultButton3";
 import PRthumbnail from "../components/banner/PRthumbnail";
 import Gongthumbnail from "../components/banner/Gongthumbnail";
 import Jalthumbnail from "../components/banner/Jalthumbnail";
-import { saveAuthData, getAuthData, clearAuthData } from "../utils/instaAuth";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -39,39 +43,55 @@ const BannerResult = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  //프록시url 사용하지 않을시 proxyUrl 삭제 후 proxyUrl 들어가는 곳에 originalImageUrl를 넣기
+  const proxyUrl = `http://localhost:8080/api/v1/image/proxy?url=${encodeURIComponent(originalImageUrl)}`;
+
   const [selectedComponent, setSelectedComponent] = useState<React.FC<{ imageUrl: string; maintext?: string; servetext?: string; scale?: number }> | "original">("original");
   const [bannerData, setBannerData] = useState<BannerData | null>({
     maintext: location.state?.maintext || "",
     servetext: location.state?.servetext || "",
   });
+  const testImage = new Image();
+  testImage.crossOrigin = "anonymous";
+  testImage.src = proxyUrl;
+  testImage.onload = () => console.log("프록시 이미지 로드 성공!");
+  testImage.onerror = () => console.error("프록시 이미지 로드 실패!");
+  
+
+  const photos: {
+    id: string;
+    component: PhotoComponent | "original";
+    imageUrl: string;
+  }[] = [
+    { id: "original", component: "original", imageUrl: proxyUrl },
+    { id: "pr", component: PRthumbnail, imageUrl: proxyUrl },
+    { id: "gong", component: Gongthumbnail, imageUrl: proxyUrl },
+    { id: "jal", component: Jalthumbnail, imageUrl: proxyUrl },
+  ];
+
 
   const handleUpload = async () => {
     try {
-      setIsLoading(true);
+      const authData = await loginToInstagram();
+      if (!authData) return;
   
-      // 기존 인증 정보 가져오기
-      const authData = getAuthData();
-      if (authData) {
-        console.log("저장된 Instagram 인증 정보 사용", authData);
-        await handleCaptureAndUpload();
-        return;
-      }
+      const dataUrl = await captureElementAsPng("thumbnail-capture");
+      if (!dataUrl) return;
   
-      // 인증 정보 없으면 로그인 진행
-      const { data: loginUrl } = await axios.get(`${BASE_URL}/instagram/login`);
-      if (!loginUrl) throw new Error("Instagram 로그인 URL 가져오기 실패");
-  
-      const loginWindow = window.open(String(loginUrl), "_blank", "width=600,height=700");
-      if (!loginWindow) {
-        console.error("팝업 창 열기 실패");
-        return;
+      const imageId = await uploadImage(dataUrl);
+      if (imageId) {
+        navigate("/upload", { state: { imageId } });
+      } else {
+        console.error("업로드 응답에 imageId가 없음");
       }
     } catch (error) {
-      console.error("Instagram 로그인 실패", error);
-    } finally {
-      setIsLoading(false);
+      console.error("업로드 실패:", error);
     }
   };
+  
+  useEffect(() => {
+    checkInstagramToken();
+  }, []);
 
   useEffect(() => {  
     if (location.state?.maintext && location.state?.servetext) {
@@ -109,130 +129,21 @@ const BannerResult = () => {
   
       const { accessToken, userId } = event.data;
       if (accessToken && userId) {
-        console.log("✅ Instagram 인증 완료", { accessToken, userId });
+        console.log("Instagram 인증 완료", { accessToken, userId });
         saveAuthData(accessToken, userId);
-        
-        await handleCaptureAndUpload();
+        const dataUrl = await captureElementAsPng("thumbnail-capture");
+        if (dataUrl) {
+          await uploadImage(dataUrl);
+        } else {
+          console.error("Failed to capture element as PNG");
+        }
       }
     };
   
     window.addEventListener("message", handleMessage);
   
-    // 토큰 만료 검사 & 자동 로그아웃
-    const checkTokenExpiry = () => {
-      const authData = getAuthData();
-      if (!authData) {
-        console.log("⏳ Instagram 토큰 만료됨. 다시 로그인 필요!");
-        handleUpload();
-      } else {
-        const timeLeft = authData.issuedAt + 60 * 60 * 1000 - Date.now();
-        console.log(`⏳ 토큰 만료까지 남은 시간: ${Math.floor(timeLeft / 1000)}초`);
-  
-        // 1시간 후 토큰 자동 삭제 & 재로그인
-        setTimeout(() => {
-          console.log("🚨 Instagram 토큰 만료됨. 자동 로그아웃 처리.");
-          clearAuthData();
-          handleUpload();
-        }, timeLeft);
-      }
-    };
-  
-    checkTokenExpiry();
-  
     return () => window.removeEventListener("message", handleMessage);
   }, []);
-  
-  
-  
-  if (isLoading) return <Loading />;
-
-  const photos: {
-    id: string;
-    component: PhotoComponent | "original";
-    imageUrl: string;
-  }[] = [
-    { id: "original", component: "original", imageUrl: originalImageUrl },
-    { id: "pr", component: PRthumbnail, imageUrl: originalImageUrl },
-    { id: "gong", component: Gongthumbnail, imageUrl: originalImageUrl },
-    { id: "jal", component: Jalthumbnail, imageUrl: originalImageUrl },
-  ];
-
-  const handleCapture = async () => {
-    if (!selectedComponent) {
-      alert("먼저 썸네일을 선택해주세요!");
-      return;
-    }
-
-    try {
-      const captureElement = document.getElementById("thumbnail-capture");
-      if (!captureElement) {
-        console.error("캡처할 요소를 찾을 수 없습니다.");
-        return;
-      }
-
-      const canvas = await html2canvas(captureElement, {
-        useCORS: true,
-        scale: 2,
-      });
-
-      return canvas.toDataURL("image/png");
-    } catch (error) {
-      console.error("캡처 실패", error);
-      return null;
-    }
-  };
-  
-
-  const handleCaptureAndUpload = async () => {
-    if (!selectedComponent) {
-      alert("먼저 썸네일을 선택해주세요");
-      return;
-    }
-  
-    try {
-      setIsLoading(true);
-  
-      const imageData = await handleCapture();
-      if (!imageData) throw new Error("이미지 캡처 실패");
-  
-      const formData = new FormData();
-      formData.append("file", dataURItoBlob(imageData), "thumbnail.png");
-        
-      const { data }: { data: { imageId: string } } = await axios.post(`${BASE_URL}/images`, formData);
-      if (!data.imageId) throw new Error("이미지 업로드 실패");
-  
-      console.log("이미지 업로드 완료!", data.imageId);
-  
-      navigate("/upload", { state: { imageId: data.imageId } });
-    } catch (error) {
-      console.error("업로드 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  const dataURItoBlob = (dataURI: string) => {
-    const byteString = atob(dataURI.split(",")[1]);
-    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-
-  const handleDownload = async () => {
-    const imageData = await handleCapture();
-    if (!imageData) return;
-
-    const link = document.createElement("a");
-    link.href = imageData;
-    link.download = "thumbnail.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const handleEditText = () => {
     if (!bannerData) return;
@@ -313,7 +224,7 @@ const BannerResult = () => {
             <div className="flex flex-col gap-10 mt-[4px]">
               <ResultButton3 value="문구 편집" onClick={handleEditText} />
               <ResultButton3 value="인스타그램 업로드" onClick={handleUpload}/>
-              <ResultButton3 value="다운로드" onClick={handleDownload} />
+              <ResultButton3 value="다운로드" onClick={handleCaptureDownload} />
             </div>
           </div>
         )}
