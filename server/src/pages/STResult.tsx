@@ -5,6 +5,8 @@ import useImageStore from '../store/useImageStore';
 import ResultButton from '../components/ResultButton3';
 import ResultImage from '../components/ResultImage';
 import Loading from '../components/Loading';
+import { loginToInstagram } from '../apis/instagram'
+import { handleDownload } from '../utils/downloadImage'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -83,41 +85,25 @@ const STResult: React.FC = () => {
     };
   }, [imageId, imageUrls]);
 
-  const handleNavigateToInstagram = () => {
+  const handleNavigateToInstagram = async () => {
     if (selectedPhoto) {
-      navigate('/instagram-upload', { state: { imageUrl: selectedPhoto } });
+      const authData = await loginToInstagram();
+
+      if (authData) {
+        navigate('/upload', {
+          state: { 
+            imageId 
+          }
+        });
+      }
     }
   };
 
   const handleShowBannerSetting = () => {
     if (selectedPhoto) {
-      console.log("selectedPhoto:", selectedPhoto);
       navigate('/banner', { state: { imageUrl: selectedPhoto } });
     }
   };
-
-  const handleDownload = async () => {
-    if (!selectedPhoto) return;
-  
-    try {
-      const response = await fetch(selectedPhoto, { mode: "cors" });
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-  
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "downloaded_image.jpg"; 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("이미지 다운로드 실패:", error);
-    }
-  };
-
-  
 
   return (
     <>
@@ -132,9 +118,7 @@ const STResult: React.FC = () => {
             <div className="grid grid-cols-2 gap-10 shrink-0 w-full sm:w-auto">
               {originalImage && (
                 <div className="relative flex flex-wrap items-center justify-center shrink-0 cursor-pointer"
-                  onClick={() => {
-                    setSelectedPhoto(originalImage);
-                  }}
+                  onClick={() => setSelectedPhoto(originalImage)}
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-300 to-white mix-blend-multiply z-10"/>
                   <ResultImage
@@ -142,8 +126,8 @@ const STResult: React.FC = () => {
                     isSelected={selectedPhoto === originalImage}
                     width="64"
                     height="64"
-                    maintext=""
-                    servetext="원본 이미지"
+                    maintext="원본 이미지"
+                    servetext=""
                   />
                 </div>
               )}
@@ -164,11 +148,16 @@ const STResult: React.FC = () => {
             </div>
             {selectedPhoto && (
               <div className="flex flex-col items-center gap-10 w-full sm:w-auto">
-                <img src={optimizedPhoto || selectedPhoto} alt="selected img" className="w-64 h-64 border border-gray-300 object-cover" onContextMenu={(e) => e.preventDefault()} />
+                <img 
+                  src={optimizedPhoto || selectedPhoto} 
+                  alt="selected img" 
+                  className="w-64 h-64 border border-gray-300 object-cover" 
+                  onContextMenu={(e) => e.preventDefault()} 
+                />
                 <div className="w-full flex flex-col gap-10">
                   <ResultButton value="인스타그램 썸네일 제작" onClick={handleShowBannerSetting} />
                   <ResultButton value="인스타그램 피드 올리기" onClick={handleNavigateToInstagram} />
-                  <ResultButton value="다운로드" onClick={handleDownload} />
+                  <ResultButton value="선택된 사진 다운로드" onClick={() => handleDownload(selectedPhoto)} /> {/* New button for downloading selected photo */}
                 </div>
               </div>
             )}
